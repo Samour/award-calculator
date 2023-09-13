@@ -1,4 +1,19 @@
+# Ordering is required for initial creation of ACM certificate
+# Validation provided via Namecheap DNS UI
+resource "aws_acm_certificate" "app_certificate" {
+  provider = aws.us_east_1
+
+  domain_name       = local.public_domain_name
+  validation_method = "DNS"
+
+  tags = merge({
+    Name = "Public certificate for FE app"
+  }, local.default_tags)
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
+  depends_on = [aws_acm_certificate.app_certificate]
+
   origin {
     domain_name              = aws_s3_bucket.app_artifacts.bucket_regional_domain_name
     origin_id                = local.s3_origin_id
@@ -10,8 +25,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
-  aliases = []
-  # aliases = [local.public_domain_name]
+  aliases = [local.public_domain_name]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -28,7 +42,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
   
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = aws_acm_certificate.app_certificate.arn
+    ssl_support_method = "sni-only"
   }
 
   restrictions {
