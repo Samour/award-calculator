@@ -26,7 +26,7 @@ jobs:
         working-directory: award-calculator-fe
       - run: npm build
         working-directory: award-calculator-fe
-      - use: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: fe-artifact
           path: award-calculator-fe/build/*
