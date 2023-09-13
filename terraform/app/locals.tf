@@ -1,6 +1,4 @@
 locals {
-  app_version = "2023-09-13T05_41_15"
-
   default_tags = {
     Environment = "Prod"
     Project = "award-calculator"

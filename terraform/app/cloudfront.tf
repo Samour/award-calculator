@@ -17,7 +17,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.app_artifacts.bucket_regional_domain_name
     origin_id                = local.s3_origin_id
-    origin_path = "/app/${local.app_version}/web"
+    origin_path = "/app/${var.app_version}/web"
     origin_access_control_id = aws_cloudfront_origin_access_control.s3_distribution_oac.id
   }
 
