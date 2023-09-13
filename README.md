@@ -29,3 +29,8 @@ From the `award-calculator-fe` directory:
 ```sh
 npm run build
 ```
+
+## Infrastructure
+
+Infrastructure is managed using Terraform backed by S3 remote state. Application infrastructure is contained
+in the `terraform/app` directory.
