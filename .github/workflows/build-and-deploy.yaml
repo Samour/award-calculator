@@ -67,3 +67,4 @@ jobs:
         working-directory: terraform/app
       - run: terraform apply -input=false -auto-approve -var="app_version=$APP_VERSION"
         working-directory: terraform/app
+      - run: .github/scripts/cloudfront_invalidate.sh
