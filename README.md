@@ -36,3 +36,5 @@ npm run build
 
 Infrastructure is managed using Terraform backed by S3 remote state. Application infrastructure is contained
 in the `terraform/app` directory.
+
+`terraform/build` defines an IAM user that can be used by the Github Actions pipeline.
