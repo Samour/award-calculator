@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: generate_version
-        run: .githup/scripts/generate_version.sh
+        run: .github/scripts/generate_version.sh
     outputs:
       app_version: ${{ steps.generate_version.outputs.app_version }}
 
@@ -24,7 +24,7 @@ jobs:
           node-version: '20.x'
       - run: npm ci
         working-directory: award-calculator-fe
-      - run: npm build
+      - run: npm run build
         working-directory: award-calculator-fe
       - uses: actions/upload-artifact@v3
         with:
