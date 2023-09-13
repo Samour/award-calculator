@@ -1,5 +1,7 @@
 # Award Calculator
 
+[![Build and Deploy](https://github.com/Samour/award-calculator/actions/workflows/build-and-deploy.yaml/badge.svg)](https://github.com/Samour/award-calculator/actions/workflows/build-and-deploy.yaml)
+
 Simple FE tool to perform Australian labour award calculations.
 
 **Location:** https://award-calculator.ellie.aburke.me/
