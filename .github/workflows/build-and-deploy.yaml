@@ -65,5 +65,5 @@ jobs:
           aws-region: ap-southeast-2
       - run: terraform init
         working-directory: terraform/app
-      - run: terraform apply -var="app_version=$APP_VERSION"
+      - run: terraform apply -input=false -auto-approve -var="app_version=$APP_VERSION"
         working-directory: terraform/app
