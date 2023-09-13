@@ -9,8 +9,16 @@ resource "aws_iam_user" "ci_user" {
 data "aws_iam_policy_document" "ci_policy" {
   statement {
     effect    = "Allow"
-    actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::award-calculator.ellie.aburke.me/*"]
+    actions   = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "arn:aws:s3:::award-calculator.ellie.aburke.me",
+      "arn:aws:s3:::award-calculator.ellie.aburke.me/*"
+    ]
   }
 }
 
