@@ -2,6 +2,8 @@
 
 Simple FE tool to perform Australian labour award calculations.
 
+**Location:** https://award-calculator.ellie.aburke.me/
+
 ## Development
 
 This is a browser-based app using React + Redux written in Typescript.
