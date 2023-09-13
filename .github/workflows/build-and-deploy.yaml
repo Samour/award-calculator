@@ -5,46 +5,46 @@ on:
     branches:
       - main
 
-  jobs:
-    set-version:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - id: generate_version
-          run: .githup/scripts/generate_version.sh
-      outputs:
-        app_version: ${{ steps.generate_version.outputs.app_version }}
+jobs:
+  set-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: generate_version
+        run: .githup/scripts/generate_version.sh
+    outputs:
+      app_version: ${{ steps.generate_version.outputs.app_version }}
 
-    build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-node@v3
-          with:
-            node-version: '20.x'
-        - run: npm ci
-          working-directory: award-calculator-fe
-        - run: npm build
-          working-directory: award-calculator-fe
-        - use: actions/upload-artifact@v3
-          with:
-            name: fe-artifact
-            path: award-calculator-fe/build/*
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - run: npm ci
+        working-directory: award-calculator-fe
+      - run: npm build
+        working-directory: award-calculator-fe
+      - use: actions/upload-artifact@v3
+        with:
+          name: fe-artifact
+          path: award-calculator-fe/build/*
 
-    upload:
-      runs-on: ubuntu-latest
-      needs:
-        - set-version
-        - build
-      env:
-        APP_VERSION: ${{ needs.set-version.outputs.app_version }}
-      steps:
-        - uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ap-southeast-2
-        - uses: actions/download-artifact@v3
-          with:
-            name: fe-artifact
-        - run: aws s3 sync . s3://award-calculator.ellie.aburke.me/app/$APP_VERSION/web
+  upload:
+    runs-on: ubuntu-latest
+    needs:
+      - set-version
+      - build
+    env:
+      APP_VERSION: ${{ needs.set-version.outputs.app_version }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-2
+      - uses: actions/download-artifact@v3
+        with:
+          name: fe-artifact
+      - run: aws s3 sync . s3://award-calculator.ellie.aburke.me/app/$APP_VERSION/web
