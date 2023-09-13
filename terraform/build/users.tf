@@ -22,18 +22,16 @@ data "aws_iam_policy_document" "ci_policy" {
     ]
   }
 
-  // Award calculator app bucket
+  // Award calculator resources
   statement {
     effect    = "Allow"
-    actions   = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject",
-      "s3:ListBucket",
-    ]
+    actions   = ["*"]
     resources = [
       "arn:aws:s3:::award-calculator.ellie.aburke.me",
-      "arn:aws:s3:::award-calculator.ellie.aburke.me/*"
+      "arn:aws:s3:::award-calculator.ellie.aburke.me/*",
+      "arn:aws:cloudfront::081487835574:distribution/E100WVOJQPSM8T",
+      "arn:aws:cloudfront::081487835574:origin-access-control/E10GBMNZAZXIW8",
+      "arn:aws:acm:us-east-1:081487835574:certificate/3ee781fd-d63c-4d4b-8d5f-b35900abc36c",
     ]
   }
 }
