@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, TextCell } from '@silevis/reactgrid';
-import { ValidatedRow, useShiftTableValidator } from 'services/ShiftTableValidator';
+import { useShiftTableValidator } from 'services/ShiftTableValidator';
 import { WorkerShiftRow } from 'models/inputs/table';
+import { ValidatedRow } from 'models/validation';
 import '@silevis/reactgrid/styles.css';
 import './style.css';
 

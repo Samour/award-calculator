@@ -1,14 +1,15 @@
-export interface TableValidationFailures {
-  rowFailures: Map<number, RowValidationFailures>;
+export interface ValidatedRow {
+  employeeCode: ValidatedCell;
+  lastName: ValidatedCell;
+  firstName: ValidatedCell;
+  basePayRate: ValidatedCell;
+  shiftStartDate: ValidatedCell;
+  shiftStartTime: ValidatedCell;
+  shiftEndTime: ValidatedCell;
+  casualLoading: ValidatedCell;
 }
 
-export interface RowValidationFailures {
-  employeeCode: string[];
-  lastName: string[];
-  firstName: string[];
-  payRate: string[];
-  shiftStartDate: string[];
-  shiftStartTime: string[];
-  shiftEndTime: string[];
-  casualLoading: string[];
+export interface ValidatedCell {
+  value: string;
+  failureMessages: string[];
 }

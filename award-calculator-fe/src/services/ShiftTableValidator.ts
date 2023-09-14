@@ -1,22 +1,7 @@
 import { WorkerShiftRow } from 'models/inputs/table';
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
-
-export interface ValidatedRow {
-  employeeCode: ValidatedCell;
-  lastName: ValidatedCell;
-  firstName: ValidatedCell;
-  basePayRate: ValidatedCell;
-  shiftStartDate: ValidatedCell;
-  shiftStartTime: ValidatedCell;
-  shiftEndTime: ValidatedCell;
-  casualLoading: ValidatedCell;
-}
-
-export interface ValidatedCell {
-  value: string;
-  failureMessages: string[];
-}
+import { ValidatedRow } from 'models/validation';
 
 interface WorkerDetails {
   lastName: string | null;
