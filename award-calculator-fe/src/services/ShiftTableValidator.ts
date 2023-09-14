@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch, createSelector } from '@reduxjs/toolkit';
 import { setCellValidationMessages } from 'store/shiftEntry';
+import strings from 'strings';
 import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
@@ -51,9 +52,9 @@ export class ShiftTableValidator {
 
 const validateEmployeeCode = (employeeCode: string): string[] => {
   if (employeeCode.length < 1) {
-    return ['Employee code must have at least 1 character'];
+    return [strings.validations.workerShiftEntry.employeeCode.tooShort];
   } else if (!/^[a-zA-Z0-9]+$/.test(employeeCode)) {
-    return ['Employee code must only consist of alphabetic (a-z or A-Z) and numeric (0-9) characters'];
+    return [strings.validations.workerShiftEntry.employeeCode.illegalChars];
   } else {
     return [];
   }
@@ -61,7 +62,7 @@ const validateEmployeeCode = (employeeCode: string): string[] => {
 
 const validateLastName = (lastName: string): string[] => {
   if (lastName.length < 1) {
-    return ['Last name must have at least 1 character'];
+    return [strings.validations.workerShiftEntry.lastName.tooShort];
   } else {
     return [];
   }
@@ -69,7 +70,7 @@ const validateLastName = (lastName: string): string[] => {
 
 const validateFirstName = (firstName: string): string[] => {
   if (firstName.length < 1) {
-    return ['First name must have at least 1 character'];
+    return [strings.validations.workerShiftEntry.firstName.tooShort];
   } else {
     return [];
   }

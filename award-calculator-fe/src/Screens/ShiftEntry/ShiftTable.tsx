@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ReactGrid, Column, Row, CellChange, TextCell } from '@silevis/reactgrid';
 import { updateCellValues } from 'store/shiftEntry';
+import strings from 'strings';
 import { WorkerShiftColumnName } from 'models/inputs/table';
 import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 import { AppState } from 'models/store';
@@ -27,14 +28,14 @@ const columns: Column[] = [
 const headerRow: Row = {
   rowId: 'header',
   cells: [
-    'Employee code',
-    'Last name',
-    'First name',
-    'Pay rate',
-    'Shift start date',
-    'Shift start time',
-    'Shift end time',
-    'Casual loading',
+    strings.screens.shiftEntry.tableHeadings.employeeCode,
+    strings.screens.shiftEntry.tableHeadings.lastName,
+    strings.screens.shiftEntry.tableHeadings.firstName,
+    strings.screens.shiftEntry.tableHeadings.basePayRate,
+    strings.screens.shiftEntry.tableHeadings.shiftStartDate,
+    strings.screens.shiftEntry.tableHeadings.shiftStartTime,
+    strings.screens.shiftEntry.tableHeadings.shiftEndTime,
+    strings.screens.shiftEntry.tableHeadings.casualLoading,
   ].map((text) => ({ type: 'header', text, style: { background: 'rgba(191, 191, 191, 0.69)' } })),
 };
 
@@ -70,7 +71,6 @@ const ShiftTable = (): JSX.Element => {
   const dispatch = useDispatch();
   const workerShiftRows = useSelector(workerShiftRowsSelector);
 
-  // TODO move this to Redux so that the state persists unmounting of this component
   const renderableRows = convertToRows(workerShiftRows);
 
   const onCellsChanged = (changes: CellChange[]) => {

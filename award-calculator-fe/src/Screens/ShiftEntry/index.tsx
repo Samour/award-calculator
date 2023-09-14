@@ -1,4 +1,5 @@
 import { useShiftTableValidator } from 'services/ShiftTableValidator';
+import strings from 'strings';
 import ShiftTable from './ShiftTable';
 import ValidationNotification from './ValidationNotification';
 
@@ -15,7 +16,7 @@ const ShiftEntry = (): JSX.Element => {
     <div className="ShiftEntry">
       <div className="row">
         <div className="twelve columns">
-          <h1>View/Edit Hours</h1>
+          <h1>{strings.screens.shiftEntry.title}</h1>
         </div>
       </div>
       <ValidationNotification />
@@ -27,7 +28,7 @@ const ShiftEntry = (): JSX.Element => {
       <div className="row">
         <div className="twelve columns">
           <button className="button-primary u-pull-right"
-            onClick={onComputePayClick}>Compute Pay</button>
+            onClick={onComputePayClick}>{strings.screens.shiftEntry.buttons.computePay}</button>
         </div>
       </div>
     </div>

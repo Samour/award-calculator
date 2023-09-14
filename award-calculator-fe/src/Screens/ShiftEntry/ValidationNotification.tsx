@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
+import strings from 'strings';
 import { AppState } from 'models/store';
 import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 import Alert from 'Components/Alert';
@@ -50,12 +51,12 @@ const ValidationNotification = (): JSX.Element => {
             <div className="validation-alert">
               <div className="row">
                 <div className="twelve columns">
-                  Data entry is not valid. Fix data before proceeding.
+                  {strings.screens.shiftEntry.validation.message}
                 </div>
               </div>
               <div className="row">
                 <div className="twelve columns">
-                  <strong>Problems:</strong>
+                  <strong>{strings.screens.shiftEntry.validation.subtitle}</strong>
                 </div>
               </div>
               <div className="row compact">
