@@ -7,3 +7,7 @@
   color: black;
   border-color: rgba(64, 64, 64, 0.73);
 }
+
+.App .reactgrid-content .rg-pane .rg-cell.cell-invalid {
+  border-color: red;
+}

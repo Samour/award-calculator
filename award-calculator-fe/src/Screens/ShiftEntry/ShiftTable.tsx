@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, TextCell } from '@silevis/reactgrid';
+import { ValidatedRow, useShiftTableValidator } from 'services/ShiftTableValidator';
 import { WorkerShiftRow } from 'models/inputs/table';
 import '@silevis/reactgrid/styles.css';
 import './style.css';
@@ -35,7 +36,8 @@ const headerRow: Row = {
   ].map((text) => ({ type: 'header', text, style: { background: 'rgba(191, 191, 191, 0.69)' } })),
 };
 
-const convertToRows = (workerShiftRows: WorkerShiftRow[]): Row[] => {
+const convertToRows = (workerShiftRows: ValidatedRow[]): Row[] => {
+  console.log(workerShiftRows);
   const rows = [
     headerRow,
     ...workerShiftRows.map<Row>((r, i) => ({
@@ -49,7 +51,11 @@ const convertToRows = (workerShiftRows: WorkerShiftRow[]): Row[] => {
         r.shiftStartTime,
         r.shiftEndTime,
         r.casualLoading,
-      ].map((text) => ({ type: 'text', text })),
+      ].map((cell) => ({
+        type: 'text',
+        text: cell.value,
+        className: cell.failureMessages.length > 0 ? 'cell-invalid' : '',
+      })),
     })),
   ];
 
@@ -61,9 +67,11 @@ const emptyTable: WorkerShiftRow[] = [
 ];
 
 export const ShiftTable = (): JSX.Element => {
+  const shiftTableValidator = useShiftTableValidator();
+
   // TODO move this to Redux so that the state persists unmounting of this component
   const [workerShiftRows, setWorkerShiftRows] = useState<WorkerShiftRow[]>(emptyTable);
-  const renderableRows = convertToRows(workerShiftRows);
+  const renderableRows = convertToRows(shiftTableValidator.validateShiftRows(workerShiftRows));
 
   const onCellsChanged = (changes: CellChange[]) => {
     const updatedWorkers = workerShiftRows.map((r) => r.clone({}));
