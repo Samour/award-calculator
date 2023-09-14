@@ -4,7 +4,13 @@ import Decimal from 'decimal.js';
 import { DateTimeFormatter, LocalDate, LocalTime } from '@js-joda/core';
 import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
-import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
+import {
+  WorkerShiftColumnName,
+  WorkerShiftRow,
+  translateCasualLoading,
+  translateToLocalDate,
+  translateToLocalTime,
+} from 'models/inputs/table';
 // import { WorkerCode } from 'models/inputs/worker';
 // import { MonetaryAmount } from 'models/money';
 import { AppState } from 'models/store';
@@ -117,14 +123,12 @@ const validateShiftStartDate = (shiftStartDate: string): string[] => {
   if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(shiftStartDate)) {
     return [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat];
   }
-  
-  try {
-    LocalDate.parse(shiftStartDate, selectFormatterForDate(shiftStartDate));
-  } catch (e) {
-    return [strings.validations.workerShiftEntry.shiftStartDate.invalidDate];
-  }
 
-  return [];
+  if (translateToLocalDate(shiftStartDate) === null) {
+    return [strings.validations.workerShiftEntry.shiftStartDate.invalidDate];
+  } else {
+    return [];
+  }
 };
 
 const validateShiftStartTime = (shiftStartTime: string): string[] => {
@@ -132,13 +136,11 @@ const validateShiftStartTime = (shiftStartTime: string): string[] => {
     return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
   }
 
-  try {
-    LocalTime.parse(shiftStartTime);
-  } catch (e) {
+  if (translateToLocalTime(shiftStartTime) === null) {
     return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
+  } else {
+    return [];
   }
-
-  return [];
 };
 
 const validateShiftEndTime = (shiftEndTime: string): string[] => {
@@ -146,17 +148,15 @@ const validateShiftEndTime = (shiftEndTime: string): string[] => {
     return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
   }
 
-  try {
-    LocalTime.parse(shiftEndTime);
-  } catch (e) {
+  if (translateToLocalTime(shiftEndTime) === null) {
     return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
+  } else {
+    return [];
   }
-
-  return [];
 };
 
 const validateCasualLoading = (casualLoading: string): string[] => {
-  if (!new Set(['y', 'n', 'yes', 'no', 'true', 'false']).has(casualLoading.toLocaleLowerCase())) {
+  if (translateCasualLoading(casualLoading) === null) {
     return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
   } else {
     return [];
