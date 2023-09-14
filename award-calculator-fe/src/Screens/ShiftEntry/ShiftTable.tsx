@@ -4,6 +4,8 @@ import { WorkerShiftRow } from 'models/inputs/table';
 import '@silevis/reactgrid/styles.css';
 import './style.css';
 
+// https://reactgrid.com/docs/4.0/2-implementing-core-features/
+
 const STD_COLUMN_WIDTH = 150
 
 const columns: Column[] = [
@@ -55,16 +57,7 @@ const convertToRows = (workerShiftRows: WorkerShiftRow[]): Row[] => {
 };
 
 const emptyTable: WorkerShiftRow[] = [
-  {
-    employeeCode: 'Xyz',
-    lastName: '',
-    firstName: '',
-    basePayRate: '',
-    shiftStartDate: '',
-    shiftStartTime: '',
-    shiftEndTime: '',
-    casualLoading: '',
-  },
+  WorkerShiftRow.empty(),
 ];
 
 export const ShiftTable = (): JSX.Element => {
@@ -73,16 +66,23 @@ export const ShiftTable = (): JSX.Element => {
   const renderableRows = convertToRows(workerShiftRows);
 
   const onCellsChanged = (changes: CellChange[]) => {
-    const updatedWorkers = workerShiftRows.map((r) => Object.assign({}, r));
-    changes.forEach((change) =>
-      (updatedWorkers[change.rowId as number] as any)[change.columnId as string] = (change as CellChange<TextCell>)
-        .newCell.text
-    );
+    const updatedWorkers = workerShiftRows.map((r) => r.clone({}));
+    changes.forEach((change) => {
+      const update: any = {};
+      update[change.columnId] = (change.newCell as TextCell).text
+      updatedWorkers[change.rowId as number] = updatedWorkers[change.rowId as number].clone(update);
+    });
 
-    setWorkerShiftRows(updatedWorkers);
+    if (!updatedWorkers[updatedWorkers.length - 1].isEmpty()) {
+      updatedWorkers.push(WorkerShiftRow.empty());
+    }
+
+    setWorkerShiftRows(
+      updatedWorkers.filter((row, i) => !row.isEmpty() || i === updatedWorkers.length - 1)
+    );
   };
 
   return (
-    <ReactGrid columns={columns} rows={renderableRows} onCellsChanged={onCellsChanged} />
+    <ReactGrid enableRangeSelection columns={columns} rows={renderableRows} onCellsChanged={onCellsChanged} />
   );
 };
