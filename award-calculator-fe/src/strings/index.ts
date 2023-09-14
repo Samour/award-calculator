@@ -1,4 +1,4 @@
-export default {
+const strings = {
   validations: {
     workerShiftEntry: {
       employeeCode: {
@@ -36,3 +36,5 @@ export default {
     },
   },
 };
+
+export default strings;

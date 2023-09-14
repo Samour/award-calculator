@@ -32,6 +32,14 @@ From the `award-calculator-fe` directory:
 npm test
 ```
 
+### Run linter
+
+From the `award-calculator-fe` directory:
+
+```sh
+npm run lint
+```
+
 ### Build locally
 
 From the `award-calculator-fe` directory:
