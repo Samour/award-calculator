@@ -39,13 +39,13 @@ See [models](./award-calculator-fe/src/models) for specific attributes & relatio
 The validation on tabular input data will work as follows:
 
 - For each row:
-  1. Parse into [WorkerShiftRow](./award-calculator-fe/src/models/inputs/table.ts) model
-  2. Validate each field in the row
-  3. Extract `Employee code`, `Last name`, `First name`, `Pay rate` and `Casual loading` from the row
-  4. Perform a lookup to see if `Employee code` has previously been encountered.
-    - If yes, validate that the other worker-level fields match the prior values
-    - Otherwise, insert these fields to a map of `Employee code` -> worker-level fields
-  5. Validation failures for the row are aggregated into a
+    1. Parse into [WorkerShiftRow](./award-calculator-fe/src/models/inputs/table.ts) model
+    1. Validate each field in the row
+    1. Extract `Employee code`, `Last name`, `First name`, `Pay rate` and `Casual loading` from the row
+    1. Perform a lookup to see if `Employee code` has previously been encountered.
+        - If yes, validate that the other worker-level fields match the prior values
+        - Otherwise, insert these fields to a map of `Employee code` -> worker-level fields
+    1. Validation failures for the row are aggregated into a
 [RowValidationFailures](./award-calculator-fe/src/models/validation.ts) instance, then added to a
 [TableValidationFailures](./award-calculator-fe/src/models/validation.ts) instance for the table
 
@@ -54,28 +54,29 @@ The validation on tabular input data will work as follows:
 This is assuming the [Retail Award](./REQUIREMENTS.md#retail-award). Abstractions/flow may change as new awards are
 introduced.
 
-- Parse & collate table rows into [Worker](./award-calculator-fe/src/models/inputs/worker.ts) and
+1. Parse & collate table rows into [Worker](./award-calculator-fe/src/models/inputs/worker.ts) and
 [WorkerShift](./award-calculator-fe/src/models/inputs/shift.ts) models. Each `Worker` is processed independently.
-- For each worker:
-  1. Construct a [TimeClassifier](./award-calculator-fe/src/award/TimeClassifier.ts) & pass each
+1. For each worker:
+    1. Construct a [TimeClassifier](./award-calculator-fe/src/award/TimeClassifier.ts) & pass each
   `WorkerShift` to it in chronological order. This will return a list of
   [ClassifiedWorkedTime](./award-calculator-fe/src/award/TimeClassifier.ts) according to the following logic:
-    - The `TimeClassifier` is instantiated with 1 or more stateful
+        1. The `TimeClassifier` is instantiated with 1 or more stateful
   [OvertimeCounter](./award-calculator-fe/src/award/TimeClassifier.ts) instances.
-    - The `WorkerShift` is passed to each `OvertimeCounter` instance, which returns an `OvertimeSpan` (if applicable).
-    - Any overlapping or consecutive `OvertimeSpan` are aggregated and returned as a `ClassifiedWorkedTime` with
-  `classification=OVERTIME`
-    - Any outstanding time from the `WorkerShift` not covered by an `OvertimeSpan` is returned as a `ClassifiedWorkedTime`
-  with `classification=REGULAR_TIME`
-  2. Construct 1 or more [PayClassifier](./award-calculator-fe/src/award/PayClassifier.ts)
-  3. For each shift (in chronological order):
-    - Pass the associated `ClassifiedWorkedTime` to `PayClassifier`. `PayClassifier` will return 0 or more
+        1. The `WorkerShift` is passed to each `OvertimeCounter` instance, which returns an `OvertimeSpan` (if
+applicable).
+        1. Any overlapping or consecutive `OvertimeSpan` are aggregated and returned as a `ClassifiedWorkedTime` with
+`classification=OVERTIME`
+        1. Any outstanding time from the `WorkerShift` not covered by an `OvertimeSpan` is returned as a
+`ClassifiedWorkedTime` with `classification=REGULAR_TIME`
+    1. Construct 1 or more stateful [PayClassifier](./award-calculator-fe/src/award/PayClassifier.ts)
+    1. For each shift (in chronological order):
+        1. Pass the associated `ClassifiedWorkedTime` to `PayClassifier`. `PayClassifier` will return 0 or more
 [ClassifiedPayableTime](./award-calculator-fe/src/models/outputs/payable.ts) with the appropriate loading data.
-    - Construct a [ShiftPayable](./award-calculator-fe/src/models/outputs/payable.ts) instance by aggregating the
+        1. Construct a [ShiftPayable](./award-calculator-fe/src/models/outputs/payable.ts) instance by aggregating the
 total of all `ClassifiedPayableTime`. Any overlapping `ClassifiedPayableTime` aggregate with a simple sum (ie no
 special logic required).
-  4. Aggregate the `ShiftPayable` into [WorkerPayable](./award-calculator-fe/src/models/outputs/payable.ts)
-- Render results
+    1. Aggregate the `ShiftPayable` into [WorkerPayable](./award-calculator-fe/src/models/outputs/payable.ts)
+1. Render results
 
 Associated state aggregations (such as hours per day or hours per week) are stored & updated inside the relevant
 instances of:
