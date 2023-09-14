@@ -7,7 +7,10 @@
 
 ## App Architecture
 
-**TODO**
+Application is a single-page application written using React. All logic is contained in the SPA; there are no backend
+components or network calls made by the SPA.
+
+The SPA is served statically via CloudFront, backed by an S3 origin.
 
 ## Data Models
 
