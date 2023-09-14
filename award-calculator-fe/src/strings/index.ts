@@ -28,7 +28,7 @@ const strings = {
       },
       validation: {
         message: 'Data entry is not valid. Fix data before proceeding.',
-        subtitle: 'Problems:',
+        subtitle: (problemCount: number) => `Problems (${problemCount}):`,
       },
       buttons: {
         computePay: 'Compute Pay',

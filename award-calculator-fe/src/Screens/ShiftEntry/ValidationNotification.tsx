@@ -56,7 +56,7 @@ const ValidationNotification = (): JSX.Element => {
               </div>
               <div className="row">
                 <div className="twelve columns">
-                  <strong>{strings.screens.shiftEntry.validation.subtitle}</strong>
+                  <strong>{strings.screens.shiftEntry.validation.subtitle(validationMessages.length)}</strong>
                 </div>
               </div>
               <div className="row compact">
