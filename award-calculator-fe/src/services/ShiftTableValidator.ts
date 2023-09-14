@@ -1,12 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch, createSelector } from '@reduxjs/toolkit';
+import { useStore } from 'react-redux';
+import { Store } from '@reduxjs/toolkit';
 import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
 import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
 // import { WorkerCode } from 'models/inputs/worker';
 // import { MonetaryAmount } from 'models/money';
 import { AppState } from 'models/store';
-import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
 
 // interface WorkerDetails {
@@ -18,14 +17,20 @@ import { validatedToWorkerShift } from 'models/converters/workerShift';
 
 export class ShiftTableValidator {
 
-  constructor(private readonly dispatch: Dispatch, private readonly shifts: WorkerShiftRow[]) { }
+  constructor(private readonly store: Store<AppState>) { }
+
+  private getShiftsFromStore(): WorkerShiftRow[] {
+    const rows = this.store.getState().shiftEntry.rows
+    return rows.map((row) => validatedToWorkerShift(row))
+      .slice(0, rows.length - 1);
+  }
 
   validateShiftRows(): boolean {
     // const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
 
     var isValid = true;
 
-    this.shifts.forEach((shift, rowIndex) => {
+    this.getShiftsFromStore().forEach((shift, rowIndex) => {
       const validators: [WorkerShiftColumnName, (value: string) => string[]][] = [
         ['employeeCode', validateEmployeeCode],
         ['lastName', validateLastName],
@@ -36,7 +41,7 @@ export class ShiftTableValidator {
         const failureMessages = validator(shift[columnId]);
         isValid = isValid && failureMessages.length === 0;
 
-        this.dispatch(setCellValidationMessages({
+        this.store.dispatch(setCellValidationMessages({
           cellIdentifier: {
             rowIndex,
             columnId,
@@ -76,16 +81,8 @@ const validateFirstName = (firstName: string): string[] => {
   }
 };
 
-const workerShiftsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
-  state.shiftEntry.rows;
-
-const workerShiftsConverter = (rows: ValidatedWorkerShiftRow[]): WorkerShiftRow[] =>
-  rows.map((row) => validatedToWorkerShift(row))
-    .slice(0, rows.length - 1);
-
 export const useShiftTableValidator = () => {
-  const dispatch = useDispatch();
-  const shifts = useSelector(createSelector([workerShiftsSelector], workerShiftsConverter));
+  const store = useStore<AppState>();
 
-  return new ShiftTableValidator(dispatch, shifts);
+  return new ShiftTableValidator(store);
 };
