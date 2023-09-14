@@ -1,4 +1,11 @@
 # Backlog
 
-- Design processing algorithm
+- Create UI for tabular shift data input
+- Implement validation logic for shift data
+- Create UI for pay data display
+- Create specific implementations of `OvertimeCounter` for the retail award
+- Create specific implementations of `PayClassifier` for the retail award
+- Create general-purpose implementation of `AwardPayCalculator` and `TimeClassifier`
+- Create import functionality to populate shift data from CSV
+- Create export functionality for shift pay data to CSV
 - Transform into Progressive Web Application (Think this comes with CRA?)
