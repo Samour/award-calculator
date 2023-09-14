@@ -88,15 +88,13 @@ Time worked counts as overtime if any of the following are true:
   - 7am-9pm on a Monday - Friday
   - 7am-6pm on a Saturday
   - 9am-6pm on a Sunday
-- Time worked is beyond 9 hours in a given day*
+- Time worked is beyond 9 hours in a given day
   - An exemption exists for the first such day this occurs in any given week. In that case, the threshold is 11 hours
 rather than 9.
 - Time worked is beyond 76 hours in a given fortnight
 - All time worked beyond the 5th consecutive day that has a shift worked
 - All time worked beyond 5 hours with no break
   - *Based on assumptions, we will be ignoring this requirement for now*
-
-*Definition of "day" TBD
 
 **Overtime pay**
 
