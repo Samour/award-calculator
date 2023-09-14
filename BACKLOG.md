@@ -8,4 +8,5 @@
 - Create general-purpose implementation of `AwardPayCalculator` and `TimeClassifier`
 - Create import functionality to populate shift data from CSV
 - Create export functionality for shift pay data to CSV
+- Auto-fill common worker fields based on existing entries
 - Transform into Progressive Web Application (Think this comes with CRA?)

@@ -1,0 +1,9 @@
+.App .reactgrid-content {
+  color: black;
+  background-color: white;
+}
+
+.App .reactgrid-content .rg-pane .rg-cell {
+  color: black;
+  border-color: rgba(64, 64, 64, 0.73);
+}

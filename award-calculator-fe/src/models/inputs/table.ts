@@ -2,7 +2,7 @@ export interface WorkerShiftRow {
   employeeCode: string;
   lastName: string;
   firstName: string;
-  payRate: string;
+  basePayRate: string;
   shiftStartDate: string;
   shiftStartTime: string;
   shiftEndTime: string;
