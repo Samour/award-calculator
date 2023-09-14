@@ -1,3 +1,12 @@
+export type WorkerShiftColumnName = 'employeeCode'
+  | 'lastName'
+  | 'firstName'
+  | 'basePayRate'
+  | 'shiftStartDate'
+  | 'shiftStartTime'
+  | 'shiftEndTime'
+  | 'casualLoading';
+
 function coalesce<T>(value: T | undefined, reserveValue: T): T {
   return value === undefined ? reserveValue : value;
 }
