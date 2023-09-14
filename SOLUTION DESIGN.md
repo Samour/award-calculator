@@ -12,6 +12,9 @@ components or network calls made by the SPA.
 
 The SPA is served statically via CloudFront, backed by an S3 origin.
 
+There is currently no data persistence scoped; however, if any persistence were to occur, it would utilize browser
+local storage.
+
 ## Data Models
 
 Key input entities:

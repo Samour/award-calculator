@@ -92,7 +92,7 @@ Time worked counts as overtime if any of the following are true:
   - An exemption exists for the first such day this occurs in any given week. In that case, the threshold is 11 hours
 rather than 9.
 - Time worked is beyond 76 hours in a given fortnight
-- All time worked beyond the 5th consecutive day that has a shift worked
+- All time worked beyond the 6th consecutive day that has a shift has been worked
 - All time worked beyond 5 hours with no break
   - *Based on assumptions, we will be ignoring this requirement for now*
 
