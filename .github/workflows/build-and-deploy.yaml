@@ -51,6 +51,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    concurrency: app-deploy
     needs:
       - set-version
       - upload
