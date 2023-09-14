@@ -10,4 +10,5 @@
 
 .App .reactgrid-content .rg-pane .rg-cell.cell-invalid {
   border-color: red;
+  color: red;
 }
