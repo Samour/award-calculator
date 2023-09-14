@@ -34,6 +34,23 @@ See [models](./award-calculator-fe/src/models) for specific attributes & relatio
 
 ## Data processing
 
+### Data validation
+
+The validation on tabular input data will work as follows:
+
+- For each row:
+  1. Parse into [WorkerShiftRow](./award-calculator-fe/src/models/inputs/table.ts) model
+  2. Validate each field in the row
+  3. Extract `Employee code`, `Last name`, `First name`, `Pay rate` and `Casual loading` from the row
+  4. Perform a lookup to see if `Employee code` has previously been encountered.
+    - If yes, validate that the other worker-level fields match the prior values
+    - Otherwise, insert these fields to a map of `Employee code` -> worker-level fields
+  5. Validation failures for the row are aggregated into a
+[RowValidationFailures](./award-calculator-fe/src/models/validation.ts) instance, then added to a
+[TableValidationFailures](./award-calculator-fe/src/models/validation.ts) instance for the table
+
+### Pay calculation
+
 **TODO**
 
 ## User Interface
@@ -55,13 +72,11 @@ pay calculation.
 
 #### Validation
 
-Validation will be provided in the following ways:
+Validation will be applied when the "Calculate Pay" button is clicked. If there are failures, no navigation will occur
+& each of the validation failures will be marked in the UI table.
 
-1. In real-time whenever the UI table is updated
-2. When a file is selected for upload
-
-If the file data fails any validation, the UI table will be populated anyway and all failues shown in the same way as
-for manually entered data.
+When providing a file for upload, an additional validation step will occur when matching the CSV headers with expected
+column names. If the columns do not align, an error modal will appear & the file will not be ingested.
 
 Validation rules may apply at 1 of 2 levels. Field-level validation ensures a particular data value has a correct
 format & value. Table-level validation ensures data consistency between rows of the table.
@@ -74,6 +89,7 @@ format & value. Table-level validation ensures data consistency between rows of 
 - `Pay rate` must have a value of `0.01` or greater
 - `Shift start date` must be in the format of `dd/mm/yy` or `dd/mm/yyyy`
 - `Shift start time` and `Shift end time` must each be in the format of `HH:MM`
+- `Shift start time` and `Shift end time`, combined with `ShiftStartDate` and the app's global timezone, must be a valid date-time
 - `Shift end time` must be at least 1 minute after `Shift start time`
 - `Casual loading` must have one of the following values (case insensitive):
   - `y`
