@@ -4,7 +4,13 @@
 
 Simple FE tool to perform Australian labour award calculations.
 
-**Location:** https://award-calculator.ellie.aburke.me/
+**App location:** https://award-calculator.ellie.aburke.me/
+
+[Requirements](./REQUIREMENTS.md)
+
+[Solution Design](./SOLUTION%20DESIGN.md)
+
+[Backlog](./BACKLOG.md)
 
 ## Development
 
