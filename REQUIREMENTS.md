@@ -40,6 +40,8 @@ Output per worker:
 
 - All times are in AEST
 - All monetary amounts are in AUD
+- No shift crosses a calendar day
+- There is no minimum gap between shifts
 - Only 1 award applies to each worker
   - Corollary: all shifts for a particular worker apply under the same award
 - Base pay rate & casual loading is applied at the worker level
@@ -50,6 +52,7 @@ Output per worker:
   - Award rules relating to breaks are ignored (ie we will assume that all required breaks are taken & there is no
   additional overtime to be awarded)
 - All public holidays are ignored
+- Rounding roll-ups are performed at the shift level
 
 *Technical Assumptions*
 
@@ -71,6 +74,9 @@ Output per worker:
   - RT: RT hours * BPR
   - TAH: TAH hours * BPR * 1.5
   - DT: DT hours * BPR * 2
+- The following penalty rates will be added to the final amount for hours worked on specific days:
+  - Saturday: RT hours * BPR * 0.25
+  - Sunday: RT hours * BPR * 0.5
 - If casual loading applies, the following pay will be added to the final amount:
   - Total hours * BPR * 0.25
 
@@ -95,8 +101,8 @@ rather than 9.
 **Overtime pay**
 
 - OT is grouped by the day in which it occurred
-- The first 3 hours of OT in any given day is classified as TAH
-- All remaining OT is classified as DT
+- On a Sunday, all OT hours are classified as DT
+- On Monday-Saturday, the first 3 hours of OT in any given day is classified as TAH with the remainder classified as DT
 
 ## Data entry
 
