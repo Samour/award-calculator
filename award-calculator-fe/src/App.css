@@ -2,6 +2,6 @@
   text-align: center;
 }
 
-.App .row {
-  margin-top: 20px;
+.App .row:not(.compact) {
+  margin-top: 2rem;
 }

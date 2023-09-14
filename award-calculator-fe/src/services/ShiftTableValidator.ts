@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch, createSelector } from '@reduxjs/toolkit';
-import { setCellValidationMessages } from 'store/reducers/shiftEntry';
+import { setCellValidationMessages } from 'store/shiftEntry';
 import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';

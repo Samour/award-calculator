@@ -1,0 +1,8 @@
+.App .alert-container {
+  color: rgb(95, 33, 32);
+  background-color: rgb(253, 237, 237);
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(164, 91, 90);
+  border-radius: 4px;
+}

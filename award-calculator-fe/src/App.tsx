@@ -1,5 +1,5 @@
+import ShiftEntry from 'Screens/ShiftEntry';
 import './App.css';
-import { ShiftEntry } from 'Screens/ShiftEntry';
 
 function App() {
   return (

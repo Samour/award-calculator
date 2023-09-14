@@ -12,3 +12,18 @@
   border-color: red;
   color: red;
 }
+
+.App .ShiftEntry .validation-alert {
+  /* Make the alert a fixed height to prevent the table from jumping around the screen as errors are resolved */
+  height: 19rem;
+}
+
+.App .ShiftEntry .validation-messages {
+  text-align: left;
+  max-height: 10rem;
+  overflow-y: scroll;
+}
+
+.App .ShiftEntry .validation-messages li {
+  margin-bottom: 0.5rem;
+}

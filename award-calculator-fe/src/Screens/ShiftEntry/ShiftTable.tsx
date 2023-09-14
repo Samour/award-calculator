@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ReactGrid, Column, Row, CellChange, TextCell } from '@silevis/reactgrid';
-import { updateCellValue } from 'store/reducers/shiftEntry';
+import { updateCellValues } from 'store/shiftEntry';
 import { WorkerShiftColumnName } from 'models/inputs/table';
 import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 import { AppState } from 'models/store';
@@ -66,7 +66,7 @@ const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
 const workerShiftRowsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
-export const ShiftTable = (): JSX.Element => {
+const ShiftTable = (): JSX.Element => {
   const dispatch = useDispatch();
   const workerShiftRows = useSelector(workerShiftRowsSelector);
 
@@ -74,18 +74,20 @@ export const ShiftTable = (): JSX.Element => {
   const renderableRows = convertToRows(workerShiftRows);
 
   const onCellsChanged = (changes: CellChange[]) => {
-    changes.forEach((change) => {
-      dispatch(updateCellValue({
+    dispatch(updateCellValues(
+      changes.map((change) => ({
         cellIdentifier: {
           rowIndex: change.rowId as number,
           columnId: change.columnId as WorkerShiftColumnName,
         },
         value: (change.newCell as TextCell).text,
-      }));
-    });
+      }))
+    ));
   };
 
   return (
     <ReactGrid enableRangeSelection columns={columns} rows={renderableRows} onCellsChanged={onCellsChanged} />
   );
 };
+
+export default ShiftTable;

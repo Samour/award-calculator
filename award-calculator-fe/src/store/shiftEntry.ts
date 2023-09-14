@@ -39,7 +39,7 @@ const initialState: ShiftEntryState = {
 
 const {
   actions: {
-    updateCellValue,
+    updateCellValues,
     setCellValidationMessages,
   },
   reducer,
@@ -47,11 +47,13 @@ const {
   name: 'shiftEntry',
   initialState: initialState,
   reducers: {
-    updateCellValue: (state, action: PayloadAction<UpdateCellValue>) => {
+    updateCellValues: (state, action: PayloadAction<UpdateCellValue[]>) => {
       const payload = action.payload;
-      const cell = state.rows[payload.cellIdentifier.rowIndex][payload.cellIdentifier.columnId];
-      cell.value = payload.value;
-      cell.failureMessages = [];
+      payload.forEach(({ cellIdentifier, value }) => {
+        const cell = state.rows[cellIdentifier.rowIndex][cellIdentifier.columnId];
+        cell.value = value;
+        cell.failureMessages = [];
+      });
 
       state.rows = state.rows.filter((r) => !rowIsEmpty(r));
       if (state.rows.length === 0 || !rowIsEmpty(state.rows[state.rows.length - 1])) {
@@ -77,7 +79,7 @@ const rowIsEmpty = (row: ValidatedWorkerShiftRow): boolean =>
   && row.casualLoading.value === '';
 
 export {
-  updateCellValue,
+  updateCellValues,
   setCellValidationMessages,
   reducer as shiftEntryReducer,
 };
