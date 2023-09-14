@@ -3,7 +3,7 @@ import Decimal from 'decimal.js';
 
 /**
  * Zoned timestamp used for values such as shift start/end times
- * Timezone will always be the app's global timezone (Australia/Melbourne)
+ * Timezone will always be the app's global timezone (Australia/Brisbane)
  * Normalised to the nearest minute
  */
 export type ShiftTimestamp = ZonedDateTime;

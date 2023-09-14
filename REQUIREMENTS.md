@@ -38,7 +38,7 @@ Output per worker:
 
 #### Assumptions
 
-- All times are in AEST
+- All times are in `Australia/Brisbane` time zone
 - All monetary amounts are in AUD
 - No shift crosses a calendar day
 - There is no minimum gap between shifts
@@ -60,7 +60,7 @@ Output per worker:
 - All time calculations will be made using minutes in base 10
 - All intermediate values will be calculated with the following precision:
   - Money: 4 decimal places
-  - Time: 2 decimal places
+  - Time: 0 decimal places
 - All final values will be calculated with a precision of 0 decimal places
 - All rounding will be half-even
 

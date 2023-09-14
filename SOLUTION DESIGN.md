@@ -51,7 +51,39 @@ The validation on tabular input data will work as follows:
 
 ### Pay calculation
 
-**TODO**
+This is assuming the [Retail Award](./REQUIREMENTS.md#retail-award). Abstractions/flow may change as new awards are
+introduced.
+
+1. Parse & collate table rows into [Worker](./award-calculator-fe/src/models/inputs/worker.ts) and
+[WorkerShift](./award-calculator-fe/src/models/inputs/shift.ts) models. Each `Worker` is processed independently.
+2. For each worker:
+  1. Construct a [TimeClassifier](./award-calculator-fe/src/award/TimeClassifier.ts) & pass each
+  `WorkerShift` to it in chronological order. This will return a list of
+  [ClassifiedWorkedTime](./award-calculator-fe/src/award/TimeClassifier.ts) according to the following logic:
+    1. The `TimeClassifier` is instantiated with 1 or more stateful
+  [OvertimeCounter](./award-calculator-fe/src/award/TimeClassifier.ts) instances.
+    2. The `WorkerShift` is passed to each `OvertimeCounter` instance, which returns an `OvertimeSpan` (if applicable).
+    3. Any overlapping or consecutive `OvertimeSpan` are aggregated and returned as a `ClassifiedWorkedTime` with
+  `classification=OVERTIME`
+    4. Any outstanding time from the `WorkerShift` not covered by an `OvertimeSpan` is returned as a `ClassifiedWorkedTime`
+  with `classification=REGULAR_TIME`
+  2. Construct 1 or more [PayClassifier](./award-calculator-fe/src/award/PayClassifier.ts)
+  3. For each shift (in chronological order):
+    1. Pass the associated `ClassifiedWorkedTime` to `PayClassifier`. `PayClassifier` will return 0 or more
+[ClassifiedPayableTime](./award-calculator-fe/src/models/outputs/payable.ts) with the appropriate loading data.
+    2. Construct a [ShiftPayable](./award-calculator-fe/src/models/outputs/payable.ts) instance by aggregating the
+total of all `ClassifiedPayableTime`. Any overlapping `ClassifiedPayableTime` aggregate with a simple sum (ie no
+special logic required).
+  4. Aggregate the `ShiftPayable` into [WorkerPayable](./award-calculator-fe/src/models/outputs/payable.ts)
+5. Render results
+
+Associated state aggregations (such as hours per day or hours per week) are stored & updated inside the relevant
+instances of:
+
+- `OvertimeCounter`
+- `PayClassifier`
+
+This is the reason why chonological invocations of these interfaces are essential.
 
 ## User Interface
 
@@ -106,6 +138,8 @@ format & value. Table-level validation ensures data consistency between rows of 
   - `First name`
   - `Pay rate`
   - `Casual loading`
+- For any 2 rows with the same `Employee code` and `Shift start date`, the shift start & end times may not be
+overlapping
 
 ### Pay report screen
 
