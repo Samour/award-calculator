@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ReactGrid, Column, Row, CellChange, TextCell } from '@silevis/reactgrid';
 import { updateCellValue } from 'store/reducers/shiftEntry';
-import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
-import { ValidatedRow } from 'models/validation';
+import { WorkerShiftColumnName } from 'models/inputs/table';
+import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 import { AppState } from 'models/store';
 import '@silevis/reactgrid/styles.css';
 import './style.css';
@@ -38,7 +38,7 @@ const headerRow: Row = {
   ].map((text) => ({ type: 'header', text, style: { background: 'rgba(191, 191, 191, 0.69)' } })),
 };
 
-const convertToRows = (workerShiftRows: ValidatedRow[]): Row[] => {
+const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
   const rows = [
     headerRow,
     ...workerShiftRows.map<Row>((r, i) => ({
@@ -63,11 +63,7 @@ const convertToRows = (workerShiftRows: ValidatedRow[]): Row[] => {
   return rows;
 };
 
-const emptyTable: WorkerShiftRow[] = [
-  WorkerShiftRow.empty(),
-];
-
-const workerShiftRowsSelector = (state: AppState): ValidatedRow[] =>
+const workerShiftRowsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
 export const ShiftTable = (): JSX.Element => {

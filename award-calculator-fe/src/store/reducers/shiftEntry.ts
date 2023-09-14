@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { WorkerShiftColumnName } from 'models/inputs/table';
-import { ShiftEntryState } from 'models/store/shiftEntry';
-import { ValidatedCell, ValidatedRow } from 'models/validation';
+import { ShiftEntryState, ValidatedCell, ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 
 export interface CellIdentifier {
   rowIndex: number;
@@ -23,7 +22,7 @@ const createEmptyCell = (): ValidatedCell => ({
   failureMessages: [],
 });
 
-const createEmptyRow = (): ValidatedRow => ({
+const createEmptyRow = (): ValidatedWorkerShiftRow => ({
   employeeCode: createEmptyCell(),
   lastName: createEmptyCell(),
   firstName: createEmptyCell(),
@@ -67,7 +66,7 @@ const {
   },
 });
 
-const rowIsEmpty = (row: ValidatedRow): boolean =>
+const rowIsEmpty = (row: ValidatedWorkerShiftRow): boolean =>
   row.employeeCode.value === ''
   && row.lastName.value === ''
   && row.firstName.value === ''

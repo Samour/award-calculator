@@ -1,7 +1,7 @@
 import { WorkerShiftRow } from 'models/inputs/table';
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
-import { ValidatedRow } from 'models/validation';
+import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 
 interface WorkerDetails {
   lastName: string | null;
@@ -11,7 +11,7 @@ interface WorkerDetails {
 }
 
 export class ShiftTableValidator {
-  validateShiftRows(shifts: WorkerShiftRow[]): ValidatedRow[] {
+  validateShiftRows(shifts: WorkerShiftRow[]): ValidatedWorkerShiftRow[] {
     const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
 
     return shifts.map((shift) => {
