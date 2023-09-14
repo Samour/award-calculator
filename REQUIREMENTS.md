@@ -107,10 +107,10 @@ rather than 9.
 Worker shift data will be entered as tabular data, with a row per shift worked. The table will have the following
 columns:
 
-| Employee code | Last name | First name | Shift start date | Shift start time | Shift end time | Casual Loading |
-|--|--|--|--|--|--|--|
-| S1065 | Doe | John | 14/09/2023 | 09:00 | 17:00 | Y |
-| S1065 | Doe | John | 15/09/2023 | 09:00 | 17:00 | Y |
-| S1066 | Smith | Matt | 14/09/2023 | 09:00 | 16:30 | N |
+| Employee code | Last name | First name | Pay rate | Shift start date | Shift start time | Shift end time | Casual Loading |
+|--|--|--|--|--|--|--|--|
+| S1065 | Doe | John | 25.75 | 14/09/2023 | 09:00 | 17:00 | Y |
+| S1065 | Doe | John | 25.75 | 15/09/2023 | 09:00 | 17:00 | Y |
+| S1066 | Smith | Matt | 28.50 | 14/09/2023 | 09:00 | 16:30 | N |
 
 Options should exist to enter data via CSV upload or by manual data entry into a table UI.
