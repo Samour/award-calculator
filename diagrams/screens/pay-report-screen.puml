@@ -1,0 +1,18 @@
+@startsalt
+
+{
+
+Pay Report
+
+{#
+Employee code | Last name | First name | Shift date | Shift payable | Details
+S1065 | Doe | John | 14/09/2023 | 276.81 | [?]
+S1065 | Doe | John | 15/09/2023 | 276.81 | [?]
+S1066 | Smith | Matt | 14/09/2023 | 267.19 | [?]
+}
+
+{[ < Back to Edit ] | [ Download ]}
+
+}
+
+@endsalt

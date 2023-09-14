@@ -1,0 +1,24 @@
+@startsalt
+
+{{+
+
+S1065 Doe John | [ X ]
+Shift Date: 14/09/2023
+Shift Start Time: 09:00
+Shift End Time: 17:00
+Base Pay Rate: $25.75
+
+{#
+Pay Type | Loading rate | Effective start time | Effective end time | Payable duration | Payable amount
+Regular time | 1 | 09:00 | 15:30 | 6h 30m | 167.3750
+Overtime (time and a half) | 1.5 | 15:30 | 17:00 | 1h 30m | 57.9375
+Casual loading | 0.25 | 09:00 | 17:00 | 8h | 51.5000
+}
+
+Total payable for shift: $276.81
+
+[ Close ]
+
+}}
+
+@endsalt
