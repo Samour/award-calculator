@@ -1,5 +1,7 @@
 import { useStore } from 'react-redux';
 import { Store } from '@reduxjs/toolkit';
+import Decimal from 'decimal.js';
+import { DateTimeFormatter, LocalDate, LocalTime } from '@js-joda/core';
 import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
 import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
@@ -35,6 +37,11 @@ export class ShiftTableValidator {
         ['employeeCode', validateEmployeeCode],
         ['lastName', validateLastName],
         ['firstName', validateFirstName],
+        ['basePayRate', validateBasePayRate],
+        ['shiftStartDate', validateShiftStartDate],
+        ['shiftStartTime', validateShiftStartTime],
+        ['shiftEndTime', validateShiftEndTime],
+        ['casualLoading', validateCasualLoading],
       ];
 
       validators.forEach(([columnId, validator]) => {
@@ -76,6 +83,81 @@ const validateLastName = (lastName: string): string[] => {
 const validateFirstName = (firstName: string): string[] => {
   if (firstName.length < 1) {
     return [strings.validations.workerShiftEntry.firstName.tooShort];
+  } else {
+    return [];
+  }
+};
+
+const validateBasePayRate = (basePayRate: string): string[] => {
+  if (!/^\$?[0-9]+(\.[0-9]+)?$/.test(basePayRate)) {
+    return [strings.validations.workerShiftEntry.basePayRate.illegalFormat];
+  }
+
+  const failures: string[] = [];
+  const parsedAmount = new Decimal(basePayRate.replace('$', ''));
+  if (parsedAmount.decimalPlaces() > 2) {
+    failures.push(strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
+  }
+  if (parsedAmount < new Decimal('0.01')) {
+    failures.push(strings.validations.workerShiftEntry.basePayRate.tooLow);
+  }
+
+  return failures;
+};
+
+const selectFormatterForDate = (date: string): DateTimeFormatter => {
+  if (/\/[0-9]{4}/.test(date)) {
+    return DateTimeFormatter.ofPattern('d/M/yyyy');
+  } else {
+    return DateTimeFormatter.ofPattern('d/M/yy');
+  }
+};
+
+const validateShiftStartDate = (shiftStartDate: string): string[] => {
+  if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(shiftStartDate)) {
+    return [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat];
+  }
+  
+  try {
+    LocalDate.parse(shiftStartDate, selectFormatterForDate(shiftStartDate));
+  } catch (e) {
+    return [strings.validations.workerShiftEntry.shiftStartDate.invalidDate];
+  }
+
+  return [];
+};
+
+const validateShiftStartTime = (shiftStartTime: string): string[] => {
+  if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftStartTime)) {
+    return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
+  }
+
+  try {
+    LocalTime.parse(shiftStartTime);
+  } catch (e) {
+    return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
+  }
+
+  return [];
+};
+
+const validateShiftEndTime = (shiftEndTime: string): string[] => {
+  if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftEndTime)) {
+    return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
+  }
+
+  try {
+    LocalTime.parse(shiftEndTime);
+  } catch (e) {
+    return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
+  }
+
+  return [];
+};
+
+const validateCasualLoading = (casualLoading: string): string[] => {
+  if (!new Set(['y', 'n', 'yes', 'no', 'true', 'false']).has(casualLoading.toLocaleLowerCase())) {
+    return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
   } else {
     return [];
   }

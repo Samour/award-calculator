@@ -11,6 +11,26 @@ const strings = {
       firstName: {
         tooShort: 'First name must have at least 1 character',
       },
+      basePayRate: {
+        illegalFormat: 'Pay rate must be in a valid dollar format such as $123.45, 123.45 or 123',
+        illegalPrecision: 'Pay rate must not include fractions of a cent',
+        tooLow: 'Pay rate must be at least $0.01',
+      },
+      shiftStartDate: {
+        illegalFormat: 'Shift start date must be in the format of dd/mm/yy or dd/mm/yyyy',
+        invalidDate: 'Shift start date must refer to a real date',
+      },
+      shiftStartTime: {
+        illegalFormat: 'Shift start time must be in the format of HH:MM using 24-hour time',
+        invalidTime: 'Shift start time must refer to a real time',
+      },
+      shiftEndTime: {
+        illegalFormat: 'Shift end time must be in the format of HH:MM using 24-hour time',
+        invalidTime: 'Shift end time must refer to a real time',
+      },
+      casualLoading: {
+        illegalValue: 'Casual loading must be one of the following: y, yes, true, n, no, false',
+      },
     },
   },
   screens: {
