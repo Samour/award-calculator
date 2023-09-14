@@ -1,8 +1,24 @@
 # Requirements
 
+- [Definitions](#definitions)
 - [Time & Pay calculations](#time--pay-calculations)
   - [Retail Award](#retail-award)
 - [Data entry](#data-entry)
+
+## Definitions
+
+**Day**
+
+Any reference to "day" refers to a calendar day
+
+**Week**
+
+Any reference to "week" refers to a calendar week beginning on Monday.
+
+**Fortnight**
+
+Any reference to "fortnight" refers to a pair of calendar weeks, with the odd-numbered week of the year being the first
+week of the fortnight.
 
 ## Time & Pay calculations
 
