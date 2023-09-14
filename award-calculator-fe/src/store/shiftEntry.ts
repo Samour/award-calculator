@@ -1,6 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { WorkerShiftColumnName } from 'models/inputs/table';
-import { ShiftEntryState, ValidatedCell, ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
+import { createValidatedCell, workerShiftToEmptyValidated } from 'models/converters/workerShift';
+import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
+import { ShiftEntryState, ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
+import { ENTRY_TABLE_LS_KEY } from './persistence';
 
 export interface CellIdentifier {
   rowIndex: number;
@@ -17,24 +19,28 @@ export interface SetCellValidationMessages {
   failureMessages: string[];
 }
 
-const createEmptyCell = (): ValidatedCell => ({
-  value: '',
-  failureMessages: [],
-});
-
 const createEmptyRow = (): ValidatedWorkerShiftRow => ({
-  employeeCode: createEmptyCell(),
-  lastName: createEmptyCell(),
-  firstName: createEmptyCell(),
-  basePayRate: createEmptyCell(),
-  shiftStartDate: createEmptyCell(),
-  shiftStartTime: createEmptyCell(),
-  shiftEndTime: createEmptyCell(),
-  casualLoading: createEmptyCell(),
+  employeeCode: createValidatedCell(''),
+  lastName: createValidatedCell(''),
+  firstName: createValidatedCell(''),
+  basePayRate: createValidatedCell(''),
+  shiftStartDate: createValidatedCell(''),
+  shiftStartTime: createValidatedCell(''),
+  shiftEndTime: createValidatedCell(''),
+  casualLoading: createValidatedCell(''),
 });
 
-const initialState: ShiftEntryState = {
-  rows: [createEmptyRow()],
+const initialState = (): ShiftEntryState => {
+  const persisted = localStorage.getItem(ENTRY_TABLE_LS_KEY);
+  if (persisted) {
+    return {
+      rows: (JSON.parse(persisted) as WorkerShiftRow[]).map((row) => workerShiftToEmptyValidated(row))
+    };
+  } else {
+    return {
+      rows: [createEmptyRow()],
+    };
+  }
 };
 
 const {
@@ -45,7 +51,7 @@ const {
   reducer,
 } = createSlice({
   name: 'shiftEntry',
-  initialState: initialState,
+  initialState: initialState(),
   reducers: {
     updateCellValues: (state, action: PayloadAction<UpdateCellValue[]>) => {
       const payload = action.payload;

@@ -1,7 +1,6 @@
 # Backlog
 
 - **WIP** Implement validation logic for shift data
-- Persist input table data to LocalStorage so that a page refresh/close + re-open does not lose all data
 - Create UI for pay data display
 - Create specific implementations of `OvertimeCounter` for the retail award
 - Create specific implementations of `PayClassifier` for the retail award

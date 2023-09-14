@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { AppState } from 'models/store';
 import { shiftEntryReducer } from './shiftEntry';
+import { shiftWorkerTablePersistenceMiddleware } from './persistence';
 
-export default configureStore<AppState>({
+export default configureStore({
   reducer: {
     shiftEntry: shiftEntryReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(shiftWorkerTablePersistenceMiddleware()),
 });

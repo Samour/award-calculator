@@ -35,8 +35,8 @@ const validationMessagesSelector = createSelector([tableRowsSelector], validatio
 const ValidationNotification = (): JSX.Element => {
   const validationMessages = useSelector(validationMessagesSelector);
 
-  const validationMessageElements = validationMessages.map(({ rowNumber, message }) => (
-    <li>Row {rowNumber}: {message}</li>
+  const validationMessageElements = validationMessages.map(({ rowNumber, message }, i) => (
+    <li key={i}>Row {rowNumber}: {message}</li>
   ));
 
   if (validationMessages.length === 0) {

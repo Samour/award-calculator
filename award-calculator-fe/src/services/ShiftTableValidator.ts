@@ -6,6 +6,7 @@ import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
 import { AppState } from 'models/store';
 import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
+import { validatedToWorkerShift } from 'models/converters/workerShift';
 
 interface WorkerDetails {
   lastName: string | null;
@@ -29,7 +30,7 @@ export class ShiftTableValidator {
         ['lastName', validateLastName],
         ['firstName', validateFirstName],
       ];
-      
+
       validators.forEach(([columnId, validator]) => {
         const failureMessages = validator(shift[columnId]);
         isValid = isValid && failureMessages.length === 0;
@@ -78,16 +79,8 @@ const workerShiftsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
 const workerShiftsConverter = (rows: ValidatedWorkerShiftRow[]): WorkerShiftRow[] =>
-  rows.map((row) => ({
-    employeeCode: row.employeeCode.value,
-    lastName: row.lastName.value,
-    firstName: row.firstName.value,
-    basePayRate: row.basePayRate.value,
-    shiftStartDate: row.shiftStartDate.value,
-    shiftStartTime: row.shiftStartTime.value,
-    shiftEndTime: row.shiftEndTime.value,
-    casualLoading: row.casualLoading.value,
-  })).slice(0, rows.length - 1);
+  rows.map((row) => validatedToWorkerShift(row))
+    .slice(0, rows.length - 1);
 
 export const useShiftTableValidator = () => {
   const dispatch = useDispatch();
