@@ -1,6 +1,5 @@
 # Backlog
 
-- **WIP** Implement validation logic for shift data
 - Create UI for pay data display
 - Create specific implementations of `OvertimeCounter` for the retail award
 - Create specific implementations of `PayClassifier` for the retail award
