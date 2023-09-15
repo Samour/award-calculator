@@ -1,7 +1,6 @@
 import { useStore } from 'react-redux';
 import { Store } from '@reduxjs/toolkit';
 import Decimal from 'decimal.js';
-import { DateTimeFormatter, LocalDate, LocalTime } from '@js-joda/core';
 import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
 import {
@@ -36,7 +35,7 @@ export class ShiftTableValidator {
   validateShiftRows(): boolean {
     // const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
 
-    var isValid = true;
+    let isValid = true;
 
     this.getShiftsFromStore().forEach((shift, rowIndex) => {
       const validators: [WorkerShiftColumnName, (value: string) => string[]][] = [
@@ -109,14 +108,6 @@ const validateBasePayRate = (basePayRate: string): string[] => {
   }
 
   return failures;
-};
-
-const selectFormatterForDate = (date: string): DateTimeFormatter => {
-  if (/\/[0-9]{4}/.test(date)) {
-    return DateTimeFormatter.ofPattern('d/M/yyyy');
-  } else {
-    return DateTimeFormatter.ofPattern('d/M/yy');
-  }
 };
 
 const validateShiftStartDate = (shiftStartDate: string): string[] => {

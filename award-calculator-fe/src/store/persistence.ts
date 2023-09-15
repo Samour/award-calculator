@@ -6,7 +6,7 @@ import { ValidatedWorkerShiftRow } from 'models/store/shiftEntry';
 export const ENTRY_TABLE_LS_KEY = 'v1/workerShiftEntryTable';
 
 export const shiftWorkerTablePersistenceMiddleware: () => Middleware = () => {
-  var lastRows: ValidatedWorkerShiftRow[] | null = null;
+  let lastRows: ValidatedWorkerShiftRow[] | null = null;
   return store => next => action => {
     next(action);
     const rows = (store.getState() as AppState).shiftEntry.rows;
