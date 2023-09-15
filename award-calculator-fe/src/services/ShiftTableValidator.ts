@@ -55,22 +55,23 @@ export class ShiftTableValidator {
 
       const existingWorker = encounteredWorkers.get(shift.employeeCode);
 
-      const validators: [WorkerShiftColumnName, (value: string) => string[]][] = [
-        ['employeeCode', validateEmployeeCode],
-        ['lastName', validateLastName(existingWorker)],
-        ['firstName', validateFirstName(existingWorker)],
-        ['basePayRate', validateBasePayRate(existingWorker, parsedBasePayRate)],
-        ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate)],
-        ['shiftStartTime', validateShiftStartTime(parsedShiftStartTime)],
-        ['shiftEndTime', validateShiftEndTime(parsedShiftEndTime, zonedShiftStartTime, zonedShiftEndTime)],
+      const validators: [WorkerShiftColumnName, string[]][] = [
+        ['employeeCode', validateEmployeeCode(shift.employeeCode)],
+        ['lastName', validateLastName(existingWorker, shift.lastName)],
+        ['firstName', validateFirstName(existingWorker, shift.firstName)],
+        ['basePayRate', validateBasePayRate(existingWorker, parsedBasePayRate, shift.basePayRate)],
+        ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate, shift.shiftStartDate)],
+        ['shiftStartTime', validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)],
+        ['shiftEndTime', validateShiftEndTime(!!parsedShiftStartDate, zonedShiftStartTime, zonedShiftEndTime,
+          shift.shiftEndTime)],
         ['casualLoading', validateCasualLoading(existingWorker, parsedCasualLoading)],
       ];
 
       validationOutcomes.push({
         rowIndex,
-        columns: validators.map(([columnId, validator]) => ({
+        columns: validators.map(([columnId, failureMessages]) => ({
           columnId,
-          failureMessages: validator(shift[columnId]),
+          failureMessages,
         })),
       });
 
@@ -104,7 +105,7 @@ const validateEmployeeCode = (employeeCode: string): string[] => {
   }
 };
 
-const validateLastName = (existingWorker: WorkerDetails | undefined) => (lastName: string): string[] => {
+const validateLastName = (existingWorker: WorkerDetails | undefined, lastName: string): string[] => {
   if (lastName.length < 1) {
     return [strings.validations.workerShiftEntry.lastName.tooShort];
   } else if (!!existingWorker?.lastName && existingWorker.lastName !== lastName) {
@@ -114,7 +115,7 @@ const validateLastName = (existingWorker: WorkerDetails | undefined) => (lastNam
   }
 };
 
-const validateFirstName = (existingWorker: WorkerDetails | undefined) => (firstName: string): string[] => {
+const validateFirstName = (existingWorker: WorkerDetails | undefined, firstName: string): string[] => {
   if (firstName.length < 1) {
     return [strings.validations.workerShiftEntry.firstName.tooShort];
   } else if (!!existingWorker?.firstName && existingWorker.firstName !== firstName) {
@@ -124,30 +125,30 @@ const validateFirstName = (existingWorker: WorkerDetails | undefined) => (firstN
   }
 };
 
-const validateBasePayRate = (existingWorker: WorkerDetails | undefined, parsedBasePayRate: MonetaryAmount | null) =>
-  (basePayRate: string): string[] => {
-    if (!/^\$?[0-9]+(\.[0-9]+)?$/.test(basePayRate)) {
-      return [strings.validations.workerShiftEntry.basePayRate.illegalFormat];
-    }
+const validateBasePayRate = (existingWorker: WorkerDetails | undefined, parsedBasePayRate: MonetaryAmount | null,
+  rawBasePayRate: string): string[] => {
+  if (!/^\$?[0-9]+(\.[0-9]+)?$/.test(rawBasePayRate)) {
+    return [strings.validations.workerShiftEntry.basePayRate.illegalFormat];
+  }
 
-    const failures: string[] = [];
-    const parsedAmount = new Decimal(basePayRate.replace('$', ''));
-    if (parsedAmount.decimalPlaces() > 2) {
-      failures.push(strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
-    }
-    if (parsedAmount < new Decimal('0.01')) {
-      failures.push(strings.validations.workerShiftEntry.basePayRate.tooLow);
-    }
+  const failures: string[] = [];
+  const parsedAmount = new Decimal(rawBasePayRate.replace('$', ''));
+  if (parsedAmount.decimalPlaces() > 2) {
+    failures.push(strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
+  }
+  if (parsedAmount < new Decimal('0.01')) {
+    failures.push(strings.validations.workerShiftEntry.basePayRate.tooLow);
+  }
 
-    if (!!existingWorker?.basePayRate && parsedBasePayRate && !existingWorker.basePayRate.equals(parsedBasePayRate)) {
-      failures.push(strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry);
-    }
+  if (!!existingWorker?.basePayRate && parsedBasePayRate && !existingWorker.basePayRate.equals(parsedBasePayRate)) {
+    failures.push(strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry);
+  }
 
-    return failures;
-  };
+  return failures;
+};
 
-const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null) => (shiftStartDate: string): string[] => {
-  if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(shiftStartDate)) {
+const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null, rawShiftStartDate: string): string[] => {
+  if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(rawShiftStartDate)) {
     return [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat];
   }
 
@@ -158,47 +159,47 @@ const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null) => (shif
   }
 };
 
-const validateShiftStartTime = (parsedShiftStartTime: LocalTime | null) =>
-  (shiftStartTime: string): string[] => {
-    if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftStartTime)) {
-      return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
-    }
+const validateShiftStartTime = (shiftDateKnown: boolean, parsedShiftStartTime: LocalTime | null,
+  rawShiftStartTime: string): string[] => {
+  if (!/^[0-9]{2}:[0-9]{2}$/.test(rawShiftStartTime)) {
+    return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
+  }
 
-    if (parsedShiftStartTime === null) {
-      return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
-    } else {
-      return [];
-    }
-  };
-
-const validateShiftEndTime = (parsedShiftEndTime: LocalTime | null, shiftStartTime: ZonedDateTime | null,
-  zonedShiftEndTime: ZonedDateTime | null) => (shiftEndTime: string): string[] => {
-    if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftEndTime)) {
-      return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
-    }
-
-    if (parsedShiftEndTime === null) {
-      return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
-    }
-
-    if (!!shiftStartTime && !!zonedShiftEndTime && !shiftStartTime.isBefore(zonedShiftEndTime)) {
-      return [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart];
-    }
-
+  if (shiftDateKnown && parsedShiftStartTime === null) {
+    return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
+  } else {
     return [];
-  };
+  }
+};
 
-const validateCasualLoading = (existingWorker: WorkerDetails | undefined, parsedCasualLoading: boolean | null) =>
-  (casualLoading: string): string[] => {
-    if (parsedCasualLoading === null) {
-      return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
-    } else if (!!existingWorker && existingWorker.casualLoading !== null
-      && existingWorker.casualLoading !== parsedCasualLoading) {
-      return [strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry];
-    } else {
-      return [];
-    }
-  };
+const validateShiftEndTime = (shiftDateKnown: boolean, shiftStartTime: ZonedDateTime | null,
+  zonedShiftEndTime: ZonedDateTime | null,
+  rawShiftEndTime: string): string[] => {
+  if (!/^[0-9]{2}:[0-9]{2}$/.test(rawShiftEndTime)) {
+    return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
+  }
+
+  if (shiftDateKnown && zonedShiftEndTime === null) {
+    return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
+  }
+
+  if (!!shiftStartTime && !!zonedShiftEndTime && !shiftStartTime.isBefore(zonedShiftEndTime)) {
+    return [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart];
+  }
+
+  return [];
+};
+
+const validateCasualLoading = (existingWorker: WorkerDetails | undefined, parsedCasualLoading: boolean | null) => {
+  if (parsedCasualLoading === null) {
+    return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
+  } else if (!!existingWorker && existingWorker.casualLoading !== null
+    && existingWorker.casualLoading !== parsedCasualLoading) {
+    return [strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry];
+  } else {
+    return [];
+  }
+};
 
 export const useShiftTableValidator = (): (() => boolean) => {
   const store = useStore<AppState>();
