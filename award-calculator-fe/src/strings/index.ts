@@ -7,14 +7,17 @@ const strings = {
       },
       lastName: {
         tooShort: 'Last name must have at least 1 character',
+        doesNotMatchPriorEntry: 'Last name must be the same for all rows with the same Employee code',
       },
       firstName: {
         tooShort: 'First name must have at least 1 character',
+        doesNotMatchPriorEntry: 'First name must be the same for all rows with the same Employee code',
       },
       basePayRate: {
         illegalFormat: 'Pay rate must be in a valid dollar format such as $123.45, 123.45 or 123',
         illegalPrecision: 'Pay rate must not include fractions of a cent',
         tooLow: 'Pay rate must be at least $0.01',
+        doesNotMatchPriorEntry: 'Pay rate must be the same for all rows with the same Employee code',
       },
       shiftStartDate: {
         illegalFormat: 'Shift start date must be in the format of dd/mm/yy or dd/mm/yyyy',
@@ -31,6 +34,7 @@ const strings = {
       },
       casualLoading: {
         illegalValue: 'Casual loading must be one of the following: y, yes, true, n, no, false',
+        doesNotMatchPriorEntry: 'Casual loading must be the same for all rows with the same Employee code',
       },
     },
   },

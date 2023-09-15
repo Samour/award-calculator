@@ -23,13 +23,17 @@ export interface WorkerShiftRow {
 }
 
 export const translateMonetaryAmount = (basePayRate: string): MonetaryAmount | null => {
-  const parsedAmount = new Decimal(basePayRate.replace('$', ''));
-  if (parsedAmount.decimalPlaces() > 2 || parsedAmount < new Decimal('0.01')) {
+  try {
+    const parsedAmount = new Decimal(basePayRate.replace('$', ''));
+    if (parsedAmount.decimalPlaces() > 2 || parsedAmount < new Decimal('0.01')) {
+      return null;
+    }
+
+    // TODO do we need to set some precision on parsedAmount?
+    return parsedAmount;
+  } catch (e) {
     return null;
   }
-
-  // TODO do we need to set some precision on parsedAmount?
-  return parsedAmount;
 };
 
 const selectFormatterForDate = (date: string): DateTimeFormatter => {

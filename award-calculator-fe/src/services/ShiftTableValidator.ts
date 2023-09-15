@@ -7,22 +7,23 @@ import {
   WorkerShiftColumnName,
   WorkerShiftRow,
   translateCasualLoading,
+  translateMonetaryAmount,
   translateToLocalDate,
   translateToLocalTime,
 } from 'models/inputs/table';
-// import { WorkerCode } from 'models/inputs/worker';
-// import { MonetaryAmount } from 'models/money';
+import { WorkerCode } from 'models/inputs/worker';
+import { MonetaryAmount } from 'models/money';
 import { AppState } from 'models/store';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
 import { LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
 import { toZonedDateTime } from 'models/time';
 
-// interface WorkerDetails {
-//   lastName: string | null;
-//   firstName: string | null;
-//   basePayRate: MonetaryAmount | null;
-//   casualLoading: boolean;
-// }
+interface WorkerDetails {
+  lastName: string | null;
+  firstName: string | null;
+  basePayRate: MonetaryAmount | null;
+  casualLoading: boolean | null;
+}
 
 export class ShiftTableValidator {
 
@@ -35,7 +36,7 @@ export class ShiftTableValidator {
   }
 
   validateShiftRows(): boolean {
-    // const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
+    const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
 
     let isValid = true;
 
@@ -43,21 +44,25 @@ export class ShiftTableValidator {
       const parsedShiftStartDate = translateToLocalDate(shift.shiftStartDate);
       const parsedShiftStartTime = translateToLocalTime(shift.shiftStartTime);
       const parsedShiftEndTime = translateToLocalTime(shift.shiftEndTime);
+      const parsedBasePayRate = translateMonetaryAmount(shift.basePayRate);
+      const parsedCasualLoading = translateCasualLoading(shift.casualLoading);
 
       const zonedShiftStartTime = parsedShiftStartDate && parsedShiftStartTime &&
         toZonedDateTime(parsedShiftStartDate, parsedShiftStartTime);
       const zonedShiftEndTime = parsedShiftStartDate && parsedShiftEndTime &&
         toZonedDateTime(parsedShiftStartDate, parsedShiftEndTime);
 
+      const existingWorker = encounteredWorkers.get(shift.employeeCode);
+
       const validators: [WorkerShiftColumnName, (value: string) => string[]][] = [
         ['employeeCode', validateEmployeeCode],
-        ['lastName', validateLastName],
-        ['firstName', validateFirstName],
-        ['basePayRate', validateBasePayRate],
+        ['lastName', validateLastName(existingWorker)],
+        ['firstName', validateFirstName(existingWorker)],
+        ['basePayRate', validateBasePayRate(existingWorker, parsedBasePayRate)],
         ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate)],
         ['shiftStartTime', validateShiftStartTime(parsedShiftStartTime)],
         ['shiftEndTime', validateShiftEndTime(parsedShiftEndTime, zonedShiftStartTime, zonedShiftEndTime)],
-        ['casualLoading', validateCasualLoading],
+        ['casualLoading', validateCasualLoading(existingWorker, parsedCasualLoading)],
       ];
 
       validators.forEach(([columnId, validator]) => {
@@ -72,6 +77,21 @@ export class ShiftTableValidator {
           failureMessages: failureMessages,
         }));
       });
+
+      if (existingWorker) {
+        existingWorker.lastName = existingWorker.lastName || shift.lastName;
+        existingWorker.firstName = existingWorker.firstName || shift.firstName;
+        existingWorker.basePayRate = existingWorker.basePayRate || parsedBasePayRate;
+        existingWorker.casualLoading = existingWorker.casualLoading === null ? parsedCasualLoading :
+          existingWorker.casualLoading;
+      } else if (shift.employeeCode) {
+        encounteredWorkers.set(shift.employeeCode, {
+          lastName: shift.lastName,
+          firstName: shift.firstName,
+          basePayRate: parsedBasePayRate,
+          casualLoading: parsedCasualLoading,
+        });
+      }
     });
 
     return isValid;
@@ -88,38 +108,47 @@ const validateEmployeeCode = (employeeCode: string): string[] => {
   }
 };
 
-const validateLastName = (lastName: string): string[] => {
+const validateLastName = (existingWorker: WorkerDetails | undefined) => (lastName: string): string[] => {
   if (lastName.length < 1) {
     return [strings.validations.workerShiftEntry.lastName.tooShort];
+  } else if (!!existingWorker?.lastName && existingWorker.lastName !== lastName) {
+    return [strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry];
   } else {
     return [];
   }
 };
 
-const validateFirstName = (firstName: string): string[] => {
+const validateFirstName = (existingWorker: WorkerDetails | undefined) => (firstName: string): string[] => {
   if (firstName.length < 1) {
     return [strings.validations.workerShiftEntry.firstName.tooShort];
+  } else if (!!existingWorker?.firstName && existingWorker.firstName !== firstName) {
+    return [strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry];
   } else {
     return [];
   }
 };
 
-const validateBasePayRate = (basePayRate: string): string[] => {
-  if (!/^\$?[0-9]+(\.[0-9]+)?$/.test(basePayRate)) {
-    return [strings.validations.workerShiftEntry.basePayRate.illegalFormat];
-  }
+const validateBasePayRate = (existingWorker: WorkerDetails | undefined, parsedBasePayRate: MonetaryAmount | null) =>
+  (basePayRate: string): string[] => {
+    if (!/^\$?[0-9]+(\.[0-9]+)?$/.test(basePayRate)) {
+      return [strings.validations.workerShiftEntry.basePayRate.illegalFormat];
+    }
 
-  const failures: string[] = [];
-  const parsedAmount = new Decimal(basePayRate.replace('$', ''));
-  if (parsedAmount.decimalPlaces() > 2) {
-    failures.push(strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
-  }
-  if (parsedAmount < new Decimal('0.01')) {
-    failures.push(strings.validations.workerShiftEntry.basePayRate.tooLow);
-  }
+    const failures: string[] = [];
+    const parsedAmount = new Decimal(basePayRate.replace('$', ''));
+    if (parsedAmount.decimalPlaces() > 2) {
+      failures.push(strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
+    }
+    if (parsedAmount < new Decimal('0.01')) {
+      failures.push(strings.validations.workerShiftEntry.basePayRate.tooLow);
+    }
 
-  return failures;
-};
+    if (!!existingWorker?.basePayRate && parsedBasePayRate && !existingWorker.basePayRate.equals(parsedBasePayRate)) {
+      failures.push(strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry);
+    }
+
+    return failures;
+  };
 
 const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null) => (shiftStartDate: string): string[] => {
   if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(shiftStartDate)) {
@@ -163,13 +192,17 @@ const validateShiftEndTime = (parsedShiftEndTime: LocalTime | null, shiftStartTi
     return [];
   };
 
-const validateCasualLoading = (casualLoading: string): string[] => {
-  if (translateCasualLoading(casualLoading) === null) {
-    return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
-  } else {
-    return [];
-  }
-};
+const validateCasualLoading = (existingWorker: WorkerDetails | undefined, parsedCasualLoading: boolean | null) =>
+  (casualLoading: string): string[] => {
+    if (parsedCasualLoading === null) {
+      return [strings.validations.workerShiftEntry.casualLoading.illegalValue];
+    } else if (!!existingWorker && existingWorker.casualLoading !== null
+      && existingWorker.casualLoading !== parsedCasualLoading) {
+      return [strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry];
+    } else {
+      return [];
+    }
+  };
 
 export const useShiftTableValidator = () => {
   const store = useStore<AppState>();
