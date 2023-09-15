@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@js-joda/core": "^5.5.3",
+    "@js-joda/timezone": "^2.18.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@silevis/reactgrid": "^4.1.1",
     "@testing-library/jest-dom": "^5.17.0",

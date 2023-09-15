@@ -14,6 +14,8 @@ import {
 // import { MonetaryAmount } from 'models/money';
 import { AppState } from 'models/store';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
+import { LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
+import { toZonedDateTime } from 'models/time';
 
 // interface WorkerDetails {
 //   lastName: string | null;
@@ -38,14 +40,23 @@ export class ShiftTableValidator {
     let isValid = true;
 
     this.getShiftsFromStore().forEach((shift, rowIndex) => {
+      const parsedShiftStartDate = translateToLocalDate(shift.shiftStartDate);
+      const parsedShiftStartTime = translateToLocalTime(shift.shiftStartTime);
+      const parsedShiftEndTime = translateToLocalTime(shift.shiftEndTime);
+
+      const zonedShiftStartTime = parsedShiftStartDate && parsedShiftStartTime &&
+        toZonedDateTime(parsedShiftStartDate, parsedShiftStartTime);
+      const zonedShiftEndTime = parsedShiftStartDate && parsedShiftEndTime &&
+        toZonedDateTime(parsedShiftStartDate, parsedShiftEndTime);
+
       const validators: [WorkerShiftColumnName, (value: string) => string[]][] = [
         ['employeeCode', validateEmployeeCode],
         ['lastName', validateLastName],
         ['firstName', validateFirstName],
         ['basePayRate', validateBasePayRate],
-        ['shiftStartDate', validateShiftStartDate],
-        ['shiftStartTime', validateShiftStartTime],
-        ['shiftEndTime', validateShiftEndTime],
+        ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate)],
+        ['shiftStartTime', validateShiftStartTime(parsedShiftStartTime)],
+        ['shiftEndTime', validateShiftEndTime(parsedShiftEndTime, zonedShiftStartTime, zonedShiftEndTime)],
         ['casualLoading', validateCasualLoading],
       ];
 
@@ -110,41 +121,47 @@ const validateBasePayRate = (basePayRate: string): string[] => {
   return failures;
 };
 
-const validateShiftStartDate = (shiftStartDate: string): string[] => {
+const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null) => (shiftStartDate: string): string[] => {
   if (!/^[0-9]{1,2}\/[0-9]{1,2}\/([0-9]{2}|[0-9]{4})$/.test(shiftStartDate)) {
     return [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat];
   }
 
-  if (translateToLocalDate(shiftStartDate) === null) {
+  if (parsedShiftStartDate === null) {
     return [strings.validations.workerShiftEntry.shiftStartDate.invalidDate];
   } else {
     return [];
   }
 };
 
-const validateShiftStartTime = (shiftStartTime: string): string[] => {
-  if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftStartTime)) {
-    return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
-  }
+const validateShiftStartTime = (parsedShiftStartTime: LocalTime | null) =>
+  (shiftStartTime: string): string[] => {
+    if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftStartTime)) {
+      return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
+    }
 
-  if (translateToLocalTime(shiftStartTime) === null) {
-    return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
-  } else {
+    if (parsedShiftStartTime === null) {
+      return [strings.validations.workerShiftEntry.shiftStartTime.invalidTime];
+    } else {
+      return [];
+    }
+  };
+
+const validateShiftEndTime = (parsedShiftEndTime: LocalTime | null, shiftStartTime: ZonedDateTime | null,
+  zonedShiftEndTime: ZonedDateTime | null) => (shiftEndTime: string): string[] => {
+    if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftEndTime)) {
+      return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
+    }
+
+    if (parsedShiftEndTime === null) {
+      return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
+    }
+
+    if (!!shiftStartTime && !!zonedShiftEndTime && !shiftStartTime.isBefore(zonedShiftEndTime)) {
+      return [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart];
+    }
+
     return [];
-  }
-};
-
-const validateShiftEndTime = (shiftEndTime: string): string[] => {
-  if (!/^[0-9]{2}:[0-9]{2}$/.test(shiftEndTime)) {
-    return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
-  }
-
-  if (translateToLocalTime(shiftEndTime) === null) {
-    return [strings.validations.workerShiftEntry.shiftEndTime.invalidTime];
-  } else {
-    return [];
-  }
-};
+  };
 
 const validateCasualLoading = (casualLoading: string): string[] => {
   if (translateCasualLoading(casualLoading) === null) {

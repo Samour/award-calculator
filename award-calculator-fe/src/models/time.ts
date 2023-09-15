@@ -1,4 +1,4 @@
-import { ZonedDateTime } from '@js-joda/core';
+import { LocalDate, LocalTime, ZoneId, ZonedDateTime } from '@js-joda/core';
 import Decimal from 'decimal.js';
 
 export const APP_TIME_ZONE = 'Australia/Brisbane';
@@ -15,3 +15,7 @@ export type ShiftTimestamp = ZonedDateTime;
  * Precision: 2 decimal places
  */
 export type IncrementalMinuteDuration = Decimal;
+
+export const toZonedDateTime = (localDate: LocalDate, localTime: LocalTime): ZonedDateTime => {
+  return localDate.atTime(localTime).atZone(ZoneId.of(APP_TIME_ZONE));
+};

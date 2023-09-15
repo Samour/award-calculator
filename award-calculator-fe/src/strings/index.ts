@@ -27,6 +27,7 @@ const strings = {
       shiftEndTime: {
         illegalFormat: 'Shift end time must be in the format of HH:MM using 24-hour time',
         invalidTime: 'Shift end time must refer to a real time',
+        beforeShiftStart: 'Shift end time must be at least 1 minute after the shift start time',
       },
       casualLoading: {
         illegalValue: 'Casual loading must be one of the following: y, yes, true, n, no, false',
