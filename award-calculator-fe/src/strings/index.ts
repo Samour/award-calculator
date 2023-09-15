@@ -26,6 +26,7 @@ const strings = {
       shiftStartTime: {
         illegalFormat: 'Shift start time must be in the format of HH:MM using 24-hour time',
         invalidTime: 'Shift start time must refer to a real time',
+        overlappingShifts: '2 shifts cannot have overlapping times for a single worker',
       },
       shiftEndTime: {
         illegalFormat: 'Shift end time must be in the format of HH:MM using 24-hour time',

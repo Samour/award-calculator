@@ -436,6 +436,67 @@ describe('ShiftTableValidator', () => {
     });
   });
 
+  describe('Shifts on the same day', () => {
+
+    test('should accept shifts that do not overlap', () => {
+      const result = new ShiftTableValidator([
+        validWorkerShift1,
+        {
+          ...validWorkerShift1,
+          shiftStartTime: '17:00',
+          shiftEndTime: '21:00',
+        },
+      ]).validateShiftRows();
+
+      checkGeneralShape(result)(2);
+      expectNoFailures(result);
+    });
+
+    test('should accept overlapping shifts for separate workers', () => {
+      const result = new ShiftTableValidator([
+        validWorkerShift1,
+        {
+          ...validWorkerShift1,
+          employeeCode: 'S002',
+          shiftStartTime: '09:00',
+          shiftEndTime: '20:00',
+        },
+      ]).validateShiftRows();
+
+      checkGeneralShape(result)(2);
+      expectNoFailures(result);
+    });
+
+    test('should accept overlapping times if the shifts are on separate days', () => {
+      const result = new ShiftTableValidator([
+        validWorkerShift1,
+        {
+          ...validWorkerShift1,
+          shiftStartDate: '23/01/2023',
+          shiftStartTime: '09:00',
+          shiftEndTime: '20:00',
+        },
+      ]).validateShiftRows();
+
+      checkGeneralShape(result)(2);
+      expectNoFailures(result);
+    });
+
+    test('should reject overlapping shift for a single worker', () => {
+      const result = new ShiftTableValidator([
+        validWorkerShift1,
+        {
+          ...validWorkerShift1,
+          shiftStartTime: '09:00',
+          shiftEndTime: '20:00',
+        },
+      ]).validateShiftRows();
+
+      checkGeneralShape(result)(2);
+      expectFailureMessage(result)(1, 'shiftStartTime', strings.validations.workerShiftEntry.shiftStartTime.overlappingShifts);
+    });
+  });
+
   test('should return all validation errors when more than 1 occurs', () => {
     const result = new ShiftTableValidator([
       {

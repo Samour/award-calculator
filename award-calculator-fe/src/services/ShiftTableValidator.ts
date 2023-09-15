@@ -34,6 +34,8 @@ export interface ValidationOutcome {
 
 export class ShiftTableValidator {
 
+  private readonly workerShiftTimes: Map<WorkerCode, [ZonedDateTime, ZonedDateTime][]> = new Map();
+
   constructor(private readonly shifts: WorkerShiftRow[]) { }
 
   validateShiftRows(): ValidationOutcome[] {
@@ -61,7 +63,11 @@ export class ShiftTableValidator {
         ['firstName', validateFirstName(existingWorker, shift.firstName)],
         ['basePayRate', validateBasePayRate(existingWorker, parsedBasePayRate, shift.basePayRate)],
         ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate, shift.shiftStartDate)],
-        ['shiftStartTime', validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)],
+        ['shiftStartTime',
+          validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)
+            .concat(
+              this.checkForOverlappingShiftStart(shift.employeeCode, zonedShiftStartTime, zonedShiftEndTime)
+            )],
         ['shiftEndTime', validateShiftEndTime(!!parsedShiftStartDate, zonedShiftStartTime, zonedShiftEndTime,
           shift.shiftEndTime)],
         ['casualLoading', validateCasualLoading(existingWorker, parsedCasualLoading)],
@@ -89,9 +95,44 @@ export class ShiftTableValidator {
           casualLoading: parsedCasualLoading,
         });
       }
+
+      this.pushShiftTimes(shift.employeeCode, zonedShiftStartTime, zonedShiftEndTime);
     });
 
     return validationOutcomes;
+  }
+
+  private checkForOverlappingShiftStart(employeeCode: WorkerCode, shiftStartTime: ZonedDateTime | null,
+    shiftEndTime: ZonedDateTime | null): string[] {
+    const existingShifts = this.workerShiftTimes.get(employeeCode);
+    if (!existingShifts?.length || !shiftStartTime || !shiftEndTime || !shiftStartTime.isBefore(shiftEndTime)) {
+      return [];
+    }
+
+    for (let [start, end] of existingShifts) {
+      if (shiftStartTime.isBefore(end) && shiftEndTime.isAfter(start)) {
+        return [strings.validations.workerShiftEntry.shiftStartTime.overlappingShifts];
+      } else if (shiftStartTime.isAfter(start)) {
+        break;
+      }
+    }
+
+    return [];
+  }
+
+  private pushShiftTimes(employeeCode: WorkerCode, shiftStartTime: ZonedDateTime | null,
+    shiftEndTime: ZonedDateTime | null) {
+    if (!employeeCode || !shiftStartTime || !shiftEndTime || !shiftStartTime.isBefore(shiftEndTime)) {
+      return;
+    }
+
+    const shiftTimes = this.workerShiftTimes.get(employeeCode);
+    if (shiftTimes) {
+      shiftTimes.push([shiftStartTime, shiftEndTime]);
+      shiftTimes.sort();
+    } else {
+      this.workerShiftTimes.set(employeeCode, [[shiftStartTime, shiftEndTime]]);
+    }
   }
 }
 
