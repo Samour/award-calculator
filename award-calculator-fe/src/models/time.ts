@@ -1,6 +1,8 @@
 import { LocalDate, LocalTime, ZoneId, ZonedDateTime } from '@js-joda/core';
 import Decimal from 'decimal.js';
 
+require("@js-joda/timezone");
+
 export const APP_TIME_ZONE = 'Australia/Brisbane';
 
 /**

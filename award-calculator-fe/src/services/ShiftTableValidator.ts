@@ -24,7 +24,7 @@ interface WorkerDetails {
   casualLoading: boolean | null;
 }
 
-interface ValidationOutcome {
+export interface ValidationOutcome {
   rowIndex: number;
   columns: {
     columnId: WorkerShiftColumnName;
@@ -118,7 +118,7 @@ const validateFirstName = (existingWorker: WorkerDetails | undefined) => (firstN
   if (firstName.length < 1) {
     return [strings.validations.workerShiftEntry.firstName.tooShort];
   } else if (!!existingWorker?.firstName && existingWorker.firstName !== firstName) {
-    return [strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry];
+    return [strings.validations.workerShiftEntry.firstName.doesNotMatchPriorEntry];
   } else {
     return [];
   }
