@@ -466,8 +466,4 @@ describe('ShiftTableValidator', () => {
       }
     });
   });
-
-  test('Failing test to check behaviour in build pipeline', () => {
-    fail('This is a failing test'); // eslint-disable-line jest/no-jasmine-globals
-  });
 });
