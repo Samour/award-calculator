@@ -5,3 +5,11 @@
 .App .row:not(.compact) {
   margin-top: 2rem;
 }
+
+.App button.round {
+  border-radius: 20px;
+  height: 30px;
+  width: 30px;
+  padding: 0;
+  line-height: 0;
+}

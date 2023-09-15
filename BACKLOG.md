@@ -1,6 +1,6 @@
 # Backlog
 
-- Create UI for pay data display
+- WIP Create UI for pay data display
 - Create specific implementations of `OvertimeCounter` for the retail award
 - Create specific implementations of `PayClassifier` for the retail award
 - Create general-purpose implementation of `AwardPayCalculator` and `TimeClassifier`

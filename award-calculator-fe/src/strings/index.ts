@@ -60,6 +60,20 @@ const strings = {
         computePay: 'Compute Pay',
       },
     },
+    payReport: {
+      title: 'Pay Report',
+      tableHeadings: {
+        employeeCode: 'Employee code',
+        lastName: 'Last name',
+        firstName: 'First name',
+        shiftDate: 'Shift date',
+        shiftPayable: 'Shift payable',
+        details: 'Details',
+      },
+      buttons: {
+        back: 'Back to edit',
+      },
+    },
   },
 };
 

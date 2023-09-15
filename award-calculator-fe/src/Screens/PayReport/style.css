@@ -1,0 +1,9 @@
+.App .PayReport .ShiftPayTable {
+  background-color: rgb(253, 253, 253);
+  padding: 0 20px 1px;
+  border-radius: 2px;
+}
+
+.App .PayReport .ShiftPayTable table {
+  margin-bottom: 2rem;
+}

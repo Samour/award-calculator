@@ -1,12 +1,33 @@
 import ShiftEntry from 'Screens/ShiftEntry';
+import { useSelector } from 'react-redux';
+import { AppState } from 'models/store';
+import { Screen } from 'models/store/navigation';
+import PayReport from 'Screens/PayReport';
+import Alert from 'Components/Alert';
 import './App.css';
 
-function App() {
+const navigationScreenSelector = (state: AppState): Screen => state.navigation.screen;
+
+const App = (): JSX.Element => {
+  const screen = useSelector(navigationScreenSelector);
+
+  const selectScreen = (): JSX.Element => {
+    if (screen === Screen.SHIFT_ENTRY) {
+      return <ShiftEntry/>;
+    } else if (screen === Screen.PAY_REPORT) {
+      return <PayReport/>;
+    } else {
+      return (
+        <Alert>NAVIGATION ERROR</Alert>
+      );
+    }
+  };
+
   return (
     <div className="App container">
-      <ShiftEntry/>
+      {selectScreen()}
     </div>
   );
-}
+};
 
 export default App;

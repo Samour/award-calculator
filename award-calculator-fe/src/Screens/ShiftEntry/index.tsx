@@ -1,14 +1,18 @@
+import { useDispatch } from 'react-redux';
 import { useShiftTableValidator } from 'services/ShiftTableValidator';
 import strings from 'strings';
+import { navigateToScreen } from 'store/navigation';
+import { Screen } from 'models/store/navigation';
 import ShiftTable from './ShiftTable';
 import ValidationNotification from './ValidationNotification';
 
 const ShiftEntry = (): JSX.Element => {
+  const dispatch = useDispatch();
   const validateShiftTable = useShiftTableValidator();
 
   const onComputePayClick = () => {
     if (validateShiftTable()) {
-      window.alert('Data entry is valid - I would proceed to calculation now, except that\'s not built yet.');
+      dispatch(navigateToScreen(Screen.PAY_REPORT));
     }
   };
 
