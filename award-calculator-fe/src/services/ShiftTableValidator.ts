@@ -1,5 +1,4 @@
 import { useStore } from 'react-redux';
-import { Store } from '@reduxjs/toolkit';
 import Decimal from 'decimal.js';
 import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
@@ -25,22 +24,24 @@ interface WorkerDetails {
   casualLoading: boolean | null;
 }
 
+interface ValidationOutcome {
+  rowIndex: number;
+  columns: {
+    columnId: WorkerShiftColumnName;
+    failureMessages: string[];
+  }[];
+}
+
 export class ShiftTableValidator {
 
-  constructor(private readonly store: Store<AppState>) { }
+  constructor(private readonly shifts: WorkerShiftRow[]) { }
 
-  private getShiftsFromStore(): WorkerShiftRow[] {
-    const rows = this.store.getState().shiftEntry.rows
-    return rows.map((row) => validatedToWorkerShift(row))
-      .slice(0, rows.length - 1);
-  }
+  validateShiftRows(): ValidationOutcome[] {
+    const validationOutcomes: ValidationOutcome[] = [];
 
-  validateShiftRows(): boolean {
     const encounteredWorkers: Map<WorkerCode, WorkerDetails> = new Map();
 
-    let isValid = true;
-
-    this.getShiftsFromStore().forEach((shift, rowIndex) => {
+    this.shifts.forEach((shift, rowIndex) => {
       const parsedShiftStartDate = translateToLocalDate(shift.shiftStartDate);
       const parsedShiftStartTime = translateToLocalTime(shift.shiftStartTime);
       const parsedShiftEndTime = translateToLocalTime(shift.shiftEndTime);
@@ -65,17 +66,12 @@ export class ShiftTableValidator {
         ['casualLoading', validateCasualLoading(existingWorker, parsedCasualLoading)],
       ];
 
-      validators.forEach(([columnId, validator]) => {
-        const failureMessages = validator(shift[columnId]);
-        isValid = isValid && failureMessages.length === 0;
-
-        this.store.dispatch(setCellValidationMessages({
-          cellIdentifier: {
-            rowIndex,
-            columnId,
-          },
-          failureMessages: failureMessages,
-        }));
+      validationOutcomes.push({
+        rowIndex,
+        columns: validators.map(([columnId, validator]) => ({
+          columnId,
+          failureMessages: validator(shift[columnId]),
+        })),
       });
 
       if (existingWorker) {
@@ -94,7 +90,7 @@ export class ShiftTableValidator {
       }
     });
 
-    return isValid;
+    return validationOutcomes;
   }
 }
 
@@ -204,8 +200,31 @@ const validateCasualLoading = (existingWorker: WorkerDetails | undefined, parsed
     }
   };
 
-export const useShiftTableValidator = () => {
+export const useShiftTableValidator = (): (() => boolean) => {
   const store = useStore<AppState>();
 
-  return new ShiftTableValidator(store);
+  const validateShiftTable = (): boolean => {
+    const rows = store.getState().shiftEntry.rows
+    const shifts = rows.map((row) => validatedToWorkerShift(row))
+      .slice(0, rows.length - 1);
+
+    let isValid = true;
+
+    new ShiftTableValidator(shifts).validateShiftRows().forEach(({ rowIndex, columns }) => {
+      columns.forEach(({ columnId, failureMessages }) => {
+        isValid = isValid && failureMessages.length === 0;
+        store.dispatch(setCellValidationMessages({
+          cellIdentifier: {
+            rowIndex,
+            columnId,
+          },
+          failureMessages: failureMessages,
+        }));
+      });
+    });
+
+    return isValid;
+  };
+
+  return validateShiftTable;
 };

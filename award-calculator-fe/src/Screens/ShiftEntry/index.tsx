@@ -4,10 +4,10 @@ import ShiftTable from './ShiftTable';
 import ValidationNotification from './ValidationNotification';
 
 const ShiftEntry = (): JSX.Element => {
-  const shiftTableValidator = useShiftTableValidator();
+  const validateShiftTable = useShiftTableValidator();
 
   const onComputePayClick = () => {
-    if (shiftTableValidator.validateShiftRows()) {
+    if (validateShiftTable()) {
       window.alert('Data entry is valid - I would proceed to calculation now, except that\'s not built yet.');
     }
   };
