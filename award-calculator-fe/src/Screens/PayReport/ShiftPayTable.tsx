@@ -1,8 +1,16 @@
+import { useState } from 'react';
 import strings from 'strings';
+import ShiftBreakdownModal from './ShiftBreakdownModal';
 
 const ShiftPayTable = (): JSX.Element => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
   return (
     <div className="ShiftPayTable">
+      <ShiftBreakdownModal open={modalOpen} onClose={closeModal} />
       <table className="u-full-width">
         <thead>
           <tr>
@@ -22,7 +30,7 @@ const ShiftPayTable = (): JSX.Element => {
             <td>14/09/2023</td>
             <td>$276.81</td>
             <td>
-              <button className="round">?</button>
+              <button className="round" onClick={openModal}>?</button>
             </td>
           </tr>
           <tr>
@@ -32,7 +40,7 @@ const ShiftPayTable = (): JSX.Element => {
             <td>15/09/2023</td>
             <td>$276.81</td>
             <td>
-              <button className="round">?</button>
+              <button className="round" onClick={openModal}>?</button>
             </td>
           </tr>
           <tr>
@@ -42,7 +50,7 @@ const ShiftPayTable = (): JSX.Element => {
             <td>14/09/2023</td>
             <td>$267.19</td>
             <td>
-              <button className="round">?</button>
+              <button className="round" onClick={openModal}>?</button>
             </td>
           </tr>
         </tbody>

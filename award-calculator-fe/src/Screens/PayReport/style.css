@@ -7,3 +7,7 @@
 .App .PayReport .ShiftPayTable table {
   margin-bottom: 2rem;
 }
+
+.App .PayReport .shift-pay-breakdown-modal {
+  width: 80%;
+}

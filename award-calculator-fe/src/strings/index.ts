@@ -75,6 +75,13 @@ const strings = {
       },
     },
   },
+  components: {
+    modal: {
+      buttons: {
+        close: 'close',
+      },
+    },
+  },
 };
 
 export default strings;
