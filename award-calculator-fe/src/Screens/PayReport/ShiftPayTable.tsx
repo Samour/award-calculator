@@ -1,12 +1,29 @@
 import { useState } from 'react';
 import strings from 'strings';
 import ShiftBreakdownModal from './ShiftBreakdownModal';
+import ShiftPayableRow, { ShiftPayableRowData } from './ShiftPayableRow';
+import { dummyWorkerPayableOutcomes } from 'dummyData';
+
+const sortBySourceRow = (a: ShiftPayableRowData, b: ShiftPayableRowData) => a.shift.shift.sourceRow
+  - b.shift.shift.sourceRow;
 
 const ShiftPayTable = (): JSX.Element => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+  const rowData: ShiftPayableRowData[] = dummyWorkerPayableOutcomes.flatMap((workerPayable) =>
+    workerPayable.shifts.map((shift) => ({
+      worker: workerPayable.worker,
+      shift,
+    }))
+  );
+  rowData.sort(sortBySourceRow);
+
+  const rowElements = rowData.map((rowData) => (
+    <ShiftPayableRow key={rowData.shift.shift.sourceRow} rowData={rowData} onShowDetails={openModal} />
+  ));
 
   return (
     <div className="ShiftPayTable">
@@ -23,36 +40,7 @@ const ShiftPayTable = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>S1065</td>
-            <td>Doe</td>
-            <td>John</td>
-            <td>14/09/2023</td>
-            <td>$276.81</td>
-            <td>
-              <button className="round" onClick={openModal}>?</button>
-            </td>
-          </tr>
-          <tr>
-            <td>S1065</td>
-            <td>Doe</td>
-            <td>John</td>
-            <td>15/09/2023</td>
-            <td>$276.81</td>
-            <td>
-              <button className="round" onClick={openModal}>?</button>
-            </td>
-          </tr>
-          <tr>
-            <td>S1066</td>
-            <td>Smith</td>
-            <td>Matt</td>
-            <td>14/09/2023</td>
-            <td>$267.19</td>
-            <td>
-              <button className="round" onClick={openModal}>?</button>
-            </td>
-          </tr>
+          {rowElements}
         </tbody>
       </table>
     </div>
