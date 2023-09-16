@@ -1,7 +1,7 @@
+import strings from 'strings';
+import { ClassifiedPayableTime } from 'models/outputs/payable';
 import { renderAsDollars, renderLoadingRate } from 'formatters/money';
 import { renderAsLocalTime, renderDuration } from 'formatters/time';
-import { ClassifiedPayableTime } from 'models/outputs/payable';
-import strings from 'strings';
 
 interface ShiftPayComponentRowProps {
   classifiedPayableTime: ClassifiedPayableTime;

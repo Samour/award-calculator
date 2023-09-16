@@ -1,8 +1,8 @@
-import Modal from 'Components/Modal';
 import strings from 'strings';
-import { ShiftPayableRowData } from './ShiftPayableRowData';
+import { ShiftPayableRowData } from '../ShiftPayableRowData';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
+import Modal from 'Components/Modal';
 import ShiftPayComponentRow from './ShiftPayComponentRow';
 
 interface ShiftBreakdownModalProps {
