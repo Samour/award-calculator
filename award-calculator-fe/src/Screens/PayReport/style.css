@@ -11,3 +11,7 @@
 .App .PayReport .shift-pay-breakdown-modal {
   width: 80%;
 }
+
+.App .PayReport .shift-pay-breakdown-modal-content {
+  text-align: left;
+}

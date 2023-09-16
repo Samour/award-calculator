@@ -70,6 +70,21 @@ const strings = {
         shiftPayable: 'Shift payable',
         details: 'Details',
       },
+      shiftBreakdownModal: {
+        shiftDate: 'Shift date:',
+        shiftStartTime: 'Shift start time:',
+        shiftEndTime: 'Shift end time:',
+        basePayRate: 'Base pay rate:',
+        totalPayable: 'Total payable for shift:',
+        tableHeadings: {
+          payType: 'Pay type',
+          loadingRate: 'Loading rate',
+          effectiveStartTime: 'Effective start time',
+          effectiveEndTime: 'Effective end time',
+          payableDuration: 'Payable duration',
+          payableAmount: 'Payable amount',
+        },
+      },
       buttons: {
         back: 'Back to edit',
       },
