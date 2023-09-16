@@ -1,6 +1,10 @@
 import Decimal from 'decimal.js';
-import { MonetaryAmount } from 'models/money';
+import { LoadingRate, MonetaryAmount } from 'models/money';
 
-export const renderAsDollars = (amount: MonetaryAmount): string => {
-  return amount.dividedBy(new Decimal('100')).toFixed(2);
+export const renderAsDollars = (amount: MonetaryAmount, decimalPlaces: number = 2): string => {
+  return amount.dividedBy(new Decimal('100')).toFixed(decimalPlaces);
+};
+
+export const renderLoadingRate = (loadingRate: LoadingRate): string => {
+  return loadingRate.toFixed(2);
 };

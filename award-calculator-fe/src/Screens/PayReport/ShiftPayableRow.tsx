@@ -1,12 +1,6 @@
 import { renderAsDollars } from 'formatters/money';
 import { renderAsLocalDate } from 'formatters/time';
-import { Worker } from 'models/inputs/worker';
-import { ShiftPayable } from 'models/outputs/payable';
-
-export interface ShiftPayableRowData {
-  worker: Worker;
-  shift: ShiftPayable;
-}
+import { ShiftPayableRowData } from './ShiftPayableRowData';
 
 interface ShiftPayableRowProps {
   rowData: ShiftPayableRowData;

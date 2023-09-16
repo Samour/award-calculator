@@ -1,9 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
+import Decimal from 'decimal.js';
 import App from './App';
 import store from './store';
 import './index.css';
+
+Decimal.set({ rounding: Decimal.ROUND_HALF_EVEN });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

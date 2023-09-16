@@ -115,7 +115,7 @@ export const dummyWorkerPayableOutcomes: WorkerPayable[] = [
             payableAmount: new Decimal('21375'),
           },
         ],
-        payableAmount: new Decimal('21370'),
+        payableAmount: new Decimal('21375'),
       },
     ],
     payableAmount: new Decimal('21375'),

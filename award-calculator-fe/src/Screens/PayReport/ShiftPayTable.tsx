@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import strings from 'strings';
-import ShiftBreakdownModal from './ShiftBreakdownModal';
-import ShiftPayableRow, { ShiftPayableRowData } from './ShiftPayableRow';
 import { dummyWorkerPayableOutcomes } from 'dummyData';
+import { ShiftPayableRowData } from './ShiftPayableRowData';
+import ShiftBreakdownModal from './ShiftBreakdownModal';
+import ShiftPayableRow from './ShiftPayableRow';
 
 const sortBySourceRow = (a: ShiftPayableRowData, b: ShiftPayableRowData) => a.shift.shift.sourceRow
   - b.shift.shift.sourceRow;
 
 const ShiftPayTable = (): JSX.Element => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [activeShiftBreakdown, setActiveShiftBreakdown] = useState<ShiftPayableRowData>();
 
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+  const closeModal = () => setActiveShiftBreakdown(undefined);
 
   const rowData: ShiftPayableRowData[] = dummyWorkerPayableOutcomes.flatMap((workerPayable) =>
     workerPayable.shifts.map((shift) => ({
@@ -22,12 +22,14 @@ const ShiftPayTable = (): JSX.Element => {
   rowData.sort(sortBySourceRow);
 
   const rowElements = rowData.map((rowData) => (
-    <ShiftPayableRow key={rowData.shift.shift.sourceRow} rowData={rowData} onShowDetails={openModal} />
+    <ShiftPayableRow key={rowData.shift.shift.sourceRow} rowData={rowData}
+      onShowDetails={() => setActiveShiftBreakdown(rowData)} />
   ));
 
   return (
     <div className="ShiftPayTable">
-      <ShiftBreakdownModal open={modalOpen} onClose={closeModal} />
+      <ShiftBreakdownModal open={!!activeShiftBreakdown} payableRowData={activeShiftBreakdown}
+        onClose={closeModal} />
       <table className="u-full-width">
         <thead>
           <tr>

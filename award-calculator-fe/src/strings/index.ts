@@ -1,3 +1,5 @@
+import { LoadingClassification } from 'models/outputs/payable';
+
 const strings = {
   validations: {
     workerShiftEntry: {
@@ -96,6 +98,13 @@ const strings = {
         close: 'close',
       },
     },
+  },
+  loadingClassification: {
+    [LoadingClassification.REGULAR_TIME]: 'Regular time',
+    [LoadingClassification.TIME_AND_A_HALF]: 'Overtime (time and a half)',
+    [LoadingClassification.DOUBLE_TIME]: 'Overtime (double time)',
+    [LoadingClassification.WEEKEND_PENALTY]: 'Weekend penalty rate',
+    [LoadingClassification.CASUAL]: 'Casual loading',
   },
 };
 
