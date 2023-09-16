@@ -29,8 +29,7 @@ export const translateMonetaryAmount = (basePayRate: string): MonetaryAmount | n
       return null;
     }
 
-    // TODO do we need to set some precision on parsedAmount?
-    return parsedAmount;
+    return parsedAmount.times(new Decimal('100'));
   } catch (e) {
     return null;
   }
