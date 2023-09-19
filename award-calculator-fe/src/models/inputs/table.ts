@@ -60,7 +60,7 @@ export const translateToLocalTime = (time: string): LocalTime | null => {
 };
 
 export const translateCasualLoading = (casualLoading: string): boolean | null => {
-  let normalised = casualLoading.toLocaleLowerCase();
+  let normalised = casualLoading.toLocaleLowerCase().trim();
   if (normalised === 'y' || normalised === 'yes' || normalised === 'true') {
     return true;
   } else if (normalised === 'n' || normalised === 'no' || normalised === 'false') {
