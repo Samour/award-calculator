@@ -5,6 +5,7 @@ import strings from 'strings';
 import {
   WorkerShiftColumnName,
   WorkerShiftRow,
+  normaliseRow,
   translateCasualLoading,
   translateMonetaryAmount,
   translateToLocalDate,
@@ -248,6 +249,7 @@ export const useShiftTableValidator = (): (() => boolean) => {
   const validateShiftTable = (): boolean => {
     const rows = store.getState().shiftEntry.rows
     const shifts = rows.map((row) => validatedToWorkerShift(row))
+      .map((row) => normaliseRow(row))
       .slice(0, rows.length - 1);
 
     let isValid = true;

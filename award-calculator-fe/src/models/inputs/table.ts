@@ -22,6 +22,17 @@ export interface WorkerShiftRow {
   casualLoading: string,
 }
 
+export const normaliseRow = (workerShiftRow: WorkerShiftRow): WorkerShiftRow => ({
+  employeeCode: workerShiftRow.employeeCode.trim(),
+  lastName: workerShiftRow.lastName.trim(),
+  firstName: workerShiftRow.firstName.trim(),
+  basePayRate: workerShiftRow.basePayRate.trim(),
+  shiftStartDate: workerShiftRow.shiftStartDate.trim(),
+  shiftStartTime: workerShiftRow.shiftStartTime.trim(),
+  shiftEndTime: workerShiftRow.shiftEndTime.trim(),
+  casualLoading: workerShiftRow.casualLoading.trim(),
+});
+
 export const translateMonetaryAmount = (basePayRate: string): MonetaryAmount | null => {
   try {
     const parsedAmount = new Decimal(basePayRate.replace('$', ''));
@@ -60,7 +71,7 @@ export const translateToLocalTime = (time: string): LocalTime | null => {
 };
 
 export const translateCasualLoading = (casualLoading: string): boolean | null => {
-  let normalised = casualLoading.toLocaleLowerCase().trim();
+  let normalised = casualLoading.toLocaleLowerCase();
   if (normalised === 'y' || normalised === 'yes' || normalised === 'true') {
     return true;
   } else if (normalised === 'n' || normalised === 'no' || normalised === 'false') {

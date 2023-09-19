@@ -287,16 +287,12 @@ describe('ShiftTableValidator', () => {
       'N',
       'yes',
       'YES',
-      ' yes',
-      'yes ',
       'no',
       'NO',
       'true',
       'TRUE',
       'false',
       'FALSE',
-      ' no',
-      'no ',
     ])('should accept valid value \'%s\'', (casualLoading) => {
       const result = new ShiftTableValidator([{
         ...validWorkerShift1,
