@@ -1,5 +1,5 @@
-import { WorkerShiftColumnName, WorkerShiftRow } from 'models/inputs/table';
-import { ShiftTableValidator, ValidationOutcome } from 'services/ShiftTableValidator';
+import { WorkerShiftRow } from 'models/inputs/table';
+import { ShiftTableValidator } from 'services/ShiftTableValidator';
 import strings from 'strings';
 
 const validWorkerShift1: WorkerShiftRow = {
@@ -18,52 +18,11 @@ const validWorkerShift2: WorkerShiftRow = {
   shiftStartDate: '23/01/2023',
 };
 
-const checkGeneralShape = (valiationOutcomes: ValidationOutcome[]) =>
-  (expectedElements: number) => {
-    expect(valiationOutcomes).toHaveLength(expectedElements);
-    valiationOutcomes.forEach((row, rowIdx) => {
-      expect(row.rowIndex).toEqual(rowIdx);
-      expect(row.columns).toHaveLength(8);
-      expect(row.columns.map((c) => c.columnId).sort()).toEqual(
-        [
-          'employeeCode',
-          'lastName',
-          'firstName',
-          'basePayRate',
-          'shiftStartDate',
-          'shiftStartTime',
-          'shiftEndTime',
-          'casualLoading',
-        ].sort()
-      );
-    });
-  };
-
-const expectNoFailures = (validationOutcomes: ValidationOutcome[]) => {
-  validationOutcomes.forEach((row) => {
-    row.columns.forEach((c) => expect(c.failureMessages).toHaveLength(0));
-  });
-};
-
-const expectFailureMessage = (validationOutcomes: ValidationOutcome[]) =>
-  (rowIndex: number, columnId: WorkerShiftColumnName, failureMessage: string) => {
-    validationOutcomes.forEach((row, rowIdx) => {
-      row.columns.forEach((c) => {
-        if (rowIdx === rowIndex && c.columnId === columnId) {
-          expect(c.failureMessages).toEqual([failureMessage]);
-        } else {
-          expect(c.failureMessages).toHaveLength(0);
-        }
-      });
-    });
-  };
-
 describe('ShiftTableValidator', () => {
   test('should accept a single valid row', () => {
     const result = new ShiftTableValidator([validWorkerShift1]).validateShiftRows();
 
-    checkGeneralShape(result)(1);
-    expectNoFailures(result);
+    expect(result).toHaveLength(0);
   });
 
   describe('Employee code', () => {
@@ -76,8 +35,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'employeeCode', strings.validations.workerShiftEntry.employeeCode.tooShort);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'employeeCode',
+            failureMessages: [strings.validations.workerShiftEntry.employeeCode.tooShort],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value with illegal characters', () => {
@@ -88,8 +54,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'employeeCode', strings.validations.workerShiftEntry.employeeCode.illegalChars);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'employeeCode',
+            failureMessages: [strings.validations.workerShiftEntry.employeeCode.illegalChars],
+          }],
+        }
+      ]);
     });
   });
 
@@ -103,8 +76,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'firstName', strings.validations.workerShiftEntry.firstName.tooShort);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'firstName',
+            failureMessages: [strings.validations.workerShiftEntry.firstName.tooShort],
+          }],
+        }
+      ]);
     });
   });
 
@@ -118,8 +98,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'lastName', strings.validations.workerShiftEntry.lastName.tooShort);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'lastName',
+            failureMessages: [strings.validations.workerShiftEntry.lastName.tooShort],
+          }],
+        }
+      ]);
     });
   });
 
@@ -144,8 +131,7 @@ describe('ShiftTableValidator', () => {
         basePayRate,
       }]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject an empty value', () => {
@@ -156,8 +142,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'basePayRate', strings.validations.workerShiftEntry.basePayRate.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'basePayRate',
+            failureMessages: [strings.validations.workerShiftEntry.basePayRate.illegalFormat],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value with fractional cents', () => {
@@ -168,8 +161,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'basePayRate', strings.validations.workerShiftEntry.basePayRate.illegalPrecision);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'basePayRate',
+            failureMessages: [strings.validations.workerShiftEntry.basePayRate.illegalPrecision],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value less than 1 cent', () => {
@@ -180,8 +180,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'basePayRate', strings.validations.workerShiftEntry.basePayRate.tooLow);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'basePayRate',
+            failureMessages: [strings.validations.workerShiftEntry.basePayRate.tooLow],
+          }],
+        }
+      ]);
     });
   });
 
@@ -195,8 +202,7 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject an empty value', () => {
@@ -207,8 +213,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftStartDate', strings.validations.workerShiftEntry.shiftStartDate.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftStartDate',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value with invalid format', () => {
@@ -219,8 +232,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftStartDate', strings.validations.workerShiftEntry.shiftStartDate.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftStartDate',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat],
+          }],
+        }
+      ]);
     });
   });
 
@@ -232,8 +252,7 @@ describe('ShiftTableValidator', () => {
         shiftStartTime: '8:01',
       }]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject an empty value', () => {
@@ -244,8 +263,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftStartTime', strings.validations.workerShiftEntry.shiftStartTime.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftStartTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value with invalid format', () => {
@@ -256,8 +282,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftStartTime', strings.validations.workerShiftEntry.shiftStartTime.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftStartTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat],
+          }],
+        }
+      ]);
     });
   });
 
@@ -269,8 +302,7 @@ describe('ShiftTableValidator', () => {
         shiftEndTime: '9:01',
       }]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject an empty value', () => {
@@ -281,8 +313,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftEndTime', strings.validations.workerShiftEntry.shiftEndTime.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftEndTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat],
+          }],
+        }
+      ]);
     });
 
     test('should reject a value with invalid format', () => {
@@ -293,8 +332,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftEndTime', strings.validations.workerShiftEntry.shiftEndTime.illegalFormat);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftEndTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat],
+          }],
+        }
+      ]);
     });
   });
 
@@ -319,8 +365,7 @@ describe('ShiftTableValidator', () => {
         casualLoading,
       }]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject an empty value', () => {
@@ -331,8 +376,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'casualLoading', strings.validations.workerShiftEntry.casualLoading.illegalValue);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'casualLoading',
+            failureMessages: [strings.validations.workerShiftEntry.casualLoading.illegalValue],
+          }],
+        }
+      ]);
     });
 
     test('should reject an invalid value', () => {
@@ -343,8 +395,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'casualLoading', strings.validations.workerShiftEntry.casualLoading.illegalValue);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'casualLoading',
+            failureMessages: [strings.validations.workerShiftEntry.casualLoading.illegalValue],
+          }],
+        }
+      ]);
     });
   });
 
@@ -359,8 +418,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftEndTime', strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftEndTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart],
+          }],
+        }
+      ]);
     });
 
     test('should reject an equal start date-time', () => {
@@ -372,8 +438,15 @@ describe('ShiftTableValidator', () => {
         }
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(1);
-      expectFailureMessage(result)(0, 'shiftEndTime', strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart);
+      expect(result).toEqual([
+        {
+          rowIndex: 0,
+          columns: [{
+            columnId: 'shiftEndTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart],
+          }],
+        }
+      ]);
     });
   });
 
@@ -385,8 +458,7 @@ describe('ShiftTableValidator', () => {
         validWorkerShift2,
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject when Last name is not consistent', () => {
@@ -398,8 +470,15 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectFailureMessage(result)(1, 'lastName', strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry);
+      expect(result).toEqual([
+        {
+          rowIndex: 1,
+          columns: [{
+            columnId: 'lastName',
+            failureMessages: [strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry],
+          }],
+        }
+      ]);
     });
 
     test('should reject when First name is not consistent', () => {
@@ -411,8 +490,15 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectFailureMessage(result)(1, 'firstName', strings.validations.workerShiftEntry.firstName.doesNotMatchPriorEntry);
+      expect(result).toEqual([
+        {
+          rowIndex: 1,
+          columns: [{
+            columnId: 'firstName',
+            failureMessages: [strings.validations.workerShiftEntry.firstName.doesNotMatchPriorEntry],
+          }],
+        }
+      ]);
     });
 
     test('should reject when Pay rate is not consistent', () => {
@@ -424,8 +510,15 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectFailureMessage(result)(1, 'basePayRate', strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry);
+      expect(result).toEqual([
+        {
+          rowIndex: 1,
+          columns: [{
+            columnId: 'basePayRate',
+            failureMessages: [strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry],
+          }],
+        }
+      ]);
     });
 
     test('should reject when Casual loading is not consistent', () => {
@@ -437,8 +530,15 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectFailureMessage(result)(1, 'casualLoading', strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry);
+      expect(result).toEqual([
+        {
+          rowIndex: 1,
+          columns: [{
+            columnId: 'casualLoading',
+            failureMessages: [strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry],
+          }],
+        }
+      ]);
     });
 
     test('should accept different values for different employees', () => {
@@ -451,8 +551,7 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
   });
 
@@ -468,8 +567,7 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should accept overlapping shifts for separate workers', () => {
@@ -483,8 +581,7 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should accept overlapping times if the shifts are on separate days', () => {
@@ -498,8 +595,7 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectNoFailures(result);
+      expect(result).toHaveLength(0);
     });
 
     test('should reject overlapping shift for a single worker', () => {
@@ -512,8 +608,15 @@ describe('ShiftTableValidator', () => {
         },
       ]).validateShiftRows();
 
-      checkGeneralShape(result)(2);
-      expectFailureMessage(result)(1, 'shiftStartTime', strings.validations.workerShiftEntry.shiftStartTime.overlappingShifts);
+      expect(result).toEqual([
+        {
+          rowIndex: 1,
+          columns: [{
+            columnId: 'shiftStartTime',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.overlappingShifts],
+          }],
+        }
+      ]);
     });
   });
 
@@ -527,24 +630,27 @@ describe('ShiftTableValidator', () => {
       }
     ]).validateShiftRows();
 
-    checkGeneralShape(result)(1);
-    result[0].columns.forEach((c) => {
-      if (c.columnId === 'employeeCode') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(c.failureMessages).toEqual([strings.validations.workerShiftEntry.employeeCode.tooShort]);
-      } else if (c.columnId === 'basePayRate') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(c.failureMessages.sort()).toEqual([
-          strings.validations.workerShiftEntry.basePayRate.illegalPrecision,
-          strings.validations.workerShiftEntry.basePayRate.tooLow,
-        ].sort());
-      } else if (c.columnId === 'shiftStartDate') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(c.failureMessages).toEqual([strings.validations.workerShiftEntry.shiftStartDate.illegalFormat]);
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(c.failureMessages).toHaveLength(0);
-      }
-    });
+    expect(result).toEqual([
+      {
+        rowIndex: 0,
+        columns: [
+          {
+            columnId: 'employeeCode',
+            failureMessages: [strings.validations.workerShiftEntry.employeeCode.tooShort],
+          },
+          {
+            columnId: 'basePayRate',
+            failureMessages: [
+              strings.validations.workerShiftEntry.basePayRate.illegalPrecision,
+              strings.validations.workerShiftEntry.basePayRate.tooLow,
+            ],
+          },
+          {
+            columnId: 'shiftStartDate',
+            failureMessages: [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat],
+          },
+        ],
+      },
+    ]);
   });
 });

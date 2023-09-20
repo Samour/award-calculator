@@ -27,10 +27,12 @@ interface WorkerDetails {
 
 export interface ValidationOutcome {
   rowIndex: number;
-  columns: {
-    columnId: WorkerShiftColumnName;
-    failureMessages: string[];
-  }[];
+  columns: CellValidationFailure[];
+}
+
+export interface CellValidationFailure {
+  columnId: WorkerShiftColumnName;
+  failureMessages: string[];
 }
 
 export class ShiftTableValidator {
@@ -58,29 +60,56 @@ export class ShiftTableValidator {
 
       const existingWorker = encounteredWorkers.get(shift.employeeCode);
 
-      const validators: [WorkerShiftColumnName, string[]][] = [
-        ['employeeCode', validateEmployeeCode(shift.employeeCode)],
-        ['lastName', validateLastName(existingWorker, shift.lastName)],
-        ['firstName', validateFirstName(existingWorker, shift.firstName)],
-        ['basePayRate', validateBasePayRate(existingWorker, parsedBasePayRate, shift.basePayRate)],
-        ['shiftStartDate', validateShiftStartDate(parsedShiftStartDate, shift.shiftStartDate)],
-        ['shiftStartTime',
-          validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)
+      const validations: CellValidationFailure[] = [
+        {
+          columnId: 'employeeCode',
+          failureMessages: validateEmployeeCode(shift.employeeCode),
+        },
+        {
+          columnId: 'lastName',
+          failureMessages: validateLastName(existingWorker, shift.lastName),
+        },
+        {
+          columnId: 'firstName',
+          failureMessages: validateFirstName(existingWorker, shift.firstName),
+        },
+        {
+          columnId: 'basePayRate',
+          failureMessages: validateBasePayRate(existingWorker, parsedBasePayRate, shift.basePayRate),
+        },
+        {
+          columnId: 'shiftStartDate',
+          failureMessages: validateShiftStartDate(parsedShiftStartDate, shift.shiftStartDate),
+        },
+        {
+          columnId: 'shiftStartTime',
+          failureMessages: validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)
             .concat(
               this.checkForOverlappingShiftStart(shift.employeeCode, zonedShiftStartTime, zonedShiftEndTime)
-            )],
-        ['shiftEndTime', validateShiftEndTime(!!parsedShiftStartDate, zonedShiftStartTime, zonedShiftEndTime,
-          shift.shiftEndTime)],
-        ['casualLoading', validateCasualLoading(existingWorker, parsedCasualLoading)],
+            )
+        },
+        {
+          columnId: 'shiftEndTime',
+          failureMessages: validateShiftEndTime(
+            !!parsedShiftStartDate,
+            zonedShiftStartTime,
+            zonedShiftEndTime,
+            shift.shiftEndTime,
+          )
+        },
+        {
+          columnId: 'casualLoading',
+          failureMessages: validateCasualLoading(existingWorker, parsedCasualLoading),
+        },
       ];
+      const failedValidations = validations.filter(({ failureMessages }) => failureMessages.length > 0);
 
-      validationOutcomes.push({
-        rowIndex,
-        columns: validators.map(([columnId, failureMessages]) => ({
-          columnId,
-          failureMessages,
-        })),
-      });
+      if (failedValidations.length > 0) {
+        validationOutcomes.push({
+          rowIndex,
+          columns: failedValidations,
+        });
+      }
 
       if (existingWorker) {
         existingWorker.lastName = existingWorker.lastName || shift.lastName;
