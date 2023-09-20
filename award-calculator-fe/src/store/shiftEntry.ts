@@ -23,6 +23,10 @@ export interface DisplayCsvParsingFailureMessage {
   message: string;
 }
 
+export interface PopulateWorkerShiftTable {
+  rows: ValidatedWorkerShiftRow[];
+}
+
 const createEmptyRow = (): ValidatedWorkerShiftRow => ({
   employeeCode: createValidatedCell(''),
   lastName: createValidatedCell(''),
@@ -55,6 +59,7 @@ const {
   actions: {
     updateCellValues,
     setCellValidationMessages,
+    populateWorkerShiftTable,
     displayCsvParsingFailureMessage,
     closeParsingFailureModal,
   },
@@ -83,6 +88,10 @@ const {
       cell.failureMessages = payload.failureMessages;
     },
 
+    populateWorkerShiftTable: (state, action: PayloadAction<PopulateWorkerShiftTable>) => {
+      state.rows = action.payload.rows;
+    },
+
     displayCsvParsingFailureMessage: (state, action: PayloadAction<DisplayCsvParsingFailureMessage>) => {
       state.csvFileParsingError = {
         message: action.payload.message,
@@ -109,6 +118,7 @@ const rowIsEmpty = (row: ValidatedWorkerShiftRow): boolean =>
 export {
   updateCellValues,
   setCellValidationMessages,
+  populateWorkerShiftTable,
   displayCsvParsingFailureMessage,
   closeParsingFailureModal,
   reducer as shiftEntryReducer,
