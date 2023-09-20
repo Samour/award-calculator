@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js';
 import strings from 'strings';
 import {
-  WorkerShiftColumnName,
   WorkerShiftRow,
   translateCasualLoading,
   translateMonetaryAmount,
@@ -12,22 +11,13 @@ import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
 import { LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
 import { toZonedDateTime } from 'models/time';
+import { CellValidationFailure, ValidationOutcome } from 'models/validation';
 
 interface WorkerDetails {
   lastName: string | null;
   firstName: string | null;
   basePayRate: MonetaryAmount | null;
   casualLoading: boolean | null;
-}
-
-export interface ValidationOutcome {
-  rowIndex: number;
-  columns: CellValidationFailure[];
-}
-
-export interface CellValidationFailure {
-  columnId: WorkerShiftColumnName;
-  failureMessages: string[];
 }
 
 export class ShiftTableValidator {
