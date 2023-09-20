@@ -55,6 +55,12 @@ const initialState: ShiftEntryState = {
   },
 };
 
+const ensureEmptyTrailingRow = (mutableRows: ValidatedWorkerShiftRow[]) => {
+  if (mutableRows.length === 0 || !rowIsEmpty(mutableRows[mutableRows.length - 1])) {
+    mutableRows.push(createEmptyRow());
+  }
+};
+
 const {
   actions: {
     updateCellValues,
@@ -77,9 +83,7 @@ const {
       });
 
       state.rows = state.rows.filter((r) => !rowIsEmpty(r));
-      if (state.rows.length === 0 || !rowIsEmpty(state.rows[state.rows.length - 1])) {
-        state.rows.push(createEmptyRow());
-      }
+      ensureEmptyTrailingRow(state.rows);
     },
 
     setCellValidationMessages: (state, action: PayloadAction<SetCellValidationMessages>) => {
@@ -90,6 +94,7 @@ const {
 
     populateWorkerShiftTable: (state, action: PayloadAction<PopulateWorkerShiftTable>) => {
       state.rows = action.payload.rows;
+      ensureEmptyTrailingRow(state.rows);
     },
 
     displayCsvParsingFailureMessage: (state, action: PayloadAction<DisplayCsvParsingFailureMessage>) => {
