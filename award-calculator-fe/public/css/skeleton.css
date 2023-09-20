@@ -186,6 +186,7 @@ input[type="button"] {
   border: 1px solid #bbb;
   cursor: pointer;
   box-sizing: border-box; }
+
 .button:hover,
 button:hover,
 input[type="submit"]:hover,
@@ -199,6 +200,7 @@ input[type="button"]:focus {
   color: #333;
   border-color: #888;
   outline: 0; }
+
 .button.button-primary,
 button.button-primary,
 input[type="submit"].button-primary,
@@ -207,6 +209,7 @@ input[type="button"].button-primary {
   color: #FFF;
   background-color: #33C3F0;
   border-color: #33C3F0; }
+
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -220,6 +223,26 @@ input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #1EAEDB;
   border-color: #1EAEDB; }
+
+.button.button-primary:disabled,
+button.button-primary:disabled,
+input[type="submit"].button-primary:disabled,
+input[type="reset"].button-primary:disabled,
+input[type="button"].button-primary:disabled {
+  background-color: #7d7d7d;
+  border-color: #424242; }
+
+.button.button-primary:hover:disabled,
+button.button-primary:hover:disabled,
+input[type="submit"].button-primary:hover:disabled,
+input[type="reset"].button-primary:hover:disabled,
+input[type="button"].button-primary:hover:disabled,
+.button.button-primary:focus:disabled,
+button.button-primary:focus:disabled,
+input[type="submit"].button-primary:focus:disabled,
+input[type="reset"].button-primary:focus:disabled,
+input[type="button"].button-primary:focus:disabled {
+  background-color: #686666; }
 
 
 /* Forms
