@@ -1,7 +1,13 @@
 /* eslint-disable no-restricted-globals */
 
+import { dummyWorkerPayableOutcomes } from 'dummyData';
 import flags from 'flags';
-import { ComputePayForShiftData, DataValidationFailureResult, PayComputationResult } from 'models/messages/computePay';
+import {
+  ComputePayForShiftData,
+  DataValidationFailureResult,
+  PayBreakdownResult,
+  PayComputationResult,
+} from 'models/messages/computePay';
 import { ShiftTableValidator } from 'services/ShiftTableValidator';
 
 const makeDelay = (delay: number) => {
@@ -29,7 +35,11 @@ const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayCo
   }
 
   // TODO continue with calculation
-  return { outcome: 'TODO_WIP' };
+  const outcome: PayBreakdownResult = {
+    outcome: 'pay_breakdown',
+    workerPayables: dummyWorkerPayableOutcomes,
+  };
+  return outcome;
 };
 
 self.onmessage = ({ data }: { data: ComputePayForShiftData }) => {

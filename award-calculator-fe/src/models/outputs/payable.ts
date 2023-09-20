@@ -3,6 +3,9 @@ import { Worker } from 'models/inputs/worker';
 import { IncrementalMonetaryAmount, LoadingRate, MonetaryAmount } from 'models/money';
 import { IncrementalMinuteDuration, ShiftTimestamp } from 'models/time';
 
+// TODO Need to re-work these types a bit, as Decimal and ZonedDateTime don't play very nicely w/ Redux or WebWorkers
+// Will need to split these models into a) domain models and b) data objects to resolve. Will likely be a major
+// refactor
 export interface WorkerPayable {
   worker: Worker;
   shifts: ShiftPayable[];

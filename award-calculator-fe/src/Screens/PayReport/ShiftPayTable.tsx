@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import strings from 'strings';
-import { dummyWorkerPayableOutcomes } from 'dummyData';
+import { WorkerPayable } from 'models/outputs/payable';
+import { AppState } from 'models/store';
 import { ShiftPayableRowData } from './ShiftPayableRowData';
 import ShiftBreakdownModal from './ShiftBreakdownModal';
 import ShiftPayableRow from './ShiftPayableRow';
@@ -8,12 +10,15 @@ import ShiftPayableRow from './ShiftPayableRow';
 const sortBySourceRow = (a: ShiftPayableRowData, b: ShiftPayableRowData) => a.shift.shift.sourceRow
   - b.shift.shift.sourceRow;
 
+const selector = (state: AppState): WorkerPayable[] => state.payReport.workers;
+
 const ShiftPayTable = (): JSX.Element => {
+  const workerPayables = useSelector(selector);
   const [activeShiftBreakdown, setActiveShiftBreakdown] = useState<ShiftPayableRowData>();
 
   const closeModal = () => setActiveShiftBreakdown(undefined);
 
-  const rowData: ShiftPayableRowData[] = dummyWorkerPayableOutcomes.flatMap((workerPayable) =>
+  const rowData: ShiftPayableRowData[] = workerPayables.flatMap((workerPayable) =>
     workerPayable.shifts.map((shift) => ({
       worker: workerPayable.worker,
       shift,

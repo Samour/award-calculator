@@ -1,16 +1,17 @@
 import { useStore } from 'react-redux';
+import { AppState } from 'models/store';
+import { validatedToWorkerShift } from 'models/converters/workerShift';
+import { normaliseRow } from 'models/inputs/table';
+import { Screen } from 'models/store/navigation';
+import { DataValidationFailureResult, PayBreakdownResult } from 'models/messages/computePay';
+import { ValidationOutcome } from 'models/validation';
 import {
   invalidateTableValidationScrollNonce,
   markPayComputationInProgress,
   setCellValidationMessages,
 } from 'store/shiftEntry';
 import { navigateToScreen } from 'store/navigation';
-import { AppState } from 'models/store';
-import { validatedToWorkerShift } from 'models/converters/workerShift';
-import { normaliseRow } from 'models/inputs/table';
-import { Screen } from 'models/store/navigation';
-import { DataValidationFailureResult } from 'models/messages/computePay';
-import { ValidationOutcome } from 'models/validation';
+import { populateWorkerPayable } from 'store/payReport';
 import { computePayInWorker } from 'workers/computePay/interface';
 
 export const useComputeShiftPay = (): (() => void) => {
@@ -48,8 +49,8 @@ export const useComputeShiftPay = (): (() => void) => {
     if (outcome.outcome === 'data_validation_failure') {
       dispatchValidationFailures((outcome as DataValidationFailureResult).validationFailures);
       store.dispatch(invalidateTableValidationScrollNonce());
-    } else {
-      // TODO populate store with pay results
+    } else if (outcome.outcome === 'pay_breakdown') {
+      store.dispatch(populateWorkerPayable((outcome as PayBreakdownResult).workerPayables));
       store.dispatch(navigateToScreen(Screen.PAY_REPORT));
     }
 
