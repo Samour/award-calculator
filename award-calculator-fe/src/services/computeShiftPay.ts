@@ -4,44 +4,14 @@ import {
   markPayComputationInProgress,
   setCellValidationMessages,
 } from 'store/shiftEntry';
-import flags from 'flags';
 import { navigateToScreen } from 'store/navigation';
 import { AppState } from 'models/store';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
 import { normaliseRow } from 'models/inputs/table';
 import { Screen } from 'models/store/navigation';
-import { ComputePayForShiftData, DataValidationFailureResult, PayComputationResult } from 'models/messages/computePay';
+import { DataValidationFailureResult } from 'models/messages/computePay';
 import { ValidationOutcome } from 'models/validation';
-import { ShiftTableValidator } from './ShiftTableValidator';
-
-const makeDelay = (delay: number) => {
-  // busy-wait to freeze UI
-  const start = Date.now();
-  let increment = 0;
-  while (start + increment < start + delay) {
-    increment = Date.now() - start;
-  }
-};
-
-const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayComputationResult> => {
-  if (flags.simulateComputationDelay > 0) {
-    makeDelay(flags.simulateComputationDelay);
-  }
-
-  // TODO logic will be executed in web worker
-  const validationFailures = new ShiftTableValidator(shiftData.shiftRows).validateShiftRows();
-
-  if (validationFailures.length > 0) {
-    const outcome: DataValidationFailureResult = {
-      outcome: 'data_validation_failure',
-      validationFailures,
-    };
-    return outcome;
-  }
-
-  // TODO continue with calculation
-  return { outcome: 'TODO_WIP' };
-};
+import { computePayInWorker } from 'workers/computePay/interface';
 
 export const useComputeShiftPay = (): (() => void) => {
   const store = useStore<AppState>();
@@ -70,7 +40,7 @@ export const useComputeShiftPay = (): (() => void) => {
     console.time('validateShiftData');
 
     store.dispatch(markPayComputationInProgress({ payComputationInProgress: true }));
-    const outcome = await computeShiftPay({ shiftRows: shifts });
+    const outcome = await computePayInWorker({ shiftRows: shifts });
 
     console.log('Validation completed');
     console.timeEnd('validateShiftData');
