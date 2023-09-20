@@ -30,7 +30,7 @@ const validationMessagesMapper = (rows: ValidatedWorkerShiftRow[]): ValidationMe
       message,
     })),
   ),
-  ).flat(2)
+  ).flat(2);
 
 const validationMessagesSelector = createSelector([tableRowsSelector], validationMessagesMapper);
 

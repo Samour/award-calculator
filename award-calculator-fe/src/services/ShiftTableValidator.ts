@@ -276,7 +276,7 @@ export const useShiftTableValidator = (): (() => boolean) => {
   const store = useStore<AppState>();
 
   const validateShiftTable = (): boolean => {
-    const rows = store.getState().shiftEntry.rows
+    const rows = store.getState().shiftEntry.rows;
     const shifts = rows.map((row) => validatedToWorkerShift(row))
       .map((row) => normaliseRow(row))
       .slice(0, rows.length - 1);

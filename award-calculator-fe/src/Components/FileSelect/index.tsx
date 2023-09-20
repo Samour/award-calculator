@@ -25,7 +25,7 @@ const FileSelect = ({ label, className, onSelect }: FileSelectProps): JSX.Elemen
       <input ref={ref} type="file" style={{ display: 'none' }} onChange={handleFileChange} />
       <button className={className} onClick={handleClick}>{label}</button>
     </>
-  )
+  );
 };
 
 export default FileSelect;
