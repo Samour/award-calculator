@@ -3,10 +3,9 @@ import { AppState } from 'models/store';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
 import { WorkerShiftRow, normaliseRow } from 'models/inputs/table';
 import {
-  finishTableValidation,
   invalidateTableValidationScrollNonce,
+  markPayComputationInProgress,
   setCellValidationMessages,
-  startTableValidation,
 } from 'store/shiftEntry';
 import { ShiftTableValidator, ValidationOutcome } from './ShiftTableValidator';
 import { navigateToScreen } from 'store/navigation';
@@ -63,7 +62,7 @@ export const useComputeShiftPay = (): (() => void) => {
     console.log('Validation started');
     console.time('validateShiftData');
 
-    store.dispatch(startTableValidation());
+    store.dispatch(markPayComputationInProgress({ payComputationInProgress: true }));
     const outcome = computeShiftPay(shifts);
 
     console.log('Validation completed');
@@ -76,6 +75,7 @@ export const useComputeShiftPay = (): (() => void) => {
       // TODO populate store with pay results
       store.dispatch(navigateToScreen(Screen.PAY_REPORT));
     }
-    store.dispatch(finishTableValidation());
+
+    store.dispatch(markPayComputationInProgress({ payComputationInProgress: false }));
   };
 };

@@ -8,13 +8,13 @@ import ShiftTable from './ShiftTable';
 import ValidationNotification from './ValidationNotification';
 import CsvParsingFailureNotification from './CsvParsingFailureNotification';
 
-const selector = (state: AppState): boolean => state.shiftEntry.validationInProgress;
+const selector = (state: AppState): boolean => state.shiftEntry.payComputationInProgress;
 
 const ShiftEntry = (): JSX.Element => {
   const handleShiftFileUpload = useShiftFileUpload();
   const computeShiftPay = useComputeShiftPay();
 
-  const validationInProgress = useSelector(selector);
+  const payComputationInProgress = useSelector(selector);
 
   return (
     <div className="ShiftEntry">
@@ -32,9 +32,9 @@ const ShiftEntry = (): JSX.Element => {
       </div>
       <div className="row">
         <div className="twelve columns">
-          <button className="button-primary u-pull-right" disabled={validationInProgress} onClick={computeShiftPay}>
+          <button className="button-primary u-pull-right" disabled={payComputationInProgress} onClick={computeShiftPay}>
             {
-              validationInProgress ? strings.screens.shiftEntry.buttons.computePay.disabled :
+              payComputationInProgress ? strings.screens.shiftEntry.buttons.computePay.disabled :
                 strings.screens.shiftEntry.buttons.computePay.active
             }
           </button>

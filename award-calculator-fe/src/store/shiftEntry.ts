@@ -27,6 +27,10 @@ export interface PopulateWorkerShiftTable {
   rows: ValidatedWorkerShiftRow[];
 }
 
+export interface PayComputationInProgress {
+  payComputationInProgress: boolean;
+}
+
 const createEmptyRow = (): ValidatedWorkerShiftRow => ({
   employeeCode: createValidatedCell(''),
   lastName: createValidatedCell(''),
@@ -54,7 +58,7 @@ const initialState: ShiftEntryState = {
     message: '',
   },
   tableValidationScrollNonce: '',
-  validationInProgress: false,
+  payComputationInProgress: false,
 };
 
 const ensureEmptyTrailingRow = (mutableRows: ValidatedWorkerShiftRow[]) => {
@@ -68,8 +72,7 @@ const {
     updateCellValues,
     setCellValidationMessages,
     populateWorkerShiftTable,
-    startTableValidation,
-    finishTableValidation,
+    markPayComputationInProgress,
     invalidateTableValidationScrollNonce,
     displayCsvParsingFailureMessage,
     closeParsingFailureModal,
@@ -102,12 +105,8 @@ const {
       ensureEmptyTrailingRow(state.rows);
     },
 
-    startTableValidation: (state) => {
-      state.validationInProgress = true;
-    },
-
-    finishTableValidation: (state) => {
-      state.validationInProgress = false;
+    markPayComputationInProgress: (state, action: PayloadAction<PayComputationInProgress>) => {
+      state.payComputationInProgress = action.payload.payComputationInProgress;
     },
 
     invalidateTableValidationScrollNonce: (state) => {
@@ -141,8 +140,7 @@ export {
   updateCellValues,
   setCellValidationMessages,
   populateWorkerShiftTable,
-  startTableValidation,
-  finishTableValidation,
+  markPayComputationInProgress,
   invalidateTableValidationScrollNonce,
   displayCsvParsingFailureMessage,
   closeParsingFailureModal,

@@ -23,5 +23,5 @@ export interface ShiftEntryState {
   rows: ValidatedWorkerShiftRow[];
   csvFileParsingError: CsvFileParsingError;
   tableValidationScrollNonce: string;
-  validationInProgress: boolean; // TODO rename this
+  payComputationInProgress: boolean;
 }
