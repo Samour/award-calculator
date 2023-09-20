@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useShiftFileUpload } from 'services/shiftFileUpload';
 import { useShiftTableValidator } from 'services/ShiftTableValidator';
@@ -14,9 +15,13 @@ const ShiftEntry = (): JSX.Element => {
   const handleShiftFileUpload = useShiftFileUpload();
   const validateShiftTable = useShiftTableValidator();
 
+  const [validationScrollNonce, setValidationScrollNonce] = useState('');
+
   const onComputePayClick = () => {
     if (validateShiftTable()) {
       dispatch(navigateToScreen(Screen.PAY_REPORT));
+    } else {
+      setValidationScrollNonce(`${Math.random()}`);
     }
   };
 
@@ -28,7 +33,7 @@ const ShiftEntry = (): JSX.Element => {
           <h1>{strings.screens.shiftEntry.title}</h1>
         </div>
       </div>
-      <ValidationNotification />
+      <ValidationNotification scrollNonce={validationScrollNonce} />
       <div className="row">
         <div className="twelve columns">
           <ShiftTable />

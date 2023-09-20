@@ -34,7 +34,11 @@ const validationMessagesMapper = (rows: ValidatedWorkerShiftRow[]): ValidationMe
 
 const validationMessagesSelector = createSelector([tableRowsSelector], validationMessagesMapper);
 
-const ValidationNotification = (): JSX.Element => {
+interface ValidationNotificationProps {
+  scrollNonce?: string;
+}
+
+const ValidationNotification = ({ scrollNonce }: ValidationNotificationProps): JSX.Element => {
   const validationMessages = useSelector(validationMessagesSelector);
   const visible = validationMessages.length > 0;
 
@@ -44,7 +48,7 @@ const ValidationNotification = (): JSX.Element => {
     if (visible) {
       ref.current?.scrollIntoView();
     }
-  }, [visible]);
+  }, [visible, scrollNonce]);
 
   const validationMessageElements = validationMessages.map(({ rowNumber, message }, i) => (
     <li key={i}>Row {rowNumber}: {message}</li>
