@@ -22,5 +22,5 @@ const {
 
 export {
   populateWorkerPayable,
-  reducer as payReportReducer
+  reducer as payReportReducer,
 };
