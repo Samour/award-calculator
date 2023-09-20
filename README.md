@@ -40,6 +40,12 @@ From the `award-calculator-fe` directory:
 npm run lint
 ```
 
+To auto-fix lint errors:
+
+```sh
+npm run lint -- --fix
+```
+
 ### Build locally
 
 From the `award-calculator-fe` directory:

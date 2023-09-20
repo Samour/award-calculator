@@ -28,8 +28,8 @@ const validationMessagesMapper = (rows: ValidatedWorkerShiftRow[]): ValidationMe
     cell.failureMessages.map((message) => ({
       rowNumber: rowIndex + 1,
       message,
-    }))
-  )
+    })),
+  ),
   ).flat(2)
 
 const validationMessagesSelector = createSelector([tableRowsSelector], validationMessagesMapper);

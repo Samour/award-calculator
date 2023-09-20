@@ -17,7 +17,7 @@ const ShiftPayTable = (): JSX.Element => {
     workerPayable.shifts.map((shift) => ({
       worker: workerPayable.worker,
       shift,
-    }))
+    })),
   );
   rowData.sort(sortBySourceRow);
 

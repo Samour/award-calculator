@@ -85,8 +85,8 @@ export class ShiftTableValidator {
           columnId: 'shiftStartTime',
           failureMessages: validateShiftStartTime(!!parsedShiftStartDate, parsedShiftStartTime, shift.shiftStartTime)
             .concat(
-              this.checkForOverlappingShiftStart(shift.employeeCode, zonedShiftStartTime, zonedShiftEndTime)
-            )
+              this.checkForOverlappingShiftStart(shift.employeeCode, zonedShiftStartTime, zonedShiftEndTime),
+            ),
         },
         {
           columnId: 'shiftEndTime',
@@ -95,7 +95,7 @@ export class ShiftTableValidator {
             zonedShiftStartTime,
             zonedShiftEndTime,
             shift.shiftEndTime,
-          )
+          ),
         },
         {
           columnId: 'casualLoading',

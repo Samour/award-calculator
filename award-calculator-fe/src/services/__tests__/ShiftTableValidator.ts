@@ -32,7 +32,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           employeeCode: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -42,7 +42,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'employeeCode',
             failureMessages: [strings.validations.workerShiftEntry.employeeCode.tooShort],
           }],
-        }
+        },
       ]);
     });
 
@@ -51,7 +51,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           employeeCode: 'A$b@',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -61,7 +61,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'employeeCode',
             failureMessages: [strings.validations.workerShiftEntry.employeeCode.illegalChars],
           }],
-        }
+        },
       ]);
     });
   });
@@ -73,7 +73,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           firstName: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -83,7 +83,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'firstName',
             failureMessages: [strings.validations.workerShiftEntry.firstName.tooShort],
           }],
-        }
+        },
       ]);
     });
   });
@@ -95,7 +95,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           lastName: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -105,7 +105,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'lastName',
             failureMessages: [strings.validations.workerShiftEntry.lastName.tooShort],
           }],
-        }
+        },
       ]);
     });
   });
@@ -139,7 +139,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           basePayRate: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -149,7 +149,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'basePayRate',
             failureMessages: [strings.validations.workerShiftEntry.basePayRate.illegalFormat],
           }],
-        }
+        },
       ]);
     });
 
@@ -158,7 +158,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           basePayRate: '0.101',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -168,7 +168,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'basePayRate',
             failureMessages: [strings.validations.workerShiftEntry.basePayRate.illegalPrecision],
           }],
-        }
+        },
       ]);
     });
 
@@ -177,7 +177,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           basePayRate: '0',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -187,7 +187,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'basePayRate',
             failureMessages: [strings.validations.workerShiftEntry.basePayRate.tooLow],
           }],
-        }
+        },
       ]);
     });
   });
@@ -199,7 +199,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftStartDate: `01/01/${year}`,
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toHaveLength(0);
@@ -210,7 +210,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftStartDate: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -220,7 +220,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftStartDate',
             failureMessages: [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat],
           }],
-        }
+        },
       ]);
     });
 
@@ -229,7 +229,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftStartDate: '2023-05-23',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -239,7 +239,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftStartDate',
             failureMessages: [strings.validations.workerShiftEntry.shiftStartDate.illegalFormat],
           }],
-        }
+        },
       ]);
     });
   });
@@ -260,7 +260,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftStartTime: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -270,7 +270,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftStartTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat],
           }],
-        }
+        },
       ]);
     });
 
@@ -279,7 +279,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftStartTime: '07:00.00',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -289,7 +289,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftStartTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat],
           }],
-        }
+        },
       ]);
     });
   });
@@ -310,7 +310,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftEndTime: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -320,7 +320,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftEndTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat],
           }],
-        }
+        },
       ]);
     });
 
@@ -329,7 +329,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           shiftEndTime: '12:00.00',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -339,7 +339,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftEndTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat],
           }],
-        }
+        },
       ]);
     });
   });
@@ -373,7 +373,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           casualLoading: '',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -383,7 +383,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'casualLoading',
             failureMessages: [strings.validations.workerShiftEntry.casualLoading.illegalValue],
           }],
-        }
+        },
       ]);
     });
 
@@ -392,7 +392,7 @@ describe('ShiftTableValidator', () => {
         {
           ...validWorkerShift1,
           casualLoading: 'nah',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -402,7 +402,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'casualLoading',
             failureMessages: [strings.validations.workerShiftEntry.casualLoading.illegalValue],
           }],
-        }
+        },
       ]);
     });
   });
@@ -415,7 +415,7 @@ describe('ShiftTableValidator', () => {
           ...validWorkerShift1,
           shiftStartTime: '12:00',
           shiftEndTime: '11:00',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -425,7 +425,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftEndTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart],
           }],
-        }
+        },
       ]);
     });
 
@@ -435,7 +435,7 @@ describe('ShiftTableValidator', () => {
           ...validWorkerShift1,
           shiftStartTime: '12:00',
           shiftEndTime: '12:00',
-        }
+        },
       ]).validateShiftRows();
 
       expect(result).toEqual([
@@ -445,7 +445,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftEndTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftEndTime.beforeShiftStart],
           }],
-        }
+        },
       ]);
     });
   });
@@ -477,7 +477,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'lastName',
             failureMessages: [strings.validations.workerShiftEntry.lastName.doesNotMatchPriorEntry],
           }],
-        }
+        },
       ]);
     });
 
@@ -497,7 +497,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'firstName',
             failureMessages: [strings.validations.workerShiftEntry.firstName.doesNotMatchPriorEntry],
           }],
-        }
+        },
       ]);
     });
 
@@ -517,7 +517,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'basePayRate',
             failureMessages: [strings.validations.workerShiftEntry.basePayRate.doesNotMatchPriorEntry],
           }],
-        }
+        },
       ]);
     });
 
@@ -537,7 +537,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'casualLoading',
             failureMessages: [strings.validations.workerShiftEntry.casualLoading.doesNotMatchPriorEntry],
           }],
-        }
+        },
       ]);
     });
 
@@ -615,7 +615,7 @@ describe('ShiftTableValidator', () => {
             columnId: 'shiftStartTime',
             failureMessages: [strings.validations.workerShiftEntry.shiftStartTime.overlappingShifts],
           }],
-        }
+        },
       ]);
     });
   });
@@ -627,7 +627,7 @@ describe('ShiftTableValidator', () => {
         employeeCode: '',
         basePayRate: '0.001',
         shiftStartDate: '2023-01-22',
-      }
+      },
     ]).validateShiftRows();
 
     expect(result).toEqual([

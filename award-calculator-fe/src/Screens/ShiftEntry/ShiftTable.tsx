@@ -22,7 +22,7 @@ const columns: Column[] = [
   'shiftEndTime',
   'casualLoading',
 ].map((columnId) =>
-  ({ columnId, width: STD_COLUMN_WIDTH, resizable: false })
+  ({ columnId, width: STD_COLUMN_WIDTH, resizable: false }),
 );
 
 const headerRow: Row = {
@@ -81,7 +81,7 @@ const ShiftTable = (): JSX.Element => {
           columnId: change.columnId as WorkerShiftColumnName,
         },
         value: (change.newCell as TextCell).text,
-      }))
+      })),
     ));
   };
 

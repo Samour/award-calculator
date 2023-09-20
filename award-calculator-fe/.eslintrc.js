@@ -5,5 +5,6 @@ module.exports = {
   ],
   rules: {
     'no-var': [1],
+    'comma-dangle': ['warn', 'always-multiline'],
   },
 };
