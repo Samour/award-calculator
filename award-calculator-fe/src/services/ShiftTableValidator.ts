@@ -203,7 +203,7 @@ const validateShiftStartDate = (parsedShiftStartDate: LocalDate | null, rawShift
 
 const validateShiftStartTime = (shiftDateKnown: boolean, parsedShiftStartTime: LocalTime | null,
   rawShiftStartTime: string): string[] => {
-  if (!/^[0-9]{2}:[0-9]{2}$/.test(rawShiftStartTime)) {
+  if (!/^[0-9]{1,2}:[0-9]{2}$/.test(rawShiftStartTime)) {
     return [strings.validations.workerShiftEntry.shiftStartTime.illegalFormat];
   }
 
@@ -217,7 +217,7 @@ const validateShiftStartTime = (shiftDateKnown: boolean, parsedShiftStartTime: L
 const validateShiftEndTime = (shiftDateKnown: boolean, shiftStartTime: ZonedDateTime | null,
   zonedShiftEndTime: ZonedDateTime | null,
   rawShiftEndTime: string): string[] => {
-  if (!/^[0-9]{2}:[0-9]{2}$/.test(rawShiftEndTime)) {
+  if (!/^[0-9]{1,2}:[0-9]{2}$/.test(rawShiftEndTime)) {
     return [strings.validations.workerShiftEntry.shiftEndTime.illegalFormat];
   }
 

@@ -226,6 +226,16 @@ describe('ShiftTableValidator', () => {
 
   describe('Shift start time', () => {
 
+    test('should accept hour with no leading 0', () => {
+      const result = new ShiftTableValidator([{
+        ...validWorkerShift1,
+        shiftStartTime: '8:01',
+      }]).validateShiftRows();
+
+      checkGeneralShape(result)(1);
+      expectNoFailures(result);
+    });
+
     test('should reject an empty value', () => {
       const result = new ShiftTableValidator([
         {
@@ -252,6 +262,16 @@ describe('ShiftTableValidator', () => {
   });
 
   describe('Shift end time', () => {
+
+    test('should accept hour with no leading 0', () => {
+      const result = new ShiftTableValidator([{
+        ...validWorkerShift1,
+        shiftEndTime: '9:01',
+      }]).validateShiftRows();
+
+      checkGeneralShape(result)(1);
+      expectNoFailures(result);
+    });
 
     test('should reject an empty value', () => {
       const result = new ShiftTableValidator([

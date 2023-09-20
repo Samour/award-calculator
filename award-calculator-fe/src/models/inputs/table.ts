@@ -64,7 +64,7 @@ export const translateToLocalDate = (date: string): LocalDate | null => {
 
 export const translateToLocalTime = (time: string): LocalTime | null => {
   try {
-    return LocalTime.parse(time);
+    return LocalTime.parse(time, DateTimeFormatter.ofPattern('H:m'));
   } catch (e) {
     return null;
   }
