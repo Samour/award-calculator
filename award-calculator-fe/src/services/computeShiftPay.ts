@@ -10,6 +10,7 @@ import {
 import { ShiftTableValidator, ValidationOutcome } from './ShiftTableValidator';
 import { navigateToScreen } from 'store/navigation';
 import { Screen } from 'models/store/navigation';
+import flags from 'flags';
 
 interface PayComputationResult {
   outcome: 'data_validation_failure' | 'TODO_WIP';
@@ -20,7 +21,15 @@ interface DataValidationFailureResult extends PayComputationResult {
   validationFailures: ValidationOutcome[];
 }
 
-const computeShiftPay = (shiftData: WorkerShiftRow[]): PayComputationResult => {
+const makeDelay = (delay: number): Promise<void> => new Promise((res) => {
+  setTimeout(res, delay);
+});
+
+const computeShiftPay = async (shiftData: WorkerShiftRow[]): Promise<PayComputationResult> => {
+  if (flags.simulateComputationDelay > 0) {
+    await makeDelay(flags.simulateComputationDelay);
+  }
+
   // TODO logic will be executed in web worker
   const validationFailures = new ShiftTableValidator(shiftData).validateShiftRows();
 
@@ -53,7 +62,7 @@ export const useComputeShiftPay = (): (() => void) => {
     });
   };
 
-  return () => {
+  return async () => {
     const rows = store.getState().shiftEntry.rows;
     const shifts = rows.map((row) => validatedToWorkerShift(row))
       .map((row) => normaliseRow(row))
@@ -63,7 +72,7 @@ export const useComputeShiftPay = (): (() => void) => {
     console.time('validateShiftData');
 
     store.dispatch(markPayComputationInProgress({ payComputationInProgress: true }));
-    const outcome = computeShiftPay(shifts);
+    const outcome = await computeShiftPay(shifts);
 
     console.log('Validation completed');
     console.timeEnd('validateShiftData');
