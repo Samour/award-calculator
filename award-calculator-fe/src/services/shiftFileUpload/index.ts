@@ -7,7 +7,8 @@ export const useShiftFileUpload = (): ((file: File) => Promise<void>) => {
 
   return async (file: File) => {
     try {
-      await new ShiftFileParser().uploadFile(file);
+      const parsedRows = await new ShiftFileParser().parseFile(file);
+      console.log(parsedRows);
     } catch (e) {
       handleCsvParsingError(dispatch)(e);
     }

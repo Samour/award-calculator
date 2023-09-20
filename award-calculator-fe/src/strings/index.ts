@@ -1,4 +1,16 @@
+import { WorkerShiftColumnName } from 'models/inputs/table';
 import { LoadingClassification } from 'models/outputs/payable';
+
+const workerShiftTableHeaderNames: { [key in WorkerShiftColumnName]: string } = {
+  employeeCode: 'Employee code',
+  lastName: 'Last name',
+  firstName: 'First name',
+  basePayRate: 'Pay rate',
+  shiftStartDate: 'Shift start date',
+  shiftStartTime: 'Shift start time',
+  shiftEndTime: 'Shift end time',
+  casualLoading: 'Casual loading',
+};
 
 const strings = {
   validations: {
@@ -44,16 +56,7 @@ const strings = {
   screens: {
     shiftEntry: {
       title: 'View/Edit Hours',
-      tableHeadings: {
-        employeeCode: 'Employee code',
-        lastName: 'Last name',
-        firstName: 'First name',
-        basePayRate: 'Pay rate',
-        shiftStartDate: 'Shift start date',
-        shiftStartTime: 'Shift start time',
-        shiftEndTime: 'Shift end time',
-        casualLoading: 'Casual loading',
-      },
+      tableHeadings: workerShiftTableHeaderNames,
       validation: {
         message: 'Data entry is not valid. Fix data before proceeding.',
         subtitle: (problemCount: number) => `Problems (${problemCount}):`,
@@ -111,6 +114,10 @@ const strings = {
     csvShiftUpload: {
       notCsvFile: 'Provided file is not a CSV file',
       invalidHeaders: 'CSV file does not have the correct headers',
+      headerRepeated: (header: WorkerShiftColumnName) =>
+        `Repeated columns with the same name: ${workerShiftTableHeaderNames[header]}`,
+      headersMissing: (headers: WorkerShiftColumnName[]) =>
+        `Headers missing from CSV file: ${headers.map((h) => workerShiftTableHeaderNames[h]).join(', ')}`,
       unknownError: 'A problem occurred while reading CSV file',
     },
   },

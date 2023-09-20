@@ -1,16 +1,19 @@
+import { WorkerShiftRow } from 'models/inputs/table';
+import { buildWorkerShiftRowParser } from './WorkerShiftRowParser';
 import { EmptyShiftFileException, NotCsvContentTypeException } from './exceptions';
 
 const csvContentType = /^text\/csv(\+.*)?$/;
 
 export class ShiftFileParser {
-  async uploadFile(file: File) {
+  async parseFile(file: File): Promise<WorkerShiftRow[]> {
     if (!csvContentType.test(file.type)) {
       throw new NotCsvContentTypeException();
     }
 
-    const rawRows = this.splitRows(await this.readFileContent(file));
+    const { headerRow, contentRows } = this.splitRows(await this.readFileContent(file));
 
-    console.log(rawRows); // TODO continue
+    const rowParser = buildWorkerShiftRowParser(headerRow);
+    return contentRows.map((r) => rowParser.parseRow(r));
   }
 
   private readFileContent(file: File): Promise<string> {
