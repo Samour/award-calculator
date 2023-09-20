@@ -1,10 +1,12 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import strings from 'strings';
 import { displayCsvParsingFailureMessage } from 'store/shiftEntry';
-import { EmptyShiftFileException } from './exceptions';
+import { EmptyShiftFileException, NotCsvContentTypeException } from './exceptions';
 
 const selectMessage = (e: any): string => {
-  if (e instanceof EmptyShiftFileException) {
+  if (e instanceof NotCsvContentTypeException) {
+    return strings.exceptions.csvShiftUpload.notCsvFile;
+  } else if (e instanceof EmptyShiftFileException) {
     return strings.exceptions.csvShiftUpload.invalidHeaders;
   } else {
     return strings.exceptions.csvShiftUpload.unknownError;

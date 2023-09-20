@@ -1,7 +1,13 @@
-import { EmptyShiftFileException } from './exceptions';
+import { EmptyShiftFileException, NotCsvContentTypeException } from './exceptions';
+
+const csvContentType = /^text\/csv(\+.*)?$/;
 
 export class ShiftFileParser {
   async uploadFile(file: File) {
+    if (!csvContentType.test(file.type)) {
+      throw new NotCsvContentTypeException();
+    }
+
     const rawRows = this.splitRows(await this.readFileContent(file));
 
     console.log(rawRows); // TODO continue

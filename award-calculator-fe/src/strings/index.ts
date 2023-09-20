@@ -109,6 +109,7 @@ const strings = {
   },
   exceptions: {
     csvShiftUpload: {
+      notCsvFile: 'Provided file is not a CSV file',
       invalidHeaders: 'CSV file does not have the correct headers',
       unknownError: 'A problem occurred while reading CSV file',
     },
