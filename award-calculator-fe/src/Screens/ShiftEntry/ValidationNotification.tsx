@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import strings from 'strings';
@@ -35,16 +36,25 @@ const validationMessagesSelector = createSelector([tableRowsSelector], validatio
 
 const ValidationNotification = (): JSX.Element => {
   const validationMessages = useSelector(validationMessagesSelector);
+  const visible = validationMessages.length > 0;
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (visible) {
+      ref.current?.scrollIntoView();
+    }
+  }, [visible]);
 
   const validationMessageElements = validationMessages.map(({ rowNumber, message }, i) => (
     <li key={i}>Row {rowNumber}: {message}</li>
   ));
 
-  if (validationMessages.length === 0) {
+  if (!visible) {
     return (<></>);
   } else {
     return (
-      <div className="row">
+      <div ref={ref} className="row">
         <div className="two columns">&nbsp;</div>
         <div className="eight columns">
           <Alert>
