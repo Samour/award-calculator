@@ -59,6 +59,7 @@ const strings = {
         subtitle: (problemCount: number) => `Problems (${problemCount}):`,
       },
       buttons: {
+        uploadFile: 'Upload File',
         computePay: 'Compute Pay',
       },
     },
