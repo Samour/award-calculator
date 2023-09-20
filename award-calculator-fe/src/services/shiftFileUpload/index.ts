@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
+import { workerShiftToEmptyValidated } from 'models/converters/workerShift';
+import { populateWorkerShiftTable } from 'store/shiftEntry';
 import { ShiftFileParser } from './ShiftFileParser';
 import { handleCsvParsingError } from './errorHandler';
-import { populateWorkerShiftTable } from 'store/shiftEntry';
-import { workerShiftToEmptyValidated } from 'models/converters/workerShift';
 
 export const useShiftFileUpload = (): ((file: File) => Promise<void>) => {
   const dispatch = useDispatch();

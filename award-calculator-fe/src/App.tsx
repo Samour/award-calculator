@@ -1,9 +1,9 @@
-import ShiftEntry from 'Screens/ShiftEntry';
 import { useSelector } from 'react-redux';
 import { AppState } from 'models/store';
 import { Screen } from 'models/store/navigation';
-import PayReport from 'Screens/PayReport';
 import Alert from 'Components/Alert';
+import PayReport from 'Screens/PayReport';
+import ShiftEntry from 'Screens/ShiftEntry';
 import './App.css';
 
 const navigationScreenSelector = (state: AppState): Screen => state.navigation.screen;
