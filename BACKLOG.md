@@ -1,6 +1,6 @@
 # Backlog
 
-- Create general-purpose implementation of `AwardPayCalculator` and `TimeClassifier`
+- **WIP** Create general-purpose implementation of `AwardPayCalculator` and `TimeClassifier`
 - Create specific implementations of `OvertimeCounter` for the retail award
 - Create specific implementations of `PayClassifier` for the retail award
 - Create export functionality for shift pay data to CSV
