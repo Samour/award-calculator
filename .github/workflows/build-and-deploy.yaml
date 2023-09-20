@@ -8,6 +8,7 @@ on:
 jobs:
   set-version:
     runs-on: ubuntu-latest
+    concurrency: app-set-version
     steps:
       - uses: actions/checkout@v3
       - id: generate_version
