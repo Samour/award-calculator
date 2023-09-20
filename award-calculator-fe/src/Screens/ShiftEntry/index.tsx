@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { useShiftFileUpload } from 'services/ShiftFileUpload';
+import { useShiftFileUpload } from 'services/shiftFileUpload';
 import { useShiftTableValidator } from 'services/ShiftTableValidator';
 import strings from 'strings';
 import { navigateToScreen } from 'store/navigation';
@@ -10,7 +10,7 @@ import ValidationNotification from './ValidationNotification';
 
 const ShiftEntry = (): JSX.Element => {
   const dispatch = useDispatch();
-  const shiftFileUpload = useShiftFileUpload();
+  const handleShiftFileUpload = useShiftFileUpload();
   const validateShiftTable = useShiftTableValidator();
 
   const onComputePayClick = () => {
@@ -38,7 +38,7 @@ const ShiftEntry = (): JSX.Element => {
             {strings.screens.shiftEntry.buttons.computePay}
           </button>
           <FileSelect label={strings.screens.shiftEntry.buttons.uploadFile} className="u-pull-right u-spacer-right"
-            onSelect={(file) => shiftFileUpload.uploadFile(file)} />
+            onSelect={handleShiftFileUpload} />
         </div>
       </div>
     </div>

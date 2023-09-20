@@ -1,8 +1,6 @@
-export abstract class ShiftFileParsingException extends Error { }
+import { EmptyShiftFileException } from './exceptions';
 
-export class EmptyShiftFileException extends ShiftFileParsingException { }
-
-export class ShiftFileUpload {
+export class ShiftFileParser {
   async uploadFile(file: File) {
     const rawRows = this.splitRows(await this.readFileContent(file));
 
@@ -42,7 +40,3 @@ export class ShiftFileUpload {
     };
   }
 }
-
-export const useShiftFileUpload = () => {
-  return new ShiftFileUpload();
-};
