@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReactGrid, Column, Row, CellChange, TextCell, HeaderCell } from '@silevis/reactgrid';
 import { updateCellValues } from 'store/shiftEntry';
@@ -50,7 +51,7 @@ const headerRow: Row = {
   ],
 };
 
-const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
+const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[], nonEditable: boolean): Row[] => {
   const rows = [
     headerRow,
     ...workerShiftRows.map<Row>((r, i) => ({
@@ -72,6 +73,7 @@ const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
         ].map((cell) => ({
           type: 'text',
           text: cell.value,
+          nonEditable,
           className: cell.failureMessages.length > 0 ? 'cell-invalid' : '',
         }) as TextCell)),
       ],
@@ -84,11 +86,26 @@ const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
 const workerShiftRowsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
-const ShiftTable = (): JSX.Element => { // TODO should make this table non-editable while calculation is in progress
-  const dispatch = useDispatch();
-  const workerShiftRows = useSelector(workerShiftRowsSelector);
+const payComputationInProgressSelector = (state: AppState): boolean =>
+  state.shiftEntry.payComputationInProgress;
 
-  const renderableRows = convertToRows(workerShiftRows);
+interface ShiftTableState {
+  workerShiftRows: ValidatedWorkerShiftRow[];
+  payComputationInProgress: boolean;
+}
+
+const stateMapper = (workerShiftRows: ValidatedWorkerShiftRow[], payComputationInProgress: boolean): ShiftTableState => ({
+  workerShiftRows,
+  payComputationInProgress,
+});
+
+const selector = createSelector([workerShiftRowsSelector, payComputationInProgressSelector], stateMapper);
+
+const ShiftTable = (): JSX.Element => {
+  const dispatch = useDispatch();
+  const { workerShiftRows, payComputationInProgress } = useSelector(selector);
+
+  const renderableRows = convertToRows(workerShiftRows, payComputationInProgress);
 
   const onCellsChanged = (changes: CellChange[]) => {
     dispatch(updateCellValues(

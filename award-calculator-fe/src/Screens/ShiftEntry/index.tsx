@@ -39,7 +39,7 @@ const ShiftEntry = (): JSX.Element => {
             }
           </button>
           <FileSelect label={strings.screens.shiftEntry.buttons.uploadFile} className="u-pull-right u-spacer-right"
-            onSelect={handleShiftFileUpload} />
+            disabled={payComputationInProgress} onSelect={handleShiftFileUpload} />
         </div>
       </div>
     </div>

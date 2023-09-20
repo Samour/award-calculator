@@ -3,10 +3,11 @@ import { ChangeEvent, useRef } from 'react';
 interface FileSelectProps {
   label: string;
   className?: string;
+  disabled?: boolean;
   onSelect: (file: File) => void;
 }
 
-const FileSelect = ({ label, className, onSelect }: FileSelectProps): JSX.Element => {
+const FileSelect = ({ label, className, disabled, onSelect }: FileSelectProps): JSX.Element => {
   const ref = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -23,7 +24,7 @@ const FileSelect = ({ label, className, onSelect }: FileSelectProps): JSX.Elemen
   return (
     <>
       <input ref={ref} type="file" style={{ display: 'none' }} onChange={handleFileChange} />
-      <button className={className} onClick={handleClick}>{label}</button>
+      <button className={className} disabled={disabled} onClick={handleClick}>{label}</button>
     </>
   );
 };
