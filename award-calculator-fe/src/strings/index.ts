@@ -63,7 +63,10 @@ const strings = {
       },
       buttons: {
         uploadFile: 'Upload File',
-        computePay: 'Compute Pay',
+        computePay: {
+          active: 'Compute Pay',
+          disabled: 'Calculation in progress...',
+        },
       },
     },
     payReport: {

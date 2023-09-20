@@ -53,6 +53,7 @@ const initialState: ShiftEntryState = {
     open: false,
     message: '',
   },
+  validationInProgress: false,
 };
 
 const ensureEmptyTrailingRow = (mutableRows: ValidatedWorkerShiftRow[]) => {
@@ -66,6 +67,8 @@ const {
     updateCellValues,
     setCellValidationMessages,
     populateWorkerShiftTable,
+    startTableValidation,
+    finishTableValidation,
     displayCsvParsingFailureMessage,
     closeParsingFailureModal,
   },
@@ -97,6 +100,14 @@ const {
       ensureEmptyTrailingRow(state.rows);
     },
 
+    startTableValidation: (state) => {
+      state.validationInProgress = true;
+    },
+
+    finishTableValidation: (state) => {
+      state.validationInProgress = false;
+    },
+
     displayCsvParsingFailureMessage: (state, action: PayloadAction<DisplayCsvParsingFailureMessage>) => {
       state.csvFileParsingError = {
         message: action.payload.message,
@@ -124,6 +135,8 @@ export {
   updateCellValues,
   setCellValidationMessages,
   populateWorkerShiftTable,
+  startTableValidation,
+  finishTableValidation,
   displayCsvParsingFailureMessage,
   closeParsingFailureModal,
   reducer as shiftEntryReducer,
