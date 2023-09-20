@@ -9,8 +9,4 @@ const environmentFlags = {
 
 const effectiveFlags = environmentFlags[process.env.NODE_ENV] || environmentFlags['production'];
 
-console.log(`Environment: ${process.env.NODE_ENV}`);
-console.log(`Effective flags:`);
-console.log(effectiveFlags);
-
 export default effectiveFlags;
