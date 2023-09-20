@@ -1,11 +1,7 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useShiftFileUpload } from 'services/shiftFileUpload';
-import { useShiftTableValidator } from 'services/ShiftTableValidator';
+import { useComputeShiftPay } from 'services/computeShiftPay';
 import strings from 'strings';
-import { navigateToScreen } from 'store/navigation';
-import { finishTableValidation, startTableValidation } from 'store/shiftEntry';
-import { Screen } from 'models/store/navigation';
 import { AppState } from 'models/store';
 import FileSelect from 'Components/FileSelect';
 import ShiftTable from './ShiftTable';
@@ -15,27 +11,10 @@ import CsvParsingFailureNotification from './CsvParsingFailureNotification';
 const selector = (state: AppState): boolean => state.shiftEntry.validationInProgress;
 
 const ShiftEntry = (): JSX.Element => {
-  const dispatch = useDispatch();
   const handleShiftFileUpload = useShiftFileUpload();
-  const validateShiftTable = useShiftTableValidator();
-
-  const [validationScrollNonce, setValidationScrollNonce] = useState('');
+  const computeShiftPay = useComputeShiftPay();
 
   const validationInProgress = useSelector(selector);
-
-  const onComputePayClick = () => {
-    console.log('Validation started');
-    dispatch(startTableValidation());
-    console.time('validateShiftData');
-    if (validateShiftTable()) {
-      dispatch(navigateToScreen(Screen.PAY_REPORT));
-    } else {
-      setValidationScrollNonce(`${Math.random()}`);
-    }
-    console.log('Validation completed');
-    console.timeEnd('validateShiftData');
-    dispatch(finishTableValidation());
-  };
 
   return (
     <div className="ShiftEntry">
@@ -45,7 +24,7 @@ const ShiftEntry = (): JSX.Element => {
           <h1>{strings.screens.shiftEntry.title}</h1>
         </div>
       </div>
-      <ValidationNotification scrollNonce={validationScrollNonce} />
+      <ValidationNotification />
       <div className="row">
         <div className="twelve columns">
           <ShiftTable />
@@ -53,7 +32,7 @@ const ShiftEntry = (): JSX.Element => {
       </div>
       <div className="row">
         <div className="twelve columns">
-          <button className="button-primary u-pull-right" disabled={validationInProgress} onClick={onComputePayClick}>
+          <button className="button-primary u-pull-right" disabled={validationInProgress} onClick={computeShiftPay}>
             {
               validationInProgress ? strings.screens.shiftEntry.buttons.computePay.disabled :
                 strings.screens.shiftEntry.buttons.computePay.active

@@ -9,13 +9,22 @@ import Alert from 'Components/Alert';
 const tableRowsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
+const validationNonceSelector = (state: AppState): string =>
+  state.shiftEntry.tableValidationScrollNonce;
+
 interface ValidationMessage {
   rowNumber: number;
   message: string;
 }
 
-const validationMessagesMapper = (rows: ValidatedWorkerShiftRow[]): ValidationMessage[] =>
-  rows.map((row, rowIndex) => [
+interface ValidationNotificationState {
+  validationMessages: ValidationMessage[];
+  scrollNonce: string;
+}
+
+const stateMapper = (rows: ValidatedWorkerShiftRow[], scrollNonce: string): ValidationNotificationState =>
+({
+  validationMessages: rows.map((row, rowIndex) => [
     row.employeeCode,
     row.lastName,
     row.firstName,
@@ -30,16 +39,17 @@ const validationMessagesMapper = (rows: ValidatedWorkerShiftRow[]): ValidationMe
       message,
     })),
   ),
-  ).flat(2);
+  ).flat(2),
+  scrollNonce,
+});
 
-const validationMessagesSelector = createSelector([tableRowsSelector], validationMessagesMapper);
+const validationMessagesSelector = createSelector(
+  [tableRowsSelector, validationNonceSelector],
+  stateMapper,
+);
 
-interface ValidationNotificationProps {
-  scrollNonce?: string;
-}
-
-const ValidationNotification = ({ scrollNonce }: ValidationNotificationProps): JSX.Element => {
-  const validationMessages = useSelector(validationMessagesSelector);
+const ValidationNotification = (): JSX.Element => {
+  const { validationMessages, scrollNonce } = useSelector(validationMessagesSelector);
   const visible = validationMessages.length > 0;
 
   const ref = useRef<HTMLDivElement>(null);

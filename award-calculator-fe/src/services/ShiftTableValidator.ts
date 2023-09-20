@@ -1,11 +1,8 @@
-import { useStore } from 'react-redux';
 import Decimal from 'decimal.js';
-import { setCellValidationMessages } from 'store/shiftEntry';
 import strings from 'strings';
 import {
   WorkerShiftColumnName,
   WorkerShiftRow,
-  normaliseRow,
   translateCasualLoading,
   translateMonetaryAmount,
   translateToLocalDate,
@@ -13,8 +10,6 @@ import {
 } from 'models/inputs/table';
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
-import { AppState } from 'models/store';
-import { validatedToWorkerShift } from 'models/converters/workerShift';
 import { LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
 import { toZonedDateTime } from 'models/time';
 
@@ -270,34 +265,4 @@ const validateCasualLoading = (existingWorker: WorkerDetails | undefined, parsed
   } else {
     return [];
   }
-};
-
-export const useShiftTableValidator = (): (() => boolean) => {
-  const store = useStore<AppState>();
-
-  const validateShiftTable = (): boolean => {
-    const rows = store.getState().shiftEntry.rows;
-    const shifts = rows.map((row) => validatedToWorkerShift(row))
-      .map((row) => normaliseRow(row))
-      .slice(0, rows.length - 1);
-
-    let isValid = true;
-
-    new ShiftTableValidator(shifts).validateShiftRows().forEach(({ rowIndex, columns }) => {
-      columns.forEach(({ columnId, failureMessages }) => {
-        isValid = isValid && failureMessages.length === 0;
-        store.dispatch(setCellValidationMessages({
-          cellIdentifier: {
-            rowIndex,
-            columnId,
-          },
-          failureMessages: failureMessages,
-        }));
-      });
-    });
-
-    return isValid;
-  };
-
-  return validateShiftTable;
 };

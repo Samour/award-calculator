@@ -22,5 +22,6 @@ export interface CsvFileParsingError {
 export interface ShiftEntryState {
   rows: ValidatedWorkerShiftRow[];
   csvFileParsingError: CsvFileParsingError;
-  validationInProgress: boolean;
+  tableValidationScrollNonce: string;
+  validationInProgress: boolean; // TODO rename this
 }

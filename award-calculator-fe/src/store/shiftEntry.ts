@@ -53,6 +53,7 @@ const initialState: ShiftEntryState = {
     open: false,
     message: '',
   },
+  tableValidationScrollNonce: '',
   validationInProgress: false,
 };
 
@@ -69,6 +70,7 @@ const {
     populateWorkerShiftTable,
     startTableValidation,
     finishTableValidation,
+    invalidateTableValidationScrollNonce,
     displayCsvParsingFailureMessage,
     closeParsingFailureModal,
   },
@@ -108,6 +110,10 @@ const {
       state.validationInProgress = false;
     },
 
+    invalidateTableValidationScrollNonce: (state) => {
+      state.tableValidationScrollNonce = `${Math.random()}`;
+    },
+
     displayCsvParsingFailureMessage: (state, action: PayloadAction<DisplayCsvParsingFailureMessage>) => {
       state.csvFileParsingError = {
         message: action.payload.message,
@@ -137,6 +143,7 @@ export {
   populateWorkerShiftTable,
   startTableValidation,
   finishTableValidation,
+  invalidateTableValidationScrollNonce,
   displayCsvParsingFailureMessage,
   closeParsingFailureModal,
   reducer as shiftEntryReducer,
