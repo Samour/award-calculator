@@ -19,6 +19,10 @@ export interface SetCellValidationMessages {
   failureMessages: string[];
 }
 
+export interface DisplayCsvParsingFailureMessage {
+  message: string;
+}
+
 const createEmptyRow = (): ValidatedWorkerShiftRow => ({
   employeeCode: createValidatedCell(''),
   lastName: createValidatedCell(''),
@@ -30,28 +34,34 @@ const createEmptyRow = (): ValidatedWorkerShiftRow => ({
   casualLoading: createValidatedCell(''),
 });
 
-const initialState = (): ShiftEntryState => {
+const readRowsFromLocal = (): ValidatedWorkerShiftRow[] => {
   const persisted = localStorage.getItem(ENTRY_TABLE_LS_KEY);
   if (persisted) {
-    return {
-      rows: (JSON.parse(persisted) as WorkerShiftRow[]).map((row) => workerShiftToEmptyValidated(row))
-    };
+    return (JSON.parse(persisted) as WorkerShiftRow[]).map((row) => workerShiftToEmptyValidated(row));
   } else {
-    return {
-      rows: [createEmptyRow()],
-    };
+    return [createEmptyRow()];
   }
+};
+
+const initialState: ShiftEntryState = {
+  rows: readRowsFromLocal(),
+  csvFileParsingError: {
+    open: false,
+    message: '',
+  },
 };
 
 const {
   actions: {
     updateCellValues,
     setCellValidationMessages,
+    displayCsvParsingFailureMessage,
+    closeParsingFailureModal,
   },
   reducer,
 } = createSlice({
   name: 'shiftEntry',
-  initialState: initialState(),
+  initialState: initialState,
   reducers: {
     updateCellValues: (state, action: PayloadAction<UpdateCellValue[]>) => {
       const payload = action.payload;
@@ -66,10 +76,22 @@ const {
         state.rows.push(createEmptyRow());
       }
     },
+
     setCellValidationMessages: (state, action: PayloadAction<SetCellValidationMessages>) => {
       const payload = action.payload;
       const cell = state.rows[payload.cellIdentifier.rowIndex][payload.cellIdentifier.columnId];
       cell.failureMessages = payload.failureMessages;
+    },
+
+    displayCsvParsingFailureMessage: (state, action: PayloadAction<DisplayCsvParsingFailureMessage>) => {
+      state.csvFileParsingError = {
+        message: action.payload.message,
+        open: true,
+      };
+    },
+
+    closeParsingFailureModal: (state) => {
+      state.csvFileParsingError.open = false;
     },
   },
 });
@@ -87,5 +109,7 @@ const rowIsEmpty = (row: ValidatedWorkerShiftRow): boolean =>
 export {
   updateCellValues,
   setCellValidationMessages,
+  displayCsvParsingFailureMessage,
+  closeParsingFailureModal,
   reducer as shiftEntryReducer,
 };

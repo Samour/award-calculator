@@ -5,10 +5,17 @@ import './style.css';
 interface ModalProps {
   className?: string;
   open: boolean;
+  backdrop?: boolean;
   onClose?: () => void;
 }
 
-const Modal = ({ className, open, children, onClose }: PropsWithChildren<ModalProps>): JSX.Element => {
+const Modal = ({
+  className,
+  open,
+  backdrop = true,
+  children,
+  onClose,
+}: PropsWithChildren<ModalProps>): JSX.Element => {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -25,6 +32,9 @@ const Modal = ({ className, open, children, onClose }: PropsWithChildren<ModalPr
   };
 
   let dialogClassName = 'Modal';
+  if (!backdrop) {
+    dialogClassName += ' no-backdrop';
+  }
   if (className) {
     dialogClassName += ' ' + className;
   }

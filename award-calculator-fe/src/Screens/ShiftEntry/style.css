@@ -27,3 +27,7 @@
 .App .ShiftEntry .validation-messages li {
   margin-bottom: 0.5rem;
 }
+
+.App .ShiftEntry .csv-parsing-validation-message {
+  padding: 10px;
+}

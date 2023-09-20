@@ -2,9 +2,10 @@
   border-radius: 8px;
   border-width: 2px;
   box-shadow: 0 0 4px gray;
+  min-width: 30%;
 }
 
-.App dialog.Modal::backdrop {
+.App dialog.Modal.no-backdrop::backdrop {
   background: unset;
 }
 

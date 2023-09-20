@@ -14,6 +14,12 @@ export interface ValidatedCell {
   failureMessages: string[];
 }
 
+export interface CsvFileParsingError {
+  open: boolean;
+  message: string;
+}
+
 export interface ShiftEntryState {
   rows: ValidatedWorkerShiftRow[];
+  csvFileParsingError: CsvFileParsingError;
 }

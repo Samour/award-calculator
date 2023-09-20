@@ -7,6 +7,7 @@ import { Screen } from 'models/store/navigation';
 import FileSelect from 'Components/FileSelect';
 import ShiftTable from './ShiftTable';
 import ValidationNotification from './ValidationNotification';
+import CsvParsingFailureNotification from './CsvParsingFailureNotification';
 
 const ShiftEntry = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const ShiftEntry = (): JSX.Element => {
 
   return (
     <div className="ShiftEntry">
+      <CsvParsingFailureNotification/>
       <div className="row">
         <div className="twelve columns">
           <h1>{strings.screens.shiftEntry.title}</h1>

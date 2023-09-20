@@ -21,7 +21,7 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
   ));
 
   return (
-    <Modal className="shift-pay-breakdown-modal" open={open} onClose={onClose}>
+    <Modal className="shift-pay-breakdown-modal" open={open} backdrop={false} onClose={onClose}>
       <div className="shift-pay-breakdown-modal-content">
         <div className="row compact">
           <div className="twelve columns">
