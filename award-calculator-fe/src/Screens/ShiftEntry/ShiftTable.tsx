@@ -84,7 +84,7 @@ const convertToRows = (workerShiftRows: ValidatedWorkerShiftRow[]): Row[] => {
 const workerShiftRowsSelector = (state: AppState): ValidatedWorkerShiftRow[] =>
   state.shiftEntry.rows;
 
-const ShiftTable = (): JSX.Element => {
+const ShiftTable = (): JSX.Element => { // TODO should make this table non-editable while calculation is in progress
   const dispatch = useDispatch();
   const workerShiftRows = useSelector(workerShiftRowsSelector);
 

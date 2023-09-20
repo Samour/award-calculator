@@ -21,13 +21,18 @@ interface DataValidationFailureResult extends PayComputationResult {
   validationFailures: ValidationOutcome[];
 }
 
-const makeDelay = (delay: number): Promise<void> => new Promise((res) => {
-  setTimeout(res, delay);
-});
+const makeDelay = (delay: number) => {
+  // busy-wait to freeze UI
+  const start = Date.now();
+  let increment = 0;
+  while (Date.now() < start + delay) {
+    increment = Date.now() - start;
+  }
+}
 
 const computeShiftPay = async (shiftData: WorkerShiftRow[]): Promise<PayComputationResult> => {
   if (flags.simulateComputationDelay > 0) {
-    await makeDelay(flags.simulateComputationDelay);
+    makeDelay(flags.simulateComputationDelay);
   }
 
   // TODO logic will be executed in web worker
