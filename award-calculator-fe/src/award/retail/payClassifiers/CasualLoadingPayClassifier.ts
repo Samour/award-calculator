@@ -3,9 +3,8 @@ import Decimal from 'decimal.js';
 import { ClassifiedWorkedTime } from 'award/TimeClassifier';
 import { Worker } from 'models/inputs/worker';
 import { ClassifiedPayableTime, LoadingClassification } from 'models/outputs/payable';
+import { calculatePayableForIncrement } from 'models/money';
 import { RegularTimePayClassifier } from './RegularTimePayClassifier';
-import { MINUTES_IN_HOUR } from 'models/time';
-import { MONEY_INCREMENTAL_DECIMLAL_PLACES, MONEY_ROUNDING_MODE } from 'models/money';
 import { retailAwardDetails } from '../retailAwardDetails';
 
 export class CasualLoadingPayClassifier implements RegularTimePayClassifier {
@@ -28,10 +27,7 @@ export class CasualLoadingPayClassifier implements RegularTimePayClassifier {
         duration,
         classification: LoadingClassification.CASUAL,
         loading,
-        payableAmount: worker.basePayRate.times(duration)
-          .times(loading)
-          .div(MINUTES_IN_HOUR)
-          .toDecimalPlaces(MONEY_INCREMENTAL_DECIMLAL_PLACES, MONEY_ROUNDING_MODE),
+        payableAmount: calculatePayableForIncrement(worker.basePayRate, loading, duration),
       },
     ];
   }
