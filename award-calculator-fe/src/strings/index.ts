@@ -72,6 +72,7 @@ const strings = {
     payReport: {
       title: 'Pay Report',
       tableHeadings: {
+        rowNumber: 'Entry #',
         employeeCode: 'Employee code',
         lastName: 'Last name',
         firstName: 'First name',

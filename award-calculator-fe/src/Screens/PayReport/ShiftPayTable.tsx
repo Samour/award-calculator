@@ -26,6 +26,7 @@ const ShiftPayTable = (): JSX.Element => {
       <table className="u-full-width">
         <thead>
           <tr>
+            <th>{strings.screens.payReport.tableHeadings.rowNumber}</th>
             <th>{strings.screens.payReport.tableHeadings.employeeCode}</th>
             <th>{strings.screens.payReport.tableHeadings.lastName}</th>
             <th>{strings.screens.payReport.tableHeadings.firstName}</th>
