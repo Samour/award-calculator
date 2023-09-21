@@ -10,6 +10,8 @@ const weekdayWorkingHours = {
 export const retailAwardDetails = {
   loadings: {
     [LoadingClassification.REGULAR_TIME]: new Decimal('1'),
+    [LoadingClassification.TIME_AND_A_HALF]: new Decimal('1.5'),
+    [LoadingClassification.DOUBLE_TIME]: new Decimal('2'),
     [LoadingClassification.CASUAL]: new Decimal('0.25'),
     [LoadingClassification.WEEKEND_PENALTY]: {
       [DayOfWeek.SATURDAY.name()]: new Decimal('0.25'),
@@ -30,5 +32,16 @@ export const retailAwardDetails = {
       startTime: LocalTime.parse('09:00'),
       endTime: LocalTime.parse('18:00'),
     },
+  },
+  // How long can someone receive time-and-half pay for OT before switching to double time
+  // Different threshold per day of week
+  doubleTimeThresholds: {
+    [DayOfWeek.MONDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.TUESDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.WEDNESDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.THURSDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.FRIDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.SATURDAY.name()]: new Decimal('180'), // 3 hours
+    [DayOfWeek.SUNDAY.name()]: new Decimal('0'), // All time is double-time
   },
 };

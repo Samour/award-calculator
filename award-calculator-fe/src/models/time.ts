@@ -16,7 +16,7 @@ export type ShiftTimestamp = ZonedDateTime;
 
 /**
  * Numeric value to represent a number of minutes during a timespan
- * Precision: 2 decimal places
+ * Precision: 0 decimal places
  */
 export type IncrementalMinuteDuration = Decimal;
 
