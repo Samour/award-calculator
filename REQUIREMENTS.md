@@ -41,7 +41,6 @@ Output per worker:
 - All times are in `Australia/Brisbane` time zone
 - All monetary amounts are in AUD
 - No shift crosses a calendar day
-- There is no minimum gap between shifts
 - Only 1 award applies to each worker
   - Corollary: all shifts for a particular worker apply under the same award
 - Base pay rate & casual loading is applied at the worker level
@@ -95,6 +94,7 @@ rather than 9.
 - All time worked beyond the 6th consecutive day that has a shift has been worked
 - All time worked beyond 5 hours with no break
   - *Based on assumptions, we will be ignoring this requirement for now*
+- Any shift time worked within 12 hours of a prior shift ending
 
 **Overtime pay**
 
