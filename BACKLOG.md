@@ -1,7 +1,7 @@
 # Backlog
 
 - **WIP** Create specific implementations of `OvertimeCounter` for the retail award
-    - Time worked outside of "regular hours"
+    - ~~Time worked outside of "regular hours"~~
     - More than 9 hours in a day
     - More than 76 hours in a fortnight
     - More than 6 consecutive days
