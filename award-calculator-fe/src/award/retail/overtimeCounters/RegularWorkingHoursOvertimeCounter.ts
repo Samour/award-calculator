@@ -5,7 +5,7 @@ import { TimeSpan } from 'models/time';
 import { retailAwardDetails } from '../retailAwardDetails';
 
 export class RegularWorkingHoursOvertimeCounter implements OvertimeCounter {
-  
+
   countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
     // Assumption: shift does not cross days
     const dayOfWeek = shift.startTime.dayOfWeek();
@@ -14,21 +14,21 @@ export class RegularWorkingHoursOvertimeCounter implements OvertimeCounter {
     const toZonedDateTime = (localTime: LocalTime): ZonedDateTime => localTime
       .atDate(shift.startTime.toLocalDate())
       .atZone(shift.startTime.zone());
+    
+    const regularStartTime = toZonedDateTime(regularWorkingHours.startTime);
+    const regularEndTime = toZonedDateTime(regularWorkingHours.endTime);
 
     const overtimeSpans: TimeSpan[] = [];
-    let timeCursor = shift.startTime.toLocalTime();
-
-    if (timeCursor.isBefore(regularWorkingHours.startTime)) {
+    if (shift.startTime.isBefore(regularStartTime)) {
       overtimeSpans.push({
         startTime: shift.startTime,
-        endTime: toZonedDateTime(regularWorkingHours.startTime),
+        endTime: regularStartTime,
       });
-      timeCursor = regularWorkingHours.endTime;
     }
 
-    if (timeCursor.isBefore(shift.endTime.toLocalTime())) {
+    if (regularEndTime.isBefore(shift.endTime)) {
       overtimeSpans.push({
-        startTime: toZonedDateTime(timeCursor),
+        startTime: regularEndTime,
         endTime: shift.endTime,
       });
     }
