@@ -120,6 +120,8 @@ export const dummyShiftPayableRows: ShiftPayableRow[] = [
   },
 ];
 
+// Keeping this around, as we'll probably want to use it in future
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dummyWorkerPayableOutcomes: WorkerPayable[] = [
   {
     worker: {
