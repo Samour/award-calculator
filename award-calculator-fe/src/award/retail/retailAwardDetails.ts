@@ -8,16 +8,7 @@ const weekdayWorkingHours = {
 };
 
 export const retailAwardDetails = {
-  loadings: {
-    [LoadingClassification.REGULAR_TIME]: new Decimal('1'),
-    [LoadingClassification.TIME_AND_A_HALF]: new Decimal('1.5'),
-    [LoadingClassification.DOUBLE_TIME]: new Decimal('2'),
-    [LoadingClassification.CASUAL]: new Decimal('0.25'),
-    [LoadingClassification.WEEKEND_PENALTY]: {
-      [DayOfWeek.SATURDAY.name()]: new Decimal('0.25'),
-      [DayOfWeek.SUNDAY.name()]: new Decimal('0.5'),
-    },
-  },
+  // -- Overtime classification
   regularWorkingHours: {
     [DayOfWeek.MONDAY.name()]: weekdayWorkingHours,
     [DayOfWeek.TUESDAY.name()]: weekdayWorkingHours,
@@ -33,6 +24,11 @@ export const retailAwardDetails = {
       endTime: LocalTime.parse('18:00'),
     },
   },
+  dailyHours: {
+    maxPerDay: new Decimal('540'), // 9 hours
+    maxPerDayExempted: new Decimal('660'), // 11 hours
+  },
+  // -- Pay & loadings
   // How long can someone receive time-and-half pay for OT before switching to double time
   // Different threshold per day of week
   doubleTimeThresholds: {
@@ -43,5 +39,16 @@ export const retailAwardDetails = {
     [DayOfWeek.FRIDAY.name()]: new Decimal('180'), // 3 hours
     [DayOfWeek.SATURDAY.name()]: new Decimal('180'), // 3 hours
     [DayOfWeek.SUNDAY.name()]: new Decimal('0'), // All time is double-time
+  },
+  // Loading rates
+  loadings: {
+    [LoadingClassification.REGULAR_TIME]: new Decimal('1'),
+    [LoadingClassification.TIME_AND_A_HALF]: new Decimal('1.5'),
+    [LoadingClassification.DOUBLE_TIME]: new Decimal('2'),
+    [LoadingClassification.CASUAL]: new Decimal('0.25'),
+    [LoadingClassification.WEEKEND_PENALTY]: {
+      [DayOfWeek.SATURDAY.name()]: new Decimal('0.25'),
+      [DayOfWeek.SUNDAY.name()]: new Decimal('0.5'),
+    },
   },
 };
