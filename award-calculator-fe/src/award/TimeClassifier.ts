@@ -16,7 +16,7 @@ export interface ClassifiedWorkedTime {
 }
 
 export interface OvertimeCounter {
-  countOvertimeInShift(shift: WorkerShift): TimeSpan | null;
+  countOvertimeInShift(shift: WorkerShift): TimeSpan[];
 }
 
 export class TimeClassifier {
@@ -25,7 +25,7 @@ export class TimeClassifier {
 
   classifyShift(shift: WorkerShift): ClassifiedWorkedTime[] {
     const overtimeSpans = this.overtimeCounters.map((counter) => counter.countOvertimeInShift(shift))
-      .filter((span): span is TimeSpan => !!span);
+      .flat();
     overtimeSpans.sort(comparingTime);
 
     const mergedOvertimeSpans = this.mergeSpans(overtimeSpans);
