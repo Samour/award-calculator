@@ -1,5 +1,5 @@
 import strings from 'strings';
-import { ShiftPayableRowData } from '../ShiftPayableRowData';
+import { ShiftPayableRow } from 'models/outputs/table';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
 import Modal from 'Components/Modal';
@@ -7,7 +7,7 @@ import ShiftPayComponentRow from './ShiftPayComponentRow';
 
 interface ShiftBreakdownModalProps {
   open: boolean;
-  payableRowData?: ShiftPayableRowData;
+  payableRowData?: ShiftPayableRow;
   onClose: () => void;
 }
 
@@ -16,8 +16,8 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
     return (<></>);
   }
 
-  const payComponentRows = payableRowData.shift.increments.map((payableTime) => (
-    <ShiftPayComponentRow classifiedPayableTime={payableTime} />
+  const payComponentRows = payableRowData.increments.map((payableTime, i) => (
+    <ShiftPayComponentRow key={i} classifiedPayableTime={payableTime} />
   ));
 
   return (
@@ -34,25 +34,25 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
         <div className="row">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.shiftDate}&nbsp;
-            {renderAsLocalDate(payableRowData.shift.shift.startTime)}
+            {renderAsLocalDate(payableRowData.shift.startTime)}
           </div>
         </div>
         <div className="row compact">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.shiftStartTime}&nbsp;
-            {renderAsLocalTime(payableRowData.shift.shift.startTime)}
+            {renderAsLocalTime(payableRowData.shift.startTime)}
           </div>
         </div>
         <div className="row compact">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.shiftEndTime}&nbsp;
-            {renderAsLocalTime(payableRowData.shift.shift.endTime)}
+            {renderAsLocalTime(payableRowData.shift.endTime)}
           </div>
         </div>
         <div className="row compact">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.basePayRate}&nbsp;
-            ${renderAsDollars(payableRowData.shift.payableAmount)}
+            ${renderAsDollars(payableRowData.payableAmount)}
           </div>
         </div>
         <div className="row compact">
@@ -77,7 +77,7 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
         <div className="row compact">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.totalPayable}&nbsp;
-            ${renderAsDollars(payableRowData.shift.payableAmount)}
+            ${renderAsDollars(payableRowData.payableAmount)}
           </div>
         </div>
       </div>

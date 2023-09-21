@@ -1,33 +1,21 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import strings from 'strings';
-import { WorkerPayable } from 'models/outputs/payable';
 import { AppState } from 'models/store';
-import { ShiftPayableRowData } from './ShiftPayableRowData';
+import { ShiftPayableRow as ShiftPayableRowData } from 'models/outputs/table';
 import ShiftBreakdownModal from './ShiftBreakdownModal';
 import ShiftPayableRow from './ShiftPayableRow';
 
-const sortBySourceRow = (a: ShiftPayableRowData, b: ShiftPayableRowData) => a.shift.shift.sourceRow
-  - b.shift.shift.sourceRow;
-
-const selector = (state: AppState): WorkerPayable[] => state.payReport.workers;
+const selector = (state: AppState): ShiftPayableRowData[] => state.payReport.payableShifts;
 
 const ShiftPayTable = (): JSX.Element => {
-  const workerPayables = useSelector(selector);
+  const rowData = useSelector(selector);
   const [activeShiftBreakdown, setActiveShiftBreakdown] = useState<ShiftPayableRowData>();
 
   const closeModal = () => setActiveShiftBreakdown(undefined);
 
-  const rowData: ShiftPayableRowData[] = workerPayables.flatMap((workerPayable) =>
-    workerPayable.shifts.map((shift) => ({
-      worker: workerPayable.worker,
-      shift,
-    })),
-  );
-  rowData.sort(sortBySourceRow);
-
   const rowElements = rowData.map((rowData) => (
-    <ShiftPayableRow key={rowData.shift.shift.sourceRow} rowData={rowData}
+    <ShiftPayableRow key={rowData.sourceRow} rowData={rowData}
       onShowDetails={() => setActiveShiftBreakdown(rowData)} />
   ));
 

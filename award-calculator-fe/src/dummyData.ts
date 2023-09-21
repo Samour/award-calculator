@@ -1,9 +1,126 @@
 import { LocalDateTime, ZoneId } from '@js-joda/core';
 import Decimal from 'decimal.js';
 import { LoadingClassification, WorkerPayable } from 'models/outputs/payable';
+import { ShiftPayableRow } from 'models/outputs/table';
 import { APP_TIME_ZONE } from 'models/time';
 
-export const dummyWorkerPayableOutcomes: WorkerPayable[] = [
+export const dummyShiftPayableRows: ShiftPayableRow[] = [
+  {
+    sourceRow: 0,
+    worker: {
+      code: 'S1065',
+      name: {
+        lastName: 'Doe',
+        firstName: 'Joe',
+      },
+      basePayRate: '2575',
+      casualLoading: true,
+    },
+    shift: {
+      startTime: LocalDateTime.parse('2023-09-14T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+      endTime: LocalDateTime.parse('2023-09-14T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+    },
+    increments: [
+      {
+        startTime: LocalDateTime.parse('2023-09-14T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-14T15:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '390',
+        classification: LoadingClassification.REGULAR_TIME,
+        loading: '1',
+        payableAmount: '16737.50',
+      },
+      {
+        startTime: LocalDateTime.parse('2023-09-14T15:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-14T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '90',
+        classification: LoadingClassification.TIME_AND_A_HALF,
+        loading: '1.5',
+        payableAmount: '5793.75',
+      },
+      {
+        startTime: LocalDateTime.parse('2023-09-14T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-14T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '480',
+        classification: LoadingClassification.CASUAL,
+        loading: '0.25',
+        payableAmount: '5150',
+      },
+    ],
+    payableAmount: '27681',
+  },
+  {
+    sourceRow: 1,
+    worker: {
+      code: 'S1065',
+      name: {
+        lastName: 'Doe',
+        firstName: 'Joe',
+      },
+      basePayRate: '2575',
+      casualLoading: true,
+    },
+    shift: {
+      startTime: LocalDateTime.parse('2023-09-15T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+      endTime: LocalDateTime.parse('2023-09-15T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+    },
+    increments: [
+      {
+        startTime: LocalDateTime.parse('2023-09-15T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-15T15:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '390',
+        classification: LoadingClassification.REGULAR_TIME,
+        loading: '1',
+        payableAmount: '16737.50',
+      },
+      {
+        startTime: LocalDateTime.parse('2023-09-15T15:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-15T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '90',
+        classification: LoadingClassification.TIME_AND_A_HALF,
+        loading: '1.5',
+        payableAmount: '5793.75',
+      },
+      {
+        startTime: LocalDateTime.parse('2023-09-15T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-15T17:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '480',
+        classification: LoadingClassification.CASUAL,
+        loading: '0.25',
+        payableAmount: '5150',
+      },
+    ],
+    payableAmount: '27681',
+  },
+  {
+    sourceRow: 2,
+    worker: {
+      code: 'S1066',
+      name: {
+        lastName: 'Smith',
+        firstName: 'Matt',
+      },
+      basePayRate: '2850',
+      casualLoading: false,
+    },
+    shift: {
+      startTime: LocalDateTime.parse('2023-09-14T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+      endTime: LocalDateTime.parse('2023-09-14T16:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+    },
+    increments: [
+      {
+        startTime: LocalDateTime.parse('2023-09-14T09:00:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        endTime: LocalDateTime.parse('2023-09-14T16:30:00').atZone(ZoneId.of(APP_TIME_ZONE)).toString(),
+        duration: '450',
+        classification: LoadingClassification.REGULAR_TIME,
+        loading: '1',
+        payableAmount: '21375',
+      },
+    ],
+    payableAmount: '21375',
+  },
+];
+
+const dummyWorkerPayableOutcomes: WorkerPayable[] = [
   {
     worker: {
       code: 'S1065',

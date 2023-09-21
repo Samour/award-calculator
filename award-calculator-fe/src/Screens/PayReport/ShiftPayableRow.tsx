@@ -1,6 +1,6 @@
 import { renderAsDollars } from 'formatters/money';
 import { renderAsLocalDate } from 'formatters/time';
-import { ShiftPayableRowData } from './ShiftPayableRowData';
+import { ShiftPayableRow as ShiftPayableRowData } from 'models/outputs/table';
 
 interface ShiftPayableRowProps {
   rowData: ShiftPayableRowData;
@@ -13,8 +13,8 @@ const ShiftPayableRow = ({ rowData, onShowDetails }: ShiftPayableRowProps): JSX.
       <td>{rowData.worker.code}</td>
       <td>{rowData.worker.name.lastName}</td>
       <td>{rowData.worker.name.firstName}</td>
-      <td>{renderAsLocalDate(rowData.shift.shift.startTime)}</td>
-      <td>${renderAsDollars(rowData.shift.payableAmount)}</td>
+      <td>{renderAsLocalDate(rowData.shift.startTime)}</td>
+      <td>${renderAsDollars(rowData.payableAmount)}</td>
       <td>
         <button className="round" onClick={onShowDetails}>?</button>
       </td>

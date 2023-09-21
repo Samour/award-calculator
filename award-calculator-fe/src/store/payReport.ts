@@ -1,26 +1,26 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { dummyWorkerPayableOutcomes } from 'dummyData';
-import { WorkerPayable } from 'models/outputs/payable';
+import { dummyShiftPayableRows } from 'dummyData';
+import { ShiftPayableRow } from 'models/outputs/table';
 import { PayReportState } from 'models/store/payReport';
 
 const initialState: PayReportState = {
-  workers: dummyWorkerPayableOutcomes,
+  payableShifts: dummyShiftPayableRows,
 };
 
 const {
-  actions: { populateWorkerPayable },
+  actions: { populatePayableRows },
   reducer,
 } = createSlice({
   name: 'payReport',
   initialState,
   reducers: {
-    populateWorkerPayable: (state, action: PayloadAction<WorkerPayable[]>) => {
-      state.workers = action.payload;
+    populatePayableRows: (state, action: PayloadAction<ShiftPayableRow[]>) => {
+      state.payableShifts = action.payload;
     },
   },
 });
 
 export {
-  populateWorkerPayable,
+  populatePayableRows,
   reducer as payReportReducer,
 };

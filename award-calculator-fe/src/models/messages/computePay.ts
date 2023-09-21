@@ -1,5 +1,5 @@
 import { WorkerShiftRow } from 'models/inputs/table';
-import { WorkerPayable } from 'models/outputs/payable';
+import { ShiftPayableRow } from 'models/outputs/table';
 import { ValidationOutcome } from 'models/validation';
 
 export interface ComputePayForShiftData {
@@ -17,5 +17,5 @@ export interface DataValidationFailureResult extends PayComputationResult {
 
 export interface PayBreakdownResult extends PayComputationResult {
   outcome: 'pay_breakdown';
-  workerPayables: WorkerPayable[];
+  shiftPayables: ShiftPayableRow[];
 }

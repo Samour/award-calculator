@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 
-import { dummyWorkerPayableOutcomes } from 'dummyData';
+import { dummyShiftPayableRows } from 'dummyData';
 import flags from 'flags';
 import {
   ComputePayForShiftData,
@@ -37,7 +37,7 @@ const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayCo
   // TODO continue with calculation
   const outcome: PayBreakdownResult = {
     outcome: 'pay_breakdown',
-    workerPayables: dummyWorkerPayableOutcomes,
+    shiftPayables: dummyShiftPayableRows,
   };
   return outcome;
 };

@@ -11,7 +11,7 @@ import {
   setCellValidationMessages,
 } from 'store/shiftEntry';
 import { navigateToScreen } from 'store/navigation';
-import { populateWorkerPayable } from 'store/payReport';
+import { populatePayableRows } from 'store/payReport';
 import { computePayInWorker } from 'workers/computePay/interface';
 
 export const useComputeShiftPay = (): (() => void) => {
@@ -50,7 +50,7 @@ export const useComputeShiftPay = (): (() => void) => {
       dispatchValidationFailures((outcome as DataValidationFailureResult).validationFailures);
       store.dispatch(invalidateTableValidationScrollNonce());
     } else if (outcome.outcome === 'pay_breakdown') {
-      store.dispatch(populateWorkerPayable((outcome as PayBreakdownResult).workerPayables));
+      store.dispatch(populatePayableRows((outcome as PayBreakdownResult).shiftPayables));
       store.dispatch(navigateToScreen(Screen.PAY_REPORT));
     }
 

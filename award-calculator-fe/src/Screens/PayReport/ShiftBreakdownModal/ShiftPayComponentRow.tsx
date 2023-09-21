@@ -1,10 +1,10 @@
 import strings from 'strings';
-import { ClassifiedPayableTime } from 'models/outputs/payable';
 import { renderAsDollars, renderLoadingRate } from 'formatters/money';
 import { renderAsLocalTime, renderDuration } from 'formatters/time';
+import { SerializablePayableTime } from 'models/outputs/table';
 
 interface ShiftPayComponentRowProps {
-  classifiedPayableTime: ClassifiedPayableTime;
+  classifiedPayableTime: SerializablePayableTime;
 }
 
 const ShiftPayComponentRow = ({ classifiedPayableTime }: ShiftPayComponentRowProps): JSX.Element => {

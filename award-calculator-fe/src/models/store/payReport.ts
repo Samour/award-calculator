@@ -1,5 +1,5 @@
-import { WorkerPayable } from 'models/outputs/payable';
+import { ShiftPayableRow } from 'models/outputs/table';
 
 export interface PayReportState {
-  workers: WorkerPayable[];
+  payableShifts: ShiftPayableRow[];
 }
