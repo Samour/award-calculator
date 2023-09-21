@@ -94,7 +94,7 @@ rather than 9.
 - All time worked beyond the 6th consecutive day that has a shift has been worked
 - All time worked beyond 5 hours with no break
   - *Based on assumptions, we will be ignoring this requirement for now*
-- Any shift time worked within 12 hours of a prior shift ending
+- Any shift time worked within 12 hours of the end of the last shift on the prior day
 
 **Overtime pay**
 
