@@ -1,7 +1,7 @@
-import { Duration, ZonedDateTime } from '@js-joda/core';
+import { Duration } from '@js-joda/core';
 import Decimal from 'decimal.js';
 import { WorkerShift } from 'models/inputs/shift';
-import { IncrementalMinuteDuration, ShiftTimestamp } from 'models/time';
+import { IncrementalMinuteDuration, ShiftTimestamp, TimeSpan, comparingTime } from 'models/time';
 
 export enum WorkTimeClassification {
   REGULAR_TIME = 'REGULAR_TIME',
@@ -16,12 +16,7 @@ export interface ClassifiedWorkedTime {
 }
 
 export interface OvertimeCounter {
-  countOvertimeInShift(shift: WorkerShift): OvertimeSpan | null;
-}
-
-export interface OvertimeSpan {
-  startTime: ZonedDateTime;
-  endTime: ZonedDateTime;
+  countOvertimeInShift(shift: WorkerShift): TimeSpan | null;
 }
 
 export class TimeClassifier {
@@ -30,8 +25,8 @@ export class TimeClassifier {
 
   classifyShift(shift: WorkerShift): ClassifiedWorkedTime[] {
     const overtimeSpans = this.overtimeCounters.map((counter) => counter.countOvertimeInShift(shift))
-      .filter((span): span is OvertimeSpan => !!span);
-    overtimeSpans.sort((a, b) => a.startTime.compareTo(b.startTime));
+      .filter((span): span is TimeSpan => !!span);
+    overtimeSpans.sort(comparingTime);
 
     const mergedOvertimeSpans = this.mergeSpans(overtimeSpans);
 
@@ -68,9 +63,9 @@ export class TimeClassifier {
     return classifiedTime;
   }
 
-  private mergeSpans(overtimeSpans: OvertimeSpan[]): OvertimeSpan[] {
-    const mergedSpans: OvertimeSpan[] = [];
-    let currentSpan: OvertimeSpan | null = null;
+  private mergeSpans(overtimeSpans: TimeSpan[]): TimeSpan[] {
+    const mergedSpans: TimeSpan[] = [];
+    let currentSpan: TimeSpan | null = null;
 
     overtimeSpans.forEach((span) => {
       if (!currentSpan) {

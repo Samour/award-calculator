@@ -18,6 +18,19 @@ export type ShiftTimestamp = ZonedDateTime;
  */
 export type IncrementalMinuteDuration = Decimal;
 
+export interface TimeSpan {
+  startTime: ZonedDateTime;
+  endTime: ZonedDateTime;
+}
+
+export const comparingTime = (first: TimeSpan, second: TimeSpan): number => {
+  if (first.startTime.isEqual(second.startTime)) {
+    return first.endTime.compareTo(second.endTime);
+  } else {
+    return first.startTime.compareTo(second.startTime);
+  }
+};
+
 export const toZonedDateTime = (localDate: LocalDate, localTime: LocalTime): ZonedDateTime => {
   return localDate.atTime(localTime).atZone(ZoneId.of(APP_TIME_ZONE));
 };

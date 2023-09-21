@@ -3,6 +3,7 @@ import { Worker } from 'models/inputs/worker';
 import { ClassifiedPayableTime, ShiftPayable, WorkerPayable } from 'models/outputs/payable';
 import { WorkerShift } from 'models/inputs/shift';
 import { MONEY_FINAL_DECIMAL_PLACES, MONEY_ROUNDING_MODE, MonetaryAmount } from 'models/money';
+import { comparingTime } from 'models/time';
 import { PayClassifier } from './PayClassifier';
 import { ClassifiedWorkedTime, TimeClassifier } from './TimeClassifier';
 
@@ -20,7 +21,7 @@ export class AwardPayCalculator {
 
   calculateWorkerPay(worker: Worker): WorkerPayable {
     const shifts = [...worker.shifts];
-    shifts.sort((a, b) => a.startTime.compareTo(b.startTime));
+    shifts.sort(comparingTime);
 
     const classifiedShifts: ClassifiedShift[] = shifts.map((shift) => ({
       shift,

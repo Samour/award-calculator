@@ -10,8 +10,9 @@ import {
 import { WorkerCode } from 'models/inputs/worker';
 import { MonetaryAmount } from 'models/money';
 import { LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
-import { toZonedDateTime } from 'models/time';
+import { comparingTime, toZonedDateTime } from 'models/time';
 import { CellValidationFailure, ValidationOutcome } from 'models/validation';
+import { comparingField } from 'models/comparing';
 
 interface WorkerDetails {
   lastName: string | null;
@@ -144,7 +145,9 @@ export class ShiftTableValidator {
     const shiftTimes = this.workerShiftTimes.get(employeeCode);
     if (shiftTimes) {
       shiftTimes.push([shiftStartTime, shiftEndTime]);
-      shiftTimes.sort();
+      shiftTimes.sort(
+        comparingField(comparingTime)(([startTime, endTime]) => ({ startTime, endTime })),
+      );
     } else {
       this.workerShiftTimes.set(employeeCode, [[shiftStartTime, shiftEndTime]]);
     }
