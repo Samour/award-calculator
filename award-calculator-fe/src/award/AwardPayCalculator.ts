@@ -29,7 +29,7 @@ export class AwardPayCalculator {
 
     const shiftPayables: ShiftPayable[] = classifiedShifts.map(({ shift, classifiedTime }) => {
       const increments: ClassifiedPayableTime[] = this.payClassifiers.map((classifier) =>
-        classifier.classifyPayForSpan(worker, classifiedTime)
+        classifier.classifyPayForSpan(worker, classifiedTime),
       ).flat();
 
       const payableAmount: MonetaryAmount = increments.reduce((sum, payableTime) =>

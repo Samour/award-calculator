@@ -1,6 +1,7 @@
-import { DateTimeFormatter, LocalDate, LocalTime } from '@js-joda/core';
+import { DateTimeFormatter, LocalDate, LocalTime, ZonedDateTime } from '@js-joda/core';
 import Decimal from 'decimal.js';
 import { MonetaryAmount } from 'models/money';
+import { toZonedDateTime } from 'models/time';
 
 export type WorkerShiftColumnName = 'employeeCode'
   | 'lastName'
@@ -66,6 +67,16 @@ export const translateToLocalTime = (time: string): LocalTime | null => {
   try {
     return LocalTime.parse(time, DateTimeFormatter.ofPattern('H:m'));
   } catch (e) {
+    return null;
+  }
+};
+
+export const translateToDateTime = (date: string, time: string): ZonedDateTime | null => {
+  const localDate = translateToLocalDate(date);
+  const localTime = translateToLocalTime(time);
+  if (!!localDate && !!localTime) {
+    return toZonedDateTime(localDate, localTime);
+  } else {
     return null;
   }
 };

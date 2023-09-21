@@ -1,14 +1,18 @@
 /* eslint-disable no-restricted-globals */
 
-import { dummyShiftPayableRows } from 'dummyData';
+import { buildRetailAwardCalculator } from 'award/retail';
+import { dummyWorkerPayableOutcomes } from 'dummyData';
 import flags from 'flags';
+import { Worker } from 'models/inputs/worker';
 import {
   ComputePayForShiftData,
   DataValidationFailureResult,
   PayBreakdownResult,
   PayComputationResult,
 } from 'models/messages/computePay';
+import { WorkerPayable } from 'models/outputs/payable';
 import { ShiftTableValidator } from 'services/ShiftTableValidator';
+import { translateFromWorkerShiftRows, translateToShiftPayableRows } from './translate';
 
 const makeDelay = (delay: number) => {
   // busy-wait to freeze UI
@@ -17,6 +21,16 @@ const makeDelay = (delay: number) => {
   while (start + increment < start + delay) {
     increment = Date.now() - start;
   }
+};
+
+const calculatePayByAward = (workers: Worker[]): WorkerPayable[] => {
+  if (flags.useDummyCalculationResult) {
+    return dummyWorkerPayableOutcomes;
+  }
+
+  return workers.map((worker) =>
+    buildRetailAwardCalculator().calculateWorkerPay(worker),
+  );
 };
 
 const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayComputationResult> => {
@@ -34,10 +48,11 @@ const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayCo
     return outcome;
   }
 
-  // TODO continue with calculation
   const outcome: PayBreakdownResult = {
     outcome: 'pay_breakdown',
-    shiftPayables: dummyShiftPayableRows,
+    shiftPayables: calculatePayByAward(
+      translateFromWorkerShiftRows(shiftData.shiftRows),
+    ).map(translateToShiftPayableRows).flat(),
   };
   return outcome;
 };

@@ -52,7 +52,7 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
         <div className="row compact">
           <div className="twelve columns">
             {strings.screens.payReport.shiftBreakdownModal.basePayRate}&nbsp;
-            ${renderAsDollars(payableRowData.payableAmount)}
+            ${renderAsDollars(payableRowData.worker.basePayRate)}
           </div>
         </div>
         <div className="row compact">

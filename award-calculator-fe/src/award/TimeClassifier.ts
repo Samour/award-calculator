@@ -3,6 +3,27 @@ import Decimal from 'decimal.js';
 import { WorkerShift } from 'models/inputs/shift';
 import { IncrementalMinuteDuration, ShiftTimestamp } from 'models/time';
 
+export enum WorkTimeClassification {
+  REGULAR_TIME = 'REGULAR_TIME',
+  OVERTIME = 'OVERTIME',
+}
+
+export interface ClassifiedWorkedTime {
+  startTime: ShiftTimestamp;
+  endTime: ShiftTimestamp;
+  duration: IncrementalMinuteDuration;
+  classification: WorkTimeClassification;
+}
+
+export interface OvertimeCounter {
+  countOvertimeInShift(shift: WorkerShift): OvertimeSpan | null;
+}
+
+export interface OvertimeSpan {
+  startTime: ZonedDateTime;
+  endTime: ZonedDateTime;
+}
+
 export class TimeClassifier {
 
   constructor(private readonly overtimeCounters: OvertimeCounter[]) { }
@@ -71,25 +92,4 @@ export class TimeClassifier {
 
     return mergedSpans;
   }
-}
-
-export enum WorkTimeClassification {
-  REGULAR_TIME = 'REGULAR_TIME',
-  OVERTIME = 'OVERTIME',
-}
-
-export interface ClassifiedWorkedTime {
-  startTime: ShiftTimestamp;
-  endTime: ShiftTimestamp;
-  duration: IncrementalMinuteDuration;
-  classification: WorkTimeClassification;
-}
-
-export interface OvertimeCounter {
-  countOvertimeInShift(shift: WorkerShift): OvertimeSpan | null;
-}
-
-export interface OvertimeSpan {
-  startTime: ZonedDateTime;
-  endTime: ZonedDateTime;
 }
