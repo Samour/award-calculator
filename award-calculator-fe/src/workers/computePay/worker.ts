@@ -48,11 +48,14 @@ const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayCo
     return outcome;
   }
 
+  const shiftPayables = calculatePayByAward(
+    translateFromWorkerShiftRows(shiftData.shiftRows),
+  ).map(translateToShiftPayableRows).flat();
+  shiftPayables.sort((a, b) => a.sourceRow - b.sourceRow);
+  
   const outcome: PayBreakdownResult = {
     outcome: 'pay_breakdown',
-    shiftPayables: calculatePayByAward(
-      translateFromWorkerShiftRows(shiftData.shiftRows),
-    ).map(translateToShiftPayableRows).flat(),
+    shiftPayables,
   };
   return outcome;
 };
