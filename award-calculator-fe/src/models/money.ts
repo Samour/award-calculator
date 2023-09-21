@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import { IncrementalMinuteDuration, MINUTES_IN_HOUR } from './time';
 
-export const MONEY_INCREMENTAL_DECIMLAL_PLACES = 4;
+export const MONEY_INCREMENTAL_DECIMAL_PLACES = 4;
 export const MONEY_FINAL_DECIMAL_PLACES = 0;
 export const MONEY_ROUNDING_MODE = Decimal.ROUND_HALF_EVEN;
 
@@ -30,4 +30,4 @@ export const calculatePayableForIncrement = (
   duration: IncrementalMinuteDuration,
 ): IncrementalMonetaryAmount => basePayRate.times(loading).times(duration)
   .div(MINUTES_IN_HOUR)
-  .toDecimalPlaces(MONEY_INCREMENTAL_DECIMLAL_PLACES, MONEY_ROUNDING_MODE);
+  .toDecimalPlaces(MONEY_INCREMENTAL_DECIMAL_PLACES, MONEY_ROUNDING_MODE);
