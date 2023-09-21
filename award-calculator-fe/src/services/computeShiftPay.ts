@@ -1,4 +1,5 @@
 import { useStore } from 'react-redux';
+import flags from 'flags';
 import { AppState } from 'models/store';
 import { validatedToWorkerShift } from 'models/converters/workerShift';
 import { normaliseRow } from 'models/inputs/table';
@@ -37,14 +38,16 @@ export const useComputeShiftPay = (): (() => void) => {
       .map((row) => normaliseRow(row))
       .slice(0, rows.length - 1);
 
-    console.log('Validation started');
-    console.time('validateShiftData');
+    if (flags.recordCalculationTiming) {
+      console.time('validateAndComputePay');
+    }
 
     store.dispatch(markPayComputationInProgress({ payComputationInProgress: true }));
     const outcome = await computePayInWorker({ shiftRows: shifts });
 
-    console.log('Validation completed');
-    console.timeEnd('validateShiftData');
+    if (flags.recordCalculationTiming) {
+      console.timeEnd('validateAndComputePay');
+    }
 
     if (outcome.outcome === 'data_validation_failure') {
       dispatchValidationFailures((outcome as DataValidationFailureResult).validationFailures);

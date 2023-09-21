@@ -7,7 +7,7 @@
     - More than 6 consecutive days
     - Within 12 hours of a prior shift end
 - **WIP** Create specific implementations of `PayClassifier` for the retail award
-    - Base pay for RT hours
+    - ~~Base pay for RT hours~~
     - TAH/DT pay for OT hours on Monday - Saturday
     - DT pay for OT hours on Sunday
     - Saturday penalty rates
