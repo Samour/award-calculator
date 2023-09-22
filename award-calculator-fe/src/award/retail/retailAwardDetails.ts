@@ -27,6 +27,7 @@ export const retailAwardDetails = {
   dailyHours: {
     maxPerDay: new Decimal('540'), // 9 hours
     maxPerDayExempted: new Decimal('660'), // 11 hours
+    exemptDaysPerWeek: 1,
   },
   // -- Pay & loadings
   // How long can someone receive time-and-half pay for OT before switching to double time

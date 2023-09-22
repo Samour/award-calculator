@@ -5,11 +5,13 @@ import { CasualLoadingPayClassifier } from './payClassifiers/CasualLoadingPayCla
 import { WeekendPenaltyPayClassifier } from './payClassifiers/WeekendPenaltyPayClassifier';
 import { RegularWorkingHoursOvertimeCounter } from './overtimeCounters/RegularWorkingHoursOvertimeCounter';
 import { OvertimePayClassifier } from './payClassifiers/OvertimePayClassifier';
+import { DailyOvertimeCounter } from './overtimeCounters/DailyOvertimeCounter';
 
 export const buildRetailAwardCalculator = (): AwardPayCalculator =>
   new AwardPayCalculator(
     new TimeClassifier([
       new RegularWorkingHoursOvertimeCounter(),
+      new DailyOvertimeCounter(),
     ]),
     [
       new RegularTimePayClassifier(),
