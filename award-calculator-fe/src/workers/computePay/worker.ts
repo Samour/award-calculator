@@ -63,5 +63,5 @@ const computeShiftPay = async (shiftData: ComputePayForShiftData): Promise<PayCo
 self.onmessage = ({ data }: { data: ComputePayForShiftData }) => {
   computeShiftPay(data).then((result) => {
     self.postMessage(result);
-  });
+  }).catch(console.error);
 };

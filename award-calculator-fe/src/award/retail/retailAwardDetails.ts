@@ -32,6 +32,9 @@ export const retailAwardDetails = {
   fortnightlyWorkedTime: {
     maxPerFortnight: new Decimal('4560'), // 76 hours
   },
+  consecutiveDays: {
+    maxConsecutiveDays: 6,
+  },
   // -- Pay & loadings
   // How long can someone receive time-and-half pay for OT before switching to double time
   // Different threshold per day of week
