@@ -36,3 +36,8 @@ export const comparingTime = (first: TimeSpan, second: TimeSpan): number => {
 export const toZonedDateTime = (localDate: LocalDate, localTime: LocalTime): ZonedDateTime => {
   return localDate.atTime(localTime).atZone(ZoneId.of(APP_TIME_ZONE));
 };
+
+export const toStartOfDay = (zonedDateTime: ZonedDateTime): ZonedDateTime => zonedDateTime
+  .toLocalDate()
+  .atStartOfDay()
+  .atZone(zonedDateTime.zone());
