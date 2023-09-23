@@ -24,7 +24,7 @@ export const retailAwardDetails = {
       endTime: LocalTime.parse('18:00'),
     },
   },
-  dailyHours: {
+  dailyWorkedTime: {
     maxPerDay: new Decimal('540'), // 9 hours
     maxPerDayExempted: new Decimal('660'), // 11 hours
     exemptDaysPerWeek: 1,

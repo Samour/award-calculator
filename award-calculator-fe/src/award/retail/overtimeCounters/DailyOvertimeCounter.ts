@@ -7,7 +7,7 @@ import { retailAwardDetails } from '../retailAwardDetails';
 
 export class DailyOvertimeCounter implements OvertimeCounter {
 
-  private exemptDaysRemaining: number = retailAwardDetails.dailyHours.exemptDaysPerWeek;
+  private exemptDaysRemaining: number = retailAwardDetails.dailyWorkedTime.exemptDaysPerWeek;
   private currentDay?: LocalDate;
   private timeWorkedInCurrentDay: IncrementalMinuteDuration = new Decimal('0');
 
@@ -15,11 +15,11 @@ export class DailyOvertimeCounter implements OvertimeCounter {
     // ISO week of year is Monday-based
     // TODO could also check currentDay.year as well - in case the days are exactly 1 year apart
     if (shift.startTime.toLocalDate().isoWeekOfWeekyear() !== this.currentDay?.isoWeekOfWeekyear()) {
-      this.exemptDaysRemaining = retailAwardDetails.dailyHours.exemptDaysPerWeek;
+      this.exemptDaysRemaining = retailAwardDetails.dailyWorkedTime.exemptDaysPerWeek;
       this.timeWorkedInCurrentDay = new Decimal('0');
       this.currentDay = shift.startTime.toLocalDate();
     } else if (!shift.startTime.toLocalDate().equals(this.currentDay)) {
-      if (this.timeWorkedInCurrentDay.greaterThan(retailAwardDetails.dailyHours.maxPerDay)) {
+      if (this.timeWorkedInCurrentDay.greaterThan(retailAwardDetails.dailyWorkedTime.maxPerDay)) {
         this.exemptDaysRemaining--;
       }
       this.timeWorkedInCurrentDay = new Decimal('0');
@@ -44,8 +44,8 @@ export class DailyOvertimeCounter implements OvertimeCounter {
 
   private remainingRegularTime(): IncrementalMinuteDuration {
     const totalRegularHoursForDay = this.exemptDaysRemaining > 0 ?
-      retailAwardDetails.dailyHours.maxPerDayExempted :
-      retailAwardDetails.dailyHours.maxPerDay;
+      retailAwardDetails.dailyWorkedTime.maxPerDayExempted :
+      retailAwardDetails.dailyWorkedTime.maxPerDay;
 
     return Decimal.max(totalRegularHoursForDay.minus(this.timeWorkedInCurrentDay), new Decimal('0'));
   }
