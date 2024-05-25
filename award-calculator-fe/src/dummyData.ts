@@ -50,6 +50,7 @@ export const dummyWorkerPayableOutcomes: WorkerPayable[] = [
             payableAmount: new Decimal('5150'),
           },
         ],
+        overtimeSpans: [],
         payableAmount: new Decimal('27681'),
       },
       {
@@ -84,6 +85,7 @@ export const dummyWorkerPayableOutcomes: WorkerPayable[] = [
             payableAmount: new Decimal('5150'),
           },
         ],
+        overtimeSpans: [],
         payableAmount: new Decimal('27681'),
       },
     ],
@@ -117,6 +119,7 @@ export const dummyWorkerPayableOutcomes: WorkerPayable[] = [
             payableAmount: new Decimal('21375'),
           },
         ],
+        overtimeSpans: [],
         payableAmount: new Decimal('21375'),
       },
     ],
