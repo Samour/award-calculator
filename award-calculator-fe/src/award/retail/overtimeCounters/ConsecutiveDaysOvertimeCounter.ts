@@ -1,6 +1,7 @@
 import { Duration, ZonedDateTime } from '@js-joda/core';
 import { OvertimeCounter } from 'award/TimeClassifier';
 import { WorkerShift } from 'models/inputs/shift';
+import { OvertimeReason } from 'models/outputs/payable';
 import { TimeSpan, toStartOfDay } from 'models/time';
 import { retailAwardDetails } from '../retailAwardDetails';
 
@@ -8,6 +9,8 @@ export class ConsecutiveDaysOvertimeCounter implements OvertimeCounter {
 
   private currentWorkDay?: ZonedDateTime;
   private consecutiveWorkedDaysCount: number = 1;
+
+  readonly reason: OvertimeReason = OvertimeReason.CONSECUTIVE_DAYS;
 
   countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
     // Assumption: shift does not cross days

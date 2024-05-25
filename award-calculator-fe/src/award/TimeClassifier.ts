@@ -22,7 +22,7 @@ export interface TimeClassification {
 }
 
 export interface OvertimeCounter {
-  reason: OvertimeReason;
+  readonly reason: OvertimeReason;
   countOvertimeInShift(shift: WorkerShift): TimeSpan[];
 }
 

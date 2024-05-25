@@ -1,12 +1,15 @@
 import { Duration, ZonedDateTime } from '@js-joda/core';
 import { OvertimeCounter } from 'award/TimeClassifier';
 import { WorkerShift } from 'models/inputs/shift';
+import { OvertimeReason } from 'models/outputs/payable';
 import { TimeSpan, toStartOfDay } from 'models/time';
 import { retailAwardDetails } from '../retailAwardDetails';
 
 export class DailyShiftGapOvertimeCounter implements OvertimeCounter {
 
   private lastShiftEnd?: ZonedDateTime;
+
+  readonly reason: OvertimeReason = OvertimeReason.SHIFT_GAP;
 
   countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
     if (!this.lastShiftEnd) {

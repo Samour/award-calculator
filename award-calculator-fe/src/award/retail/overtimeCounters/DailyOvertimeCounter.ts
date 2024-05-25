@@ -2,6 +2,7 @@ import { Duration, LocalDate } from '@js-joda/core';
 import Decimal from 'decimal.js';
 import { OvertimeCounter } from 'award/TimeClassifier';
 import { WorkerShift } from 'models/inputs/shift';
+import { OvertimeReason } from 'models/outputs/payable';
 import { IncrementalMinuteDuration, TimeSpan } from 'models/time';
 import { retailAwardDetails } from '../retailAwardDetails';
 
@@ -10,6 +11,8 @@ export class DailyOvertimeCounter implements OvertimeCounter {
   private exemptDaysRemaining: number = retailAwardDetails.dailyWorkedTime.exemptDaysPerWeek;
   private currentDay?: LocalDate;
   private timeWorkedInCurrentDay: IncrementalMinuteDuration = new Decimal('0');
+
+  readonly reason: OvertimeReason = OvertimeReason.DAILY_HOURS;
 
   countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
     // ISO week of year is Monday-based

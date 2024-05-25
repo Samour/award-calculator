@@ -1,10 +1,13 @@
 import { LocalTime, ZonedDateTime } from '@js-joda/core';
 import { OvertimeCounter } from 'award/TimeClassifier';
 import { WorkerShift } from 'models/inputs/shift';
+import { OvertimeReason } from 'models/outputs/payable';
 import { TimeSpan } from 'models/time';
 import { retailAwardDetails } from '../retailAwardDetails';
 
 export class RegularWorkingHoursOvertimeCounter implements OvertimeCounter {
+
+  readonly reason: OvertimeReason = OvertimeReason.WORKING_HOURS;
 
   countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
     // Assumption: shift does not cross days
