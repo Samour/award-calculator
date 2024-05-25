@@ -4,25 +4,22 @@ import flags from 'flags';
 import strings from 'strings';
 import { AppState } from 'models/store';
 import { ShiftPayableRow } from 'models/outputs/table';
-import { closePayBreakdownModal, showOvertimeReasons } from 'store/payReport';
+import { closePayBreakdownModal, selectOpenPayBreakdownRow, showOvertimeReasons } from 'store/payReport';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
 import LabelledSwitch from 'Components/LabelledSwitch';
 import Modal from 'Components/Modal';
-import ShiftPayComponentRow from './ShiftPayComponentRow';
+import ShiftPayComponentTable from './ShiftPayComponentTable';
 
 interface ShiftBreakdownModalState {
   payableRowData?: ShiftPayableRow;
   shouldShowOvertimeReasons: boolean;
 }
 
-const selector = (state: AppState): ShiftBreakdownModalState => {
-  const openRowIndex = state.payReport.payBreakdownModalRow;
-  return {
-    payableRowData: openRowIndex != undefined ? state.payReport.payableShifts[openRowIndex] : undefined,
-    shouldShowOvertimeReasons: state.payReport.viewOptions.showOvertimeReasons,
-  };
-};
+const selector = (state: AppState): ShiftBreakdownModalState => ({
+  payableRowData: selectOpenPayBreakdownRow(state),
+  shouldShowOvertimeReasons: state.payReport.viewOptions.showOvertimeReasons,
+});
 
 const ShiftBreakdownModal = (): JSX.Element => {
   const { payableRowData, shouldShowOvertimeReasons } = useSelector(selector);
@@ -56,10 +53,6 @@ const ShiftBreakdownModal = (): JSX.Element => {
   if (!payableRowData) {
     return (<></>);
   }
-
-  const payComponentRows = payableRowData.increments.map((payableTime, i) => (
-    <ShiftPayComponentRow key={i} classifiedPayableTime={payableTime} />
-  ));
 
   return (
     <Modal className="shift-pay-breakdown-modal" open={true} backdrop={false} onClose={onClose}>
@@ -103,21 +96,7 @@ const ShiftBreakdownModal = (): JSX.Element => {
         </div>
         <div className="row compact">
           <div className="twelve columns">
-            <table className="u-full-width">
-              <thead>
-                <tr>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.payType}</th>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.loadingRate}</th>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.effectiveStartTime}</th>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.effectiveEndTime}</th>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.payableDuration}</th>
-                  <th>{strings.screens.payReport.shiftBreakdownModal.tableHeadings.payableAmount}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payComponentRows}
-              </tbody>
-            </table>
+            <ShiftPayComponentTable />
           </div>
         </div>
         <div className="row compact">

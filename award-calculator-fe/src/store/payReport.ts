@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ShiftPayableRow } from 'models/outputs/table';
+import { AppState } from 'models/store';
 import { PayReportState } from 'models/store/payReport';
 
 const initialState: PayReportState = {
@@ -37,10 +38,16 @@ const {
   },
 });
 
+const selectOpenPayBreakdownRow = (state: AppState): ShiftPayableRow | undefined => {
+  const openRowIndex = state.payReport.payBreakdownModalRow;
+  return openRowIndex === undefined ? undefined : state.payReport.payableShifts[openRowIndex];
+};
+
 export {
   showOvertimeReasons,
   openPayBreakdownModal,
   closePayBreakdownModal,
   populatePayableRows,
   reducer as payReportReducer,
+  selectOpenPayBreakdownRow,
 };
