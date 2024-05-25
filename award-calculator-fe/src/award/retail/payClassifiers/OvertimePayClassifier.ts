@@ -25,7 +25,8 @@ export class OvertimePayClassifier implements PayClassifier {
 
       const overtimePayable: ClassifiedPayableTime[] = [];
       const dtThreshold = retailAwardDetails.doubleTimeThresholds[startTime.dayOfWeek().name()];
-      const timeAndHalfAllocation = Decimal.min(dtThreshold.minus(this.currentDayOTCount), duration);
+      const remainingTimeAndHalf = Decimal.max(dtThreshold.minus(this.currentDayOTCount), new Decimal('0'));
+      const timeAndHalfAllocation = Decimal.min(remainingTimeAndHalf, duration);
       if (timeAndHalfAllocation.greaterThan(0)) {
         const loading = retailAwardDetails.loadings[LoadingClassification.TIME_AND_A_HALF];
         overtimePayable.push({
