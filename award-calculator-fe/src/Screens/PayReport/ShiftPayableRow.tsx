@@ -1,13 +1,18 @@
+import { useDispatch } from 'react-redux';
 import { renderAsDollars } from 'formatters/money';
 import { renderAsLocalDate } from 'formatters/time';
 import { ShiftPayableRow as ShiftPayableRowData } from 'models/outputs/table';
+import { openPayBreakdownModal } from 'store/payReport';
 
 interface ShiftPayableRowProps {
+  rowIndex: number;
   rowData: ShiftPayableRowData;
-  onShowDetails: () => void;
 }
 
-const ShiftPayableRow = ({ rowData, onShowDetails }: ShiftPayableRowProps): JSX.Element => {
+const ShiftPayableRow = ({ rowIndex, rowData }: ShiftPayableRowProps): JSX.Element => {
+  const dispatch = useDispatch();
+  const onShowDetails = () => dispatch(openPayBreakdownModal(rowIndex));
+
   return (
     <tr>
       <td>{rowData.sourceRow + 1}</td>

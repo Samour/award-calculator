@@ -6,12 +6,15 @@ const initialState: PayReportState = {
   viewOptions: {
     showOvertimeReasons: false,
   },
+  payBreakdownModalRow: undefined,
   payableShifts: [],
 };
 
 const {
-  actions: { 
+  actions: {
     showOvertimeReasons,
+    openPayBreakdownModal,
+    closePayBreakdownModal,
     populatePayableRows,
   },
   reducer,
@@ -22,6 +25,12 @@ const {
     showOvertimeReasons: (state, action: PayloadAction<boolean>) => {
       state.viewOptions.showOvertimeReasons = action.payload;
     },
+    openPayBreakdownModal: (state, action: PayloadAction<number>) => {
+      state.payBreakdownModalRow = action.payload;
+    },
+    closePayBreakdownModal: (state) => {
+      state.payBreakdownModalRow = undefined;
+    },
     populatePayableRows: (state, action: PayloadAction<ShiftPayableRow[]>) => {
       state.payableShifts = action.payload;
     },
@@ -30,6 +39,8 @@ const {
 
 export {
   showOvertimeReasons,
+  openPayBreakdownModal,
+  closePayBreakdownModal,
   populatePayableRows,
   reducer as payReportReducer,
 };

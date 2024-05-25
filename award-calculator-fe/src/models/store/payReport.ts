@@ -6,5 +6,6 @@ export interface ViewOptions {
 
 export interface PayReportState {
   viewOptions: ViewOptions;
+  payBreakdownModalRow: number | undefined;
   payableShifts: ShiftPayableRow[];
 }

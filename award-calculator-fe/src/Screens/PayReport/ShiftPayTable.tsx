@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import strings from 'strings';
 import { AppState } from 'models/store';
@@ -10,19 +9,14 @@ const selector = (state: AppState): ShiftPayableRowData[] => state.payReport.pay
 
 const ShiftPayTable = (): JSX.Element => {
   const rowData = useSelector(selector);
-  const [activeShiftBreakdown, setActiveShiftBreakdown] = useState<ShiftPayableRowData>();
 
-  const closeModal = () => setActiveShiftBreakdown(undefined);
-
-  const rowElements = rowData.map((rowData) => (
-    <ShiftPayableRow key={rowData.sourceRow} rowData={rowData}
-      onShowDetails={() => setActiveShiftBreakdown(rowData)} />
+  const rowElements = rowData.map((rowData, i) => (
+    <ShiftPayableRow key={rowData.sourceRow} rowIndex={i} rowData={rowData} />
   ));
 
   return (
     <div className="ShiftPayTable">
-      <ShiftBreakdownModal open={!!activeShiftBreakdown} payableRowData={activeShiftBreakdown}
-        onClose={closeModal} />
+      <ShiftBreakdownModal />
       <table className="u-full-width">
         <thead>
           <tr>

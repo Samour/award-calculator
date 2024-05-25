@@ -4,22 +4,29 @@ import flags from 'flags';
 import strings from 'strings';
 import { AppState } from 'models/store';
 import { ShiftPayableRow } from 'models/outputs/table';
-import { showOvertimeReasons } from 'store/payReport';
+import { closePayBreakdownModal, showOvertimeReasons } from 'store/payReport';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
 import LabelledSwitch from 'Components/LabelledSwitch';
 import Modal from 'Components/Modal';
 import ShiftPayComponentRow from './ShiftPayComponentRow';
 
-interface ShiftBreakdownModalProps {
-  open: boolean;
+interface ShiftBreakdownModalState {
   payableRowData?: ShiftPayableRow;
-  onClose: () => void;
+  shouldShowOvertimeReasons: boolean;
 }
 
-const selector = (state: AppState): boolean => state.payReport.viewOptions.showOvertimeReasons;
+const selector = (state: AppState): ShiftBreakdownModalState => {
+  const openRowIndex = state.payReport.payBreakdownModalRow;
+  return {
+    payableRowData: openRowIndex != undefined ? state.payReport.payableShifts[openRowIndex] : undefined,
+    shouldShowOvertimeReasons: state.payReport.viewOptions.showOvertimeReasons,
+  };
+};
 
-const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownModalProps): JSX.Element => {
+const ShiftBreakdownModal = (): JSX.Element => {
+  const { payableRowData, shouldShowOvertimeReasons } = useSelector(selector);
+
   useEffect(() => {
     if (!!payableRowData) {
       (window as any).debugShiftInfo = () => console.log(payableRowData);
@@ -28,11 +35,12 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
     }
   }, [payableRowData]);
 
-  const shouldShowOvertimeReasons = useSelector(selector);
   const dispatch = useDispatch();
   const onShowOvertimeReasonsChange = (checked: boolean) => {
     dispatch(showOvertimeReasons(checked));
   };
+
+  const onClose = () => dispatch(closePayBreakdownModal());
 
   const overtimeReasonsToggle = flags.showOvertimeReasonsToggle ? (
     <div className="six columns">
@@ -54,7 +62,7 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
   ));
 
   return (
-    <Modal className="shift-pay-breakdown-modal" open={open} backdrop={false} onClose={onClose}>
+    <Modal className="shift-pay-breakdown-modal" open={true} backdrop={false} onClose={onClose}>
       <div className="shift-pay-breakdown-modal-content">
         <div className="row compact">
           <div className="twelve columns">
