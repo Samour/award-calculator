@@ -86,6 +86,7 @@ const strings = {
         shiftEndTime: 'Shift end time:',
         basePayRate: 'Base pay rate:',
         totalPayable: 'Total payable for shift:',
+        showOvertimeReasonsToggle: 'Show overtime reasons',
         tableHeadings: {
           payType: 'Pay type',
           loadingRate: 'Loading rate',

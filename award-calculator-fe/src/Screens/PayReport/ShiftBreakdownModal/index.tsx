@@ -36,10 +36,12 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
 
   const overtimeReasonsToggle = flags.showOvertimeReasonsToggle ? (
     <div className="six columns">
-      <LabelledSwitch
-        label='SHOW_OVERTIME_REASONS'
-        checked={shouldShowOvertimeReasons}
-        onChange={onShowOvertimeReasonsChange} />
+      <div className="u-pull-right">
+        <LabelledSwitch
+          label={strings.screens.payReport.shiftBreakdownModal.showOvertimeReasonsToggle}
+          checked={shouldShowOvertimeReasons}
+          onChange={onShowOvertimeReasonsChange} />
+      </div>
     </div>
   ) : (<></>);
 
