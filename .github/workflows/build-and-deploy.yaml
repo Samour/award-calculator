@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: app-set-version
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: generate_version
         run: .github/scripts/generate_version.sh
     outputs:
@@ -19,8 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
       - run: npm ci
@@ -29,7 +29,7 @@ jobs:
         working-directory: award-calculator-fe
       - run: npm run build
         working-directory: award-calculator-fe
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: fe-artifact
           path: award-calculator-fe/build/*
@@ -47,7 +47,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-2
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: fe-artifact
       - run: aws s3 sync . s3://award-calculator.ellie.aburke.me/app/$APP_VERSION/web
@@ -61,7 +61,7 @@ jobs:
     env:
       APP_VERSION: ${{ needs.set-version.outputs.app_version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
