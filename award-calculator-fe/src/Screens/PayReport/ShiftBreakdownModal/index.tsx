@@ -10,6 +10,7 @@ import { renderAsDollars } from 'formatters/money';
 import LabelledSwitch from 'Components/LabelledSwitch';
 import Modal from 'Components/Modal';
 import ShiftPayComponentTable from './ShiftPayComponentTable';
+import ShiftOvertimeReasonsTable from './ShiftOvertimeReasonsTable';
 
 interface ShiftBreakdownModalState {
   payableRowData?: ShiftPayableRow;
@@ -46,6 +47,14 @@ const ShiftBreakdownModal = (): JSX.Element => {
           label={strings.screens.payReport.shiftBreakdownModal.showOvertimeReasonsToggle}
           checked={shouldShowOvertimeReasons}
           onChange={onShowOvertimeReasonsChange} />
+      </div>
+    </div>
+  ) : (<></>);
+
+  const overtimeReasonsTable = shouldShowOvertimeReasons ? (
+    <div className="row compact">
+      <div className="twelve columns">
+        <ShiftOvertimeReasonsTable />
       </div>
     </div>
   ) : (<></>);
@@ -94,6 +103,7 @@ const ShiftBreakdownModal = (): JSX.Element => {
           </div>
           {overtimeReasonsToggle}
         </div>
+        {overtimeReasonsTable}
         <div className="row compact">
           <div className="twelve columns">
             <ShiftPayComponentTable />

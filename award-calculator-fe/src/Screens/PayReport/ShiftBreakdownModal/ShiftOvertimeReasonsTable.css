@@ -1,0 +1,5 @@
+.App .PayReport .ShiftOvertimeReasonsTable.no-overtime {
+  margin-bottom: 0;
+  text-align: center;
+  font-style: italic;
+}

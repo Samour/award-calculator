@@ -6,11 +6,7 @@ import ShiftPayComponentRow from './ShiftPayComponentRow';
 const ShiftPayComponentTable = (): JSX.Element => {
   const payableRowData = useSelector(selectOpenPayBreakdownRow);
 
-  if (!payableRowData) {
-    return (<></>);
-  }
-
-  const payComponentRows = payableRowData.increments.map((payableTime, i) => (
+  const payComponentRows = payableRowData?.increments.map((payableTime, i) => (
     <ShiftPayComponentRow key={i} classifiedPayableTime={payableTime} />
   ));
 
