@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import flags from 'flags';
 import strings from 'strings';
 import { AppState } from 'models/store';
 import { ShiftPayableRow } from 'models/outputs/table';
@@ -46,17 +45,6 @@ const ShiftBreakdownModal = (): JSX.Element => {
   };
 
   const onClose = () => dispatch(closePayBreakdownModal());
-
-  const overtimeReasonsToggle = flags.showOvertimeReasonsToggle ? (
-    <div className="six columns">
-      <div className="u-pull-right">
-        <LabelledSwitch
-          label={strings.screens.payReport.shiftBreakdownModal.showOvertimeReasonsToggle}
-          checked={shouldShowOvertimeReasons}
-          onChange={onShowOvertimeReasonsChange} />
-      </div>
-    </div>
-  ) : (<></>);
 
   const overtimeReasonsTable = shouldShowOvertimeReasons ? (
     <div className="row compact">
@@ -108,7 +96,14 @@ const ShiftBreakdownModal = (): JSX.Element => {
               </div>
             </div>
           </div>
-          {overtimeReasonsToggle}
+          <div className="six columns">
+            <div className="u-pull-right">
+              <LabelledSwitch
+                label={strings.screens.payReport.shiftBreakdownModal.showOvertimeReasonsToggle}
+                checked={shouldShowOvertimeReasons}
+                onChange={onShowOvertimeReasonsChange} />
+            </div>
+          </div>
         </div>
         {overtimeReasonsTable}
         <div className="row compact">
