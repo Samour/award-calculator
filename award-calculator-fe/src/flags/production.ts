@@ -4,5 +4,5 @@ export const productionFlags: FeatureFlags = {
   simulateComputationDelay: 0,
   recordCalculationTiming: false,
   useDummyCalculationResult: false,
-  showOvertimeReasonsToggle: false,
+  showOvertimeReasonsToggle: true,
 };

@@ -5,6 +5,7 @@ import { PayReportState } from 'models/store/payReport';
 
 const initialState: PayReportState = {
   viewOptions: {
+    // TODO Maybe persist this in localstorage
     showOvertimeReasons: false,
   },
   payBreakdownModalRow: undefined,
