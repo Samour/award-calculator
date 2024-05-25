@@ -1,5 +1,5 @@
 import { WorkerShiftColumnName } from 'models/inputs/table';
-import { LoadingClassification } from 'models/outputs/payable';
+import { LoadingClassification, OvertimeReason } from 'models/outputs/payable';
 
 const workerShiftTableHeaderNames: { [key in WorkerShiftColumnName]: string } = {
   employeeCode: 'Employee code',
@@ -87,6 +87,14 @@ const strings = {
         basePayRate: 'Base pay rate:',
         totalPayable: 'Total payable for shift:',
         showOvertimeReasonsToggle: 'Show overtime reasons',
+        overtimeReasons: {
+          noOvertime: 'This shift does not have any overtime',
+          tableHeadings: {
+            overtimeReason: 'Overtime reason',
+            effectiveStartTime: 'Effective start time',
+            effectiveEndTime: 'Effective end time',
+          },
+        },
         tableHeadings: {
           payType: 'Pay type',
           loadingRate: 'Loading rate',
@@ -114,6 +122,13 @@ const strings = {
     [LoadingClassification.DOUBLE_TIME]: 'Overtime (double time)',
     [LoadingClassification.WEEKEND_PENALTY]: 'Weekend penalty rate',
     [LoadingClassification.CASUAL]: 'Casual loading',
+  },
+  overtimeReason: {
+    [OvertimeReason.CONSECUTIVE_DAYS]: 'Too many consecutive working days',
+    [OvertimeReason.DAILY_HOURS]: 'Too many hours worked in a single day',
+    [OvertimeReason.FORTNIGHTLY_HOURS]: 'Too many hours worked in a single fortnight',
+    [OvertimeReason.SHIFT_GAP]: 'Insufficient gap between shifts',
+    [OvertimeReason.WORKING_HOURS]: 'Time worked outside of regular working hours',
   },
   exceptions: {
     csvShiftUpload: {

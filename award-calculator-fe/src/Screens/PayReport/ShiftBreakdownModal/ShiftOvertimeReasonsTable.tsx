@@ -1,18 +1,21 @@
+import strings from 'strings';
 import { useSelector } from 'react-redux';
 import { renderAsLocalTime } from 'formatters/time';
 import { selectOpenPayBreakdownRow } from 'store/payReport';
 import './ShiftOvertimeReasonsTable.css';
 
+const overtimeReasonsStrings = strings.screens.payReport.shiftBreakdownModal.overtimeReasons;
+
 const ShiftOvertimeReasonsTable = (): JSX.Element => {
   const payableRowData = useSelector(selectOpenPayBreakdownRow);
 
   if (!payableRowData?.overtimeSpans.length) {
-    return (<p className='ShiftOvertimeReasonsTable no-overtime'>NO_OVERTIME</p>);
+    return (<p className='ShiftOvertimeReasonsTable no-overtime'>{overtimeReasonsStrings.noOvertime}</p>);
   }
 
   const overtimeReasonRows = payableRowData.overtimeSpans.map((overtime, i) => (
     <tr key={i}>
-      <td>{overtime.reason}</td>
+      <td>{strings.overtimeReason[overtime.reason]}</td>
       <td>{renderAsLocalTime(overtime.startTime)}</td>
       <td>{renderAsLocalTime(overtime.endTime)}</td>
     </tr>
@@ -22,9 +25,9 @@ const ShiftOvertimeReasonsTable = (): JSX.Element => {
     <table className="u-full-width">
       <thead>
         <tr>
-          <th>OVERTIME_REASON</th>
-          <th>EFFECTIVE_START_TIME</th>
-          <th>EFFECTIVE_END_TIME</th>
+          <th>{overtimeReasonsStrings.tableHeadings.overtimeReason}</th>
+          <th>{overtimeReasonsStrings.tableHeadings.effectiveStartTime}</th>
+          <th>{overtimeReasonsStrings.tableHeadings.effectiveEndTime}</th>
         </tr>
       </thead>
       <tbody>
