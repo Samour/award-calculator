@@ -5,10 +5,10 @@ const SHIFT_START_TIME = ZonedDateTime.parse('2023-09-22T08:00:00Z');
 const SHIFT_END_TIME = SHIFT_START_TIME.plusHours(1);
 
 const makeOvertimeCounter = (minutesStart: number, minutesEnd: number): OvertimeCounter => ({
-  countOvertimeInShift: () => ({
+  countOvertimeInShift: () => [{
     startTime: SHIFT_START_TIME.plusMinutes(minutesStart),
     endTime: SHIFT_START_TIME.plusMinutes(minutesEnd),
-  }),
+  }],
 });
 
 const expectWorkedTime = (workerTime: ClassifiedWorkedTime) => ({
