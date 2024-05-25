@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import flags from 'flags';
 import strings from 'strings';
@@ -7,6 +7,7 @@ import { ShiftPayableRow } from 'models/outputs/table';
 import { showOvertimeReasons } from 'store/payReport';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
+import LabelledSwitch from 'Components/LabelledSwitch';
 import Modal from 'Components/Modal';
 import ShiftPayComponentRow from './ShiftPayComponentRow';
 
@@ -27,17 +28,18 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
     }
   }, [payableRowData]);
 
-  // WIP - shouldShowOvertimeReasons not yet being used
-  const shouldShowOvertimeReasons = useSelector(selector); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const shouldShowOvertimeReasons = useSelector(selector);
   const dispatch = useDispatch();
-  const onShowOvertimeReasonsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(showOvertimeReasons(e.target.checked));
+  const onShowOvertimeReasonsChange = (checked: boolean) => {
+    dispatch(showOvertimeReasons(checked));
   };
 
   const overtimeReasonsToggle = flags.showOvertimeReasonsToggle ? (
     <div className="six columns">
-      <input onChange={onShowOvertimeReasonsChange} type="checkbox" id="show_overtime_reasons" />
-      <label style={{ display: 'inline' }} htmlFor="show_overtime_reasons">&nbsp;SHOW_OVERTIME_REASONS</label>
+      <LabelledSwitch
+        label='SHOW_OVERTIME_REASONS'
+        checked={shouldShowOvertimeReasons}
+        onChange={onShowOvertimeReasonsChange} />
     </div>
   ) : (<></>);
 
