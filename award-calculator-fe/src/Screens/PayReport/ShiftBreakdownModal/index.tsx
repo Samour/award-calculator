@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import strings from 'strings';
 import { ShiftPayableRow } from 'models/outputs/table';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
@@ -12,6 +13,14 @@ interface ShiftBreakdownModalProps {
 }
 
 const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownModalProps): JSX.Element => {
+  useEffect(() => {
+    if (!!payableRowData) {
+      (window as any).debugShiftInfo = () => console.log(payableRowData);
+    } else {
+      (window as any).debugShiftInfo = () => console.warn('Select a shift to display info');
+    }
+  }, [payableRowData]);
+  
   if (!payableRowData) {
     return (<></>);
   }
