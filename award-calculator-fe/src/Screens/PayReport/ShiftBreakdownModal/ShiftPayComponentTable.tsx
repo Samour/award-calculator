@@ -1,13 +1,21 @@
 import { useSelector } from 'react-redux';
 import strings from 'strings';
 import { selectOpenPayBreakdownRow } from 'store/payReport';
-import ShiftPayComponentRow from './ShiftPayComponentRow';
+import { renderAsDollars, renderLoadingRate } from 'formatters/money';
+import { renderAsLocalTime, renderDuration } from 'formatters/time';
 
 const ShiftPayComponentTable = (): JSX.Element => {
   const payableRowData = useSelector(selectOpenPayBreakdownRow);
 
   const payComponentRows = payableRowData?.increments.map((payableTime, i) => (
-    <ShiftPayComponentRow key={i} classifiedPayableTime={payableTime} />
+    <tr key={i}>
+      <td>{strings.loadingClassification[payableTime.classification]}</td>
+      <td>{renderLoadingRate(payableTime.loading)}</td>
+      <td>{renderAsLocalTime(payableTime.startTime)}</td>
+      <td>{renderAsLocalTime(payableTime.endTime)}</td>
+      <td>{renderDuration(payableTime.duration)}</td>
+      <td>{renderAsDollars(payableTime.payableAmount, 4)}</td>
+    </tr>
   ));
 
   return (
