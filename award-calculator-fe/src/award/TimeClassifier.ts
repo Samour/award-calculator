@@ -1,6 +1,7 @@
 import { Duration } from '@js-joda/core';
 import Decimal from 'decimal.js';
 import { WorkerShift } from 'models/inputs/shift';
+import { ClassifiedOvertimeSpan, OvertimeReason } from 'models/outputs/payable';
 import { IncrementalMinuteDuration, ShiftTimestamp, TimeSpan, comparingTime } from 'models/time';
 
 export enum WorkTimeClassification {
@@ -15,7 +16,13 @@ export interface ClassifiedWorkedTime {
   classification: WorkTimeClassification;
 }
 
+export interface TimeClassification {
+  classifiedWorkedTime: ClassifiedWorkedTime[];
+  classifiedOvertime: ClassifiedOvertimeSpan[];
+}
+
 export interface OvertimeCounter {
+  reason: OvertimeReason;
   countOvertimeInShift(shift: WorkerShift): TimeSpan[];
 }
 
@@ -23,9 +30,13 @@ export class TimeClassifier {
 
   constructor(private readonly overtimeCounters: OvertimeCounter[]) { }
 
-  classifyShift(shift: WorkerShift): ClassifiedWorkedTime[] {
-    const overtimeSpans = this.overtimeCounters.map((counter) => counter.countOvertimeInShift(shift))
-      .flat();
+  classifyShift(shift: WorkerShift): TimeClassification {
+    const overtimeSpans = this.overtimeCounters.map((counter): ClassifiedOvertimeSpan[] =>
+      counter.countOvertimeInShift(shift).map((s) => ({
+        ...s,
+        reason: counter.reason,
+      }))
+    ).flat();
     overtimeSpans.sort(comparingTime);
 
     const mergedOvertimeSpans = this.mergeSpans(overtimeSpans);
@@ -41,7 +52,7 @@ export class TimeClassifier {
           classification: WorkTimeClassification.REGULAR_TIME,
         });
       }
-      
+
       classifiedTime.push({
         startTime: span.startTime,
         endTime: span.endTime,
@@ -60,7 +71,10 @@ export class TimeClassifier {
       });
     }
 
-    return classifiedTime;
+    return {
+      classifiedWorkedTime: classifiedTime,
+      classifiedOvertime: overtimeSpans,
+    };
   }
 
   private mergeSpans(overtimeSpans: TimeSpan[]): TimeSpan[] {

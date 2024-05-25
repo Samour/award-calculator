@@ -1,5 +1,5 @@
 import { WorkerCode, WorkerName } from 'models/inputs/worker';
-import { LoadingClassification } from './payable';
+import { LoadingClassification, OvertimeReason } from './payable';
 
 export interface SerializableWorker {
   code: WorkerCode;
@@ -22,10 +22,17 @@ export interface SerializablePayableTime {
   payableAmount: string;
 }
 
+export interface SerializableOvertimeSpan {
+  startTime: string;
+  endTime: string;
+  reason: OvertimeReason;
+}
+
 export interface ShiftPayableRow {
   sourceRow: number;
   worker: SerializableWorker;
   shift: SerializableShift;
   increments: SerializablePayableTime[];
+  overtimeSpans: SerializableOvertimeSpan[];
   payableAmount: string;
 }

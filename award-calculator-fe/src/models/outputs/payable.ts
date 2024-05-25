@@ -1,7 +1,7 @@
 import { WorkerShift } from 'models/inputs/shift';
 import { Worker } from 'models/inputs/worker';
 import { IncrementalMonetaryAmount, LoadingRate, MonetaryAmount } from 'models/money';
-import { IncrementalMinuteDuration, ShiftTimestamp } from 'models/time';
+import { IncrementalMinuteDuration, ShiftTimestamp, TimeSpan } from 'models/time';
 
 export interface WorkerPayable {
   worker: Worker;
@@ -11,6 +11,7 @@ export interface WorkerPayable {
 
 export interface ShiftPayable {
   shift: WorkerShift;
+  overtimeSpans: ClassifiedOvertimeSpan[];
   increments: ClassifiedPayableTime[];
   payableAmount: MonetaryAmount;
 }
@@ -23,6 +24,18 @@ export enum LoadingClassification {
   CASUAL = 'CASUAL',
 }
 
+export enum OvertimeReason {
+  CONSECUTIVE_DAYS = 'CONSECUTIVE_DAYS',
+  DAILY_HOURS = 'DAILY_HOURS',
+  SHIFT_GAP = 'SHIFT_GAP',
+  FORTNIGHTLY_HOURS = 'FORTNIGHTLY_HOURS',
+  WORKING_HOURS = 'WORKING_HOURS',
+}
+
+export interface ClassifiedOvertimeSpan extends TimeSpan {
+  reason: OvertimeReason;
+}
+
 export interface ClassifiedPayableTime {
   startTime: ShiftTimestamp;
   endTime: ShiftTimestamp;
@@ -30,6 +43,4 @@ export interface ClassifiedPayableTime {
   classification: LoadingClassification;
   loading: LoadingRate;
   payableAmount: IncrementalMonetaryAmount;
-  // TODO we could consider adding some kind of "reason" field here to display in UI
-  // Eg. "penalty rate of 25% applied because of regular time worked on a Saturday"
 }

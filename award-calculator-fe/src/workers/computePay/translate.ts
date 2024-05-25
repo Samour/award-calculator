@@ -58,5 +58,10 @@ export const translateToShiftPayableRows = (payable: WorkerPayable): ShiftPayabl
       loading: increment.loading.toString(),
       payableAmount: increment.payableAmount.toString(),
     })),
+    overtimeSpans: shift.overtimeSpans.map((span) => ({
+      startTime: span.startTime.toString(),
+      endTime: span.endTime.toString(),
+      reason: span.reason,
+    })),
     payableAmount: shift.payableAmount.toString(),
   }));

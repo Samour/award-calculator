@@ -1,10 +1,12 @@
 import { ZonedDateTime } from '@js-joda/core';
 import { ClassifiedWorkedTime, OvertimeCounter, TimeClassifier, WorkTimeClassification } from 'award/TimeClassifier';
+import { OvertimeReason } from 'models/outputs/payable';
 
 const SHIFT_START_TIME = ZonedDateTime.parse('2023-09-22T08:00:00Z');
 const SHIFT_END_TIME = SHIFT_START_TIME.plusHours(1);
 
-const makeOvertimeCounter = (minutesStart: number, minutesEnd: number): OvertimeCounter => ({
+const makeOvertimeCounter = (reason: OvertimeReason, minutesStart: number, minutesEnd: number): OvertimeCounter => ({
+  reason,
   countOvertimeInShift: () => [{
     startTime: SHIFT_START_TIME.plusMinutes(minutesStart),
     endTime: SHIFT_START_TIME.plusMinutes(minutesEnd),
