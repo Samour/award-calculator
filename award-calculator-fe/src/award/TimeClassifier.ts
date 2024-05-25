@@ -35,7 +35,7 @@ export class TimeClassifier {
       counter.countOvertimeInShift(shift).map((s) => ({
         ...s,
         reason: counter.reason,
-      }))
+      })),
     ).flat();
     overtimeSpans.sort(comparingTime);
 

@@ -1,6 +1,6 @@
 import { ZonedDateTime } from '@js-joda/core';
 import { ClassifiedWorkedTime, OvertimeCounter, TimeClassifier, WorkTimeClassification } from 'award/TimeClassifier';
-import { OvertimeReason } from 'models/outputs/payable';
+import { ClassifiedOvertimeSpan, OvertimeReason } from 'models/outputs/payable';
 
 const SHIFT_START_TIME = ZonedDateTime.parse('2023-09-22T08:00:00Z');
 const SHIFT_END_TIME = SHIFT_START_TIME.plusHours(1);
@@ -13,6 +13,16 @@ const makeOvertimeCounter = (reason: OvertimeReason, minutesStart: number, minut
   }],
 });
 
+const asClassifiedOvertimeSpan = (
+  reason: OvertimeReason,
+  minutesStart: number,
+  minutesEnd: number,
+): ClassifiedOvertimeSpan => ({
+  reason,
+  startTime: SHIFT_START_TIME.plusMinutes(minutesStart),
+  endTime: SHIFT_START_TIME.plusMinutes(minutesEnd),
+});
+
 const expectWorkedTime = (workerTime: ClassifiedWorkedTime) => ({
   toEqual: (startMinutes: number, endMinutes: number, classification: WorkTimeClassification) => {
     expect(workerTime.startTime.toString()).toEqual(SHIFT_START_TIME.plusMinutes(startMinutes).toString());
@@ -22,9 +32,9 @@ const expectWorkedTime = (workerTime: ClassifiedWorkedTime) => ({
   },
 });
 
-const expectShiftClassifications = (overtimeSpans: [number, number][]) => {
+const expectShiftClassifications = (overtimeSpans: [OvertimeReason, number, number][]) => {
   const result = new TimeClassifier(
-    overtimeSpans.map(([start, end]) => makeOvertimeCounter(start, end)),
+    overtimeSpans.map(([reason, start, end]) => makeOvertimeCounter(reason, start, end)),
   ).classifyShift({
     sourceRow: 0,
     startTime: SHIFT_START_TIME,
@@ -32,10 +42,19 @@ const expectShiftClassifications = (overtimeSpans: [number, number][]) => {
   });
 
   return {
-    toHaveSpans: (expected: [number, number, WorkTimeClassification][]) => {
-      expect(result).toHaveLength(expected.length);
+    toHaveSpans: (
+      expected: [number, number, WorkTimeClassification][],
+      expectedOvertimeSpans?: [OvertimeReason, number, number][],
+    ) => {
+      expect(result.classifiedWorkedTime).toHaveLength(expected.length);
+      expect(result.classifiedOvertime).toHaveLength(overtimeSpans.length);
       expected.forEach((workedTime, idx) =>
-        expectWorkedTime(result[idx]).toEqual(workedTime[0], workedTime[1], workedTime[2]),
+        expectWorkedTime(result.classifiedWorkedTime[idx]).toEqual(workedTime[0], workedTime[1], workedTime[2]),
+      );
+      (expectedOvertimeSpans || overtimeSpans).map(([reason, start, end]) =>
+        asClassifiedOvertimeSpan(reason, start, end),
+      ).forEach((span, idx) =>
+        expect(result.classifiedOvertime[idx]).toEqual(span),
       );
     },
   };
@@ -52,8 +71,8 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 1', () => {
     expectShiftClassifications([
-      [15, 25],
-      [35, 45],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 25],
+      [OvertimeReason.DAILY_HOURS, 35, 45],
     ]).toHaveSpans([
       [0, 15, WorkTimeClassification.REGULAR_TIME],
       [15, 25, WorkTimeClassification.OVERTIME],
@@ -73,8 +92,8 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 2', () => {
     expectShiftClassifications([
-      [0, 15],
-      [30, 45],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 30, 45],
     ]).toHaveSpans([
       [0, 15, WorkTimeClassification.OVERTIME],
       [15, 30, WorkTimeClassification.REGULAR_TIME],
@@ -93,8 +112,8 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 3', () => {
     expectShiftClassifications([
-      [25, 35],
-      [45, 60],
+      [OvertimeReason.CONSECUTIVE_DAYS, 25, 35],
+      [OvertimeReason.DAILY_HOURS, 45, 60],
     ]).toHaveSpans([
       [0, 25, WorkTimeClassification.REGULAR_TIME],
       [25, 35, WorkTimeClassification.OVERTIME],
@@ -114,9 +133,9 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 4', () => {
     expectShiftClassifications([
-      [0, 15],
-      [15, 30],
-      [30, 45],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 30, 45],
     ]).toHaveSpans([
       [0, 45, WorkTimeClassification.OVERTIME],
       [45, 60, WorkTimeClassification.REGULAR_TIME],
@@ -134,12 +153,16 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 4 (unordered)', () => {
     expectShiftClassifications([
-      [0, 15],
-      [30, 45],
-      [15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 30, 45],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 30],
     ]).toHaveSpans([
       [0, 45, WorkTimeClassification.OVERTIME],
       [45, 60, WorkTimeClassification.REGULAR_TIME],
+    ], [
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 30],
+      [OvertimeReason.DAILY_HOURS, 30, 45],
     ]);
   });
 
@@ -167,7 +190,7 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime 6', () => {
     expectShiftClassifications([
-      [0, 60],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 60],
     ]).toHaveSpans([
       [0, 60, WorkTimeClassification.OVERTIME],
     ]);
@@ -184,9 +207,9 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 1', () => {
     expectShiftClassifications([
-      [0, 15],
-      [10, 20],
-      [30, 40],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 10, 20],
+      [OvertimeReason.CONSECUTIVE_DAYS, 30, 40],
     ]).toHaveSpans([
       [0, 20, WorkTimeClassification.OVERTIME],
       [20, 30, WorkTimeClassification.REGULAR_TIME],
@@ -206,9 +229,9 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 2', () => {
     expectShiftClassifications([
-      [0, 15],
-      [10, 35],
-      [30, 40],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 10, 35],
+      [OvertimeReason.CONSECUTIVE_DAYS, 30, 40],
     ]).toHaveSpans([
       [0, 40, WorkTimeClassification.OVERTIME],
       [40, 60, WorkTimeClassification.REGULAR_TIME],
@@ -226,12 +249,16 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 2 (unordered)', () => {
     expectShiftClassifications([
-      [0, 15],
-      [30, 40],
-      [10, 35],
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.DAILY_HOURS, 30, 40],
+      [OvertimeReason.CONSECUTIVE_DAYS, 10, 35],
     ]).toHaveSpans([
       [0, 40, WorkTimeClassification.OVERTIME],
       [40, 60, WorkTimeClassification.REGULAR_TIME],
+    ], [
+      [OvertimeReason.CONSECUTIVE_DAYS, 0, 15],
+      [OvertimeReason.CONSECUTIVE_DAYS, 10, 35],
+      [OvertimeReason.DAILY_HOURS, 30, 40],
     ]);
   });
 
@@ -246,9 +273,9 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 3', () => {
     expectShiftClassifications([
-      [15, 25],
-      [15, 30],
-      [40, 50],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 25],
+      [OvertimeReason.DAILY_HOURS, 15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 40, 50],
     ]).toHaveSpans([
       [0, 15, WorkTimeClassification.REGULAR_TIME],
       [15, 30, WorkTimeClassification.OVERTIME],
@@ -269,15 +296,19 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 3 (unordered)', () => {
     expectShiftClassifications([
-      [40, 50],
-      [15, 30],
-      [15, 25],
+      [OvertimeReason.CONSECUTIVE_DAYS, 40, 50],
+      [OvertimeReason.DAILY_HOURS, 15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 25],
     ]).toHaveSpans([
       [0, 15, WorkTimeClassification.REGULAR_TIME],
       [15, 30, WorkTimeClassification.OVERTIME],
       [30, 40, WorkTimeClassification.REGULAR_TIME],
       [40, 50, WorkTimeClassification.OVERTIME],
       [50, 60, WorkTimeClassification.REGULAR_TIME],
+    ], [
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 25],
+      [OvertimeReason.DAILY_HOURS, 15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 40, 50],
     ]);
   });
 
@@ -293,9 +324,9 @@ describe('TimeClassifier', () => {
    */
   test('should return spans of regular and overtime with overlapping overtime 4', () => {
     expectShiftClassifications([
-      [10, 20],
-      [10, 25],
-      [15, 30],
+      [OvertimeReason.CONSECUTIVE_DAYS, 10, 20],
+      [OvertimeReason.DAILY_HOURS, 10, 25],
+      [OvertimeReason.CONSECUTIVE_DAYS, 15, 30],
     ]).toHaveSpans([
       [0, 10, WorkTimeClassification.REGULAR_TIME],
       [10, 30, WorkTimeClassification.OVERTIME],
