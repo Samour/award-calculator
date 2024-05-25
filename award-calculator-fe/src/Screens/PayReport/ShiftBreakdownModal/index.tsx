@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import flags from 'flags';
 import strings from 'strings';
+import { AppState } from 'models/store';
 import { ShiftPayableRow } from 'models/outputs/table';
+import { showOvertimeReasons } from 'store/payReport';
 import { renderAsLocalDate, renderAsLocalTime } from 'formatters/time';
 import { renderAsDollars } from 'formatters/money';
 import Modal from 'Components/Modal';
@@ -12,6 +16,8 @@ interface ShiftBreakdownModalProps {
   onClose: () => void;
 }
 
+const selector = (state: AppState): boolean => state.payReport.viewOptions.showOvertimeReasons;
+
 const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownModalProps): JSX.Element => {
   useEffect(() => {
     if (!!payableRowData) {
@@ -20,7 +26,21 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
       (window as any).debugShiftInfo = () => console.warn('Select a shift to display info');
     }
   }, [payableRowData]);
-  
+
+  // WIP - shouldShowOvertimeReasons not yet being used
+  const shouldShowOvertimeReasons = useSelector(selector); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const dispatch = useDispatch();
+  const onShowOvertimeReasonsChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(showOvertimeReasons(e.target.checked));
+  };
+
+  const overtimeReasonsToggle = flags.showOvertimeReasonsToggle ? (
+    <div className="six columns">
+      <input onChange={onShowOvertimeReasonsChange} type="checkbox" id="show_overtime_reasons" />
+      <label style={{ display: 'inline' }} htmlFor="show_overtime_reasons">&nbsp;SHOW_OVERTIME_REASONS</label>
+    </div>
+  ) : (<></>);
+
   if (!payableRowData) {
     return (<></>);
   }
@@ -40,29 +60,34 @@ const ShiftBreakdownModal = ({ open, payableRowData, onClose }: ShiftBreakdownMo
             </strong>
           </div>
         </div>
-        <div className="row">
-          <div className="twelve columns">
-            {strings.screens.payReport.shiftBreakdownModal.shiftDate}&nbsp;
-            {renderAsLocalDate(payableRowData.shift.startTime)}
-          </div>
-        </div>
         <div className="row compact">
-          <div className="twelve columns">
-            {strings.screens.payReport.shiftBreakdownModal.shiftStartTime}&nbsp;
-            {renderAsLocalTime(payableRowData.shift.startTime)}
+          <div className="six columns">
+            <div className="row">
+              <div className="twelve columns">
+                {strings.screens.payReport.shiftBreakdownModal.shiftDate}&nbsp;
+                {renderAsLocalDate(payableRowData.shift.startTime)}
+              </div>
+            </div>
+            <div className="row compact">
+              <div className="twelve columns">
+                {strings.screens.payReport.shiftBreakdownModal.shiftStartTime}&nbsp;
+                {renderAsLocalTime(payableRowData.shift.startTime)}
+              </div>
+            </div>
+            <div className="row compact">
+              <div className="twelve columns">
+                {strings.screens.payReport.shiftBreakdownModal.shiftEndTime}&nbsp;
+                {renderAsLocalTime(payableRowData.shift.endTime)}
+              </div>
+            </div>
+            <div className="row compact">
+              <div className="twelve columns">
+                {strings.screens.payReport.shiftBreakdownModal.basePayRate}&nbsp;
+                ${renderAsDollars(payableRowData.worker.basePayRate)}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="row compact">
-          <div className="twelve columns">
-            {strings.screens.payReport.shiftBreakdownModal.shiftEndTime}&nbsp;
-            {renderAsLocalTime(payableRowData.shift.endTime)}
-          </div>
-        </div>
-        <div className="row compact">
-          <div className="twelve columns">
-            {strings.screens.payReport.shiftBreakdownModal.basePayRate}&nbsp;
-            ${renderAsDollars(payableRowData.worker.basePayRate)}
-          </div>
+          {overtimeReasonsToggle}
         </div>
         <div className="row compact">
           <div className="twelve columns">
