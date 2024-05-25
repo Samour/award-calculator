@@ -10,8 +10,8 @@ const ShiftOvertimeReasonsTable = (): JSX.Element => {
     return (<p className='ShiftOvertimeReasonsTable no-overtime'>NO_OVERTIME</p>);
   }
 
-  const overtimeReasonRows = payableRowData.overtimeSpans.map((overtime) => (
-    <tr>
+  const overtimeReasonRows = payableRowData.overtimeSpans.map((overtime, i) => (
+    <tr key={i}>
       <td>{overtime.reason}</td>
       <td>{renderAsLocalTime(overtime.startTime)}</td>
       <td>{renderAsLocalTime(overtime.endTime)}</td>

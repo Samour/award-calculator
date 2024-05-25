@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
 import flags from 'flags';
 import strings from 'strings';
 import { AppState } from 'models/store';
@@ -17,10 +18,16 @@ interface ShiftBreakdownModalState {
   shouldShowOvertimeReasons: boolean;
 }
 
-const selector = (state: AppState): ShiftBreakdownModalState => ({
-  payableRowData: selectOpenPayBreakdownRow(state),
-  shouldShowOvertimeReasons: state.payReport.viewOptions.showOvertimeReasons,
-});
+const selectShowOvertimeReasons = (state: AppState): boolean => state.payReport.viewOptions.showOvertimeReasons;
+
+const mapState = (
+  payableRowData: ShiftPayableRow | undefined,
+  shouldShowOvertimeReasons: boolean): ShiftBreakdownModalState => ({
+    payableRowData,
+    shouldShowOvertimeReasons,
+  });
+
+const selector = createSelector([selectOpenPayBreakdownRow, selectShowOvertimeReasons], mapState);
 
 const ShiftBreakdownModal = (): JSX.Element => {
   const { payableRowData, shouldShowOvertimeReasons } = useSelector(selector);
