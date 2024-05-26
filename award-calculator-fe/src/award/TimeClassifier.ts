@@ -42,39 +42,9 @@ export class TimeClassifier {
 
     const mergedOvertimeSpans = this.mergeSpans(overtimeSpans);
 
-    const classifiedTime: ClassifiedWorkedTime[] = [];
-    let unclassifiedStart = shift.startTime;
-    mergedOvertimeSpans.forEach((span) => {
-      if (unclassifiedStart.isBefore(span.startTime)) {
-        classifiedTime.push({
-          startTime: unclassifiedStart,
-          endTime: span.startTime,
-          duration: new Decimal(Duration.between(unclassifiedStart, span.startTime).toMinutes()),
-          classification: WorkTimeClassification.REGULAR_TIME,
-        });
-      }
-
-      classifiedTime.push({
-        startTime: span.startTime,
-        endTime: span.endTime,
-        duration: new Decimal(Duration.between(span.startTime, span.endTime).toMinutes()),
-        classification: WorkTimeClassification.OVERTIME,
-      });
-      unclassifiedStart = span.endTime;
-    });
-
-    if (unclassifiedStart.isBefore(shift.endTime)) {
-      classifiedTime.push({
-        startTime: unclassifiedStart,
-        endTime: shift.endTime,
-        duration: new Decimal(Duration.between(unclassifiedStart, shift.endTime).toMinutes()),
-        classification: WorkTimeClassification.REGULAR_TIME,
-      });
-    }
-
     return {
       shift,
-      classifiedTime,
+      classifiedTime: this.fillRegularTimes(shift, mergedOvertimeSpans),
       classifiedOvertime: overtimeSpans,
     };
   }
@@ -102,5 +72,39 @@ export class TimeClassifier {
     }
 
     return mergedSpans;
+  }
+
+  private fillRegularTimes(shift: WorkerShift, overtimeSpans: TimeSpan[]): ClassifiedWorkedTime[] {
+    const classifiedTime: ClassifiedWorkedTime[] = [];
+    let unclassifiedStart = shift.startTime;
+    overtimeSpans.forEach((span) => {
+      if (unclassifiedStart.isBefore(span.startTime)) {
+        classifiedTime.push({
+          startTime: unclassifiedStart,
+          endTime: span.startTime,
+          duration: new Decimal(Duration.between(unclassifiedStart, span.startTime).toMinutes()),
+          classification: WorkTimeClassification.REGULAR_TIME,
+        });
+      }
+
+      classifiedTime.push({
+        startTime: span.startTime,
+        endTime: span.endTime,
+        duration: new Decimal(Duration.between(span.startTime, span.endTime).toMinutes()),
+        classification: WorkTimeClassification.OVERTIME,
+      });
+      unclassifiedStart = span.endTime;
+    });
+
+    if (unclassifiedStart.isBefore(shift.endTime)) {
+      classifiedTime.push({
+        startTime: unclassifiedStart,
+        endTime: shift.endTime,
+        duration: new Decimal(Duration.between(unclassifiedStart, shift.endTime).toMinutes()),
+        classification: WorkTimeClassification.REGULAR_TIME,
+      });
+    }
+
+    return classifiedTime;
   }
 }
