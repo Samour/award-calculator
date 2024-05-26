@@ -129,6 +129,7 @@ const strings = {
     [OvertimeReason.FORTNIGHTLY_HOURS]: 'Too many hours worked in a single fortnight',
     [OvertimeReason.SHIFT_GAP]: 'Insufficient gap between shifts',
     [OvertimeReason.WORKING_HOURS]: 'Time worked outside of regular working hours',
+    [OvertimeReason.CONSECUTIVE_DAYS_OFF]: 'Insufficient consecutive days off in roster period',
   },
   exceptions: {
     csvShiftUpload: {

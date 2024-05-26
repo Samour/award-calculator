@@ -41,3 +41,16 @@ export const toStartOfDay = (zonedDateTime: ZonedDateTime): ZonedDateTime => zon
   .toLocalDate()
   .atStartOfDay()
   .atZone(zonedDateTime.zone());
+
+/**
+ * Calculate the week of the year
+ * Week is 1-indexed with the first week starting on the first Monday of the year
+ * If the passed date is before that first Monday, return value will be 0
+ */
+export const toWeekOfYear = (zonedDateTime: ZonedDateTime): number => {
+  const firstDayOfYear = zonedDateTime.minusDays(zonedDateTime.dayOfYear() - 1);
+  // First day of week is Monday
+  const firstMondayOfYear = firstDayOfYear.plusDays((7 - firstDayOfYear.dayOfWeek().ordinal() + 1) % 7);
+  const daysBetween = zonedDateTime.dayOfYear() - firstMondayOfYear.dayOfYear();
+  return Math.floor((daysBetween + 1) / 7) + 1;
+};

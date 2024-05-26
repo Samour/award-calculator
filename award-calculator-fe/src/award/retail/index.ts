@@ -9,11 +9,12 @@ import { DailyOvertimeCounter } from './overtimeCounters/DailyOvertimeCounter';
 import { FortnightlyOvertimeCounter } from './overtimeCounters/FortnightlyOvertimeCounter';
 import { ConsecutiveDaysOvertimeCounter } from './overtimeCounters/ConsecutiveDaysOvertimeCounter';
 import { DailyShiftGapOvertimeCounter } from './overtimeCounters/DailyShiftGapOvertimeCounter';
+import { ConsecutiveDaysOffByRosterPeriodOvertimeCounter } from './overtimeCounters/ConsecutiveDaysOffByRosterPeriodOvertimeCounter';
 
 export const buildRetailAwardCalculator = (): AwardPayCalculator =>
   new AwardPayCalculator(
     new TimeClassifier(
-      [],
+      [new ConsecutiveDaysOffByRosterPeriodOvertimeCounter()],
       [
         new RegularWorkingHoursOvertimeCounter(),
         new DailyOvertimeCounter(),

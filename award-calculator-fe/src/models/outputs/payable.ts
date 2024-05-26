@@ -30,6 +30,7 @@ export enum OvertimeReason {
   SHIFT_GAP = 'SHIFT_GAP',
   FORTNIGHTLY_HOURS = 'FORTNIGHTLY_HOURS',
   WORKING_HOURS = 'WORKING_HOURS',
+  CONSECUTIVE_DAYS_OFF = 'CONSECUTIVE_DAYS_OFF',
 }
 
 export interface ClassifiedOvertimeSpan extends TimeSpan {
