@@ -16,8 +16,9 @@ export interface ClassifiedWorkedTime {
   classification: WorkTimeClassification;
 }
 
-export interface TimeClassification {
-  classifiedWorkedTime: ClassifiedWorkedTime[];
+export interface ClassifiedShift {
+  shift: WorkerShift;
+  classifiedTime: ClassifiedWorkedTime[];
   classifiedOvertime: ClassifiedOvertimeSpan[];
 }
 
@@ -30,7 +31,7 @@ export class TimeClassifier {
 
   constructor(private readonly overtimeCounters: OvertimeCounter[]) { }
 
-  classifyShift(shift: WorkerShift): TimeClassification {
+  classifyShift(shift: WorkerShift): ClassifiedShift {
     const overtimeSpans = this.overtimeCounters.map((counter): ClassifiedOvertimeSpan[] =>
       counter.countOvertimeInShift(shift).map((s) => ({
         ...s,
@@ -72,7 +73,8 @@ export class TimeClassifier {
     }
 
     return {
-      classifiedWorkedTime: classifiedTime,
+      shift,
+      classifiedTime,
       classifiedOvertime: overtimeSpans,
     };
   }

@@ -1,17 +1,10 @@
 import Decimal from 'decimal.js';
 import { Worker } from 'models/inputs/worker';
-import { ClassifiedOvertimeSpan, ClassifiedPayableTime, ShiftPayable, WorkerPayable } from 'models/outputs/payable';
-import { WorkerShift } from 'models/inputs/shift';
+import { ClassifiedPayableTime, ShiftPayable, WorkerPayable } from 'models/outputs/payable';
 import { MONEY_FINAL_DECIMAL_PLACES, MONEY_ROUNDING_MODE, MonetaryAmount } from 'models/money';
 import { comparingTime } from 'models/time';
 import { PayClassifier } from './PayClassifier';
-import { ClassifiedWorkedTime, TimeClassifier } from './TimeClassifier';
-
-interface ClassifiedShift {
-  shift: WorkerShift;
-  classifiedTime: ClassifiedWorkedTime[];
-  classifiedOvertime: ClassifiedOvertimeSpan[];
-}
+import { ClassifiedShift, TimeClassifier } from './TimeClassifier';
 
 export class AwardPayCalculator {
 
@@ -24,17 +17,9 @@ export class AwardPayCalculator {
     const shifts = [...worker.shifts];
     shifts.sort(comparingTime);
 
-    const classifiedShifts: ClassifiedShift[] = shifts.map((shift) => {
-      const {
-        classifiedWorkedTime: classifiedTime,
-        classifiedOvertime,
-      } = this.timeClassifier.classifyShift(shift);
-      return {
-        shift,
-        classifiedTime,
-        classifiedOvertime,
-      };
-    });
+    const classifiedShifts: ClassifiedShift[] = shifts.map((shift) =>
+      this.timeClassifier.classifyShift(shift),
+    );
 
     const shiftPayables: ShiftPayable[] = classifiedShifts.map(({ shift, classifiedTime, classifiedOvertime }) => {
       const increments: ClassifiedPayableTime[] = this.payClassifiers.map((classifier) =>
