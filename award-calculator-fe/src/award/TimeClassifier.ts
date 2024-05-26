@@ -31,7 +31,16 @@ export class TimeClassifier {
 
   constructor(private readonly overtimeCounters: OvertimeCounter[]) { }
 
-  classifyShift(shift: WorkerShift): ClassifiedShift {
+  classifyShifts(shifts: WorkerShift[]): ClassifiedShift[] {
+    const orderedShifts = [...shifts];
+    orderedShifts.sort(comparingTime);
+
+    return orderedShifts.map((shift) =>
+      this.classifySingleShift(shift),
+    );
+  }
+
+  private classifySingleShift(shift: WorkerShift): ClassifiedShift {
     const overtimeSpans = this.overtimeCounters.map((counter): ClassifiedOvertimeSpan[] =>
       counter.countOvertimeInShift(shift).map((s) => ({
         ...s,
