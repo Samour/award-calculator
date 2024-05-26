@@ -1,13 +1,24 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ShiftPayableRow } from 'models/outputs/table';
 import { AppState } from 'models/store';
-import { PayReportState } from 'models/store/payReport';
+import { PayReportState, ViewOptions } from 'models/store/payReport';
+import { PAY_REPORT_VIEW_OPTIONS_LS_KEY } from './persistence';
+
+const loadViewOptions = (): ViewOptions => {
+  const defaultViewOptions: ViewOptions = {
+    showOvertimeReasons: false,
+  };
+  const viewOptionsJson = localStorage.getItem(PAY_REPORT_VIEW_OPTIONS_LS_KEY) || '{}';
+  const viewOptionsFromLs: Partial<ViewOptions> = JSON.parse(viewOptionsJson);
+
+  return {
+    ...defaultViewOptions,
+    ...viewOptionsFromLs,
+  };
+};
 
 const initialState: PayReportState = {
-  viewOptions: {
-    // TODO Maybe persist this in localstorage
-    showOvertimeReasons: false,
-  },
+  viewOptions: loadViewOptions(),
   payBreakdownModalRow: undefined,
   payableShifts: [],
 };
