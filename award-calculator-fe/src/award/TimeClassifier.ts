@@ -27,13 +27,28 @@ export interface OvertimeCounter {
   countOvertimeInShift(shift: WorkerShift): TimeSpan[];
 }
 
+export interface LookAheadOvertimeCounter extends OvertimeCounter {
+  peekShift(shift: WorkerShift): void;
+}
+
 export class TimeClassifier {
 
-  constructor(private readonly overtimeCounters: OvertimeCounter[]) { }
+  constructor(
+    private readonly lookAheadOvertimeCounters: LookAheadOvertimeCounter[],
+    private readonly overtimeCounters: OvertimeCounter[],
+  ) { }
+
+  private get allOvertimeCounters(): OvertimeCounter[] {
+    return this.overtimeCounters.concat(this.lookAheadOvertimeCounters);
+  }
 
   classifyShifts(shifts: WorkerShift[]): ClassifiedShift[] {
     const orderedShifts = [...shifts];
     orderedShifts.sort(comparingTime);
+
+    this.lookAheadOvertimeCounters.forEach((lookAhead) =>
+      shifts.forEach((shift) => lookAhead.peekShift(shift)),
+    );
 
     return orderedShifts.map((shift) =>
       this.classifySingleShift(shift),
@@ -41,7 +56,7 @@ export class TimeClassifier {
   }
 
   private classifySingleShift(shift: WorkerShift): ClassifiedShift {
-    const overtimeSpans = this.overtimeCounters.map((counter): ClassifiedOvertimeSpan[] =>
+    const overtimeSpans = this.allOvertimeCounters.map((counter): ClassifiedOvertimeSpan[] =>
       counter.countOvertimeInShift(shift).map((s) => ({
         ...s,
         reason: counter.reason,

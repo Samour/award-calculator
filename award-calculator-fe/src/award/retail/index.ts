@@ -12,13 +12,16 @@ import { DailyShiftGapOvertimeCounter } from './overtimeCounters/DailyShiftGapOv
 
 export const buildRetailAwardCalculator = (): AwardPayCalculator =>
   new AwardPayCalculator(
-    new TimeClassifier([
-      new RegularWorkingHoursOvertimeCounter(),
-      new DailyOvertimeCounter(),
-      new FortnightlyOvertimeCounter(),
-      new ConsecutiveDaysOvertimeCounter(),
-      new DailyShiftGapOvertimeCounter(),
-    ]),
+    new TimeClassifier(
+      [],
+      [
+        new RegularWorkingHoursOvertimeCounter(),
+        new DailyOvertimeCounter(),
+        new FortnightlyOvertimeCounter(),
+        new ConsecutiveDaysOvertimeCounter(),
+        new DailyShiftGapOvertimeCounter(),
+      ],
+    ),
     [
       new RegularTimePayClassifier(),
       new OvertimePayClassifier(),
