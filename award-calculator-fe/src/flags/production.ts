@@ -6,7 +6,7 @@ export const productionFlags: FeatureFlags = {
   useDummyCalculationResult: false,
   awardRules: {
     retail: {
-      consecutiveDaysOffByRosterPeriodOvertimeCounter: false,
+      consecutiveDaysOffByRosterPeriodOvertimeCounter: true,
     },
   },
 };
