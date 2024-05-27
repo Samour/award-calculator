@@ -56,6 +56,21 @@ export class ConsecutiveDaysOffByRosterPeriodOvertimeCounter implements LookAhea
     }
     // TODO update this.overtimeDays
 
+    const weeksWithoutBreak = this.calculateWeeksWithoutSufficientBreaks();
+    const otDays = weeksWithoutBreakToOTDays(weeksWithoutBreak.size);
+    for (let i = otDays; i > 0; i--) {
+      const otDay = this.currentPeriod.shiftDates[this.currentPeriod.shiftDates.length - i];
+      this.overtimeDays.add(otDay.format(DateTimeFormatter.ISO_LOCAL_DATE));
+    }
+
+    this.currentPeriod = undefined;
+  }
+
+  private calculateWeeksWithoutSufficientBreaks(): Set<number> {
+    if (!this.currentPeriod) {
+      return new Set();
+    }
+
     const weeksWithoutBreak = new Set([1, 2]);
     let dateItr = this.currentPeriod.rosterPeriod.minusDays(1);
     let weekNo = 1;
@@ -67,26 +82,18 @@ export class ConsecutiveDaysOffByRosterPeriodOvertimeCounter implements LookAhea
 
       const breakLength = Duration.between(dateItr.atStartOfDay(), breakBoundary.atStartOfDay()).toDays() - 1;
       if (breakLength >= 3) {
-        weeksWithoutBreak.delete(1);
-        weeksWithoutBreak.delete(2);
-        break;
+        return new Set();
       } else if (breakLength === 2) {
         weeksWithoutBreak.delete(weekNo);
         if (weekNo === 2) {
-          break;
+          return weeksWithoutBreak;
         }
       }
 
       dateItr = breakBoundary;
     }
 
-    const otDays = weeksWithoutBreakToOTDays(weeksWithoutBreak.size);
-    for (let i = otDays; i > 0; i--) {
-      const otDay = this.currentPeriod.shiftDates[this.currentPeriod.shiftDates.length - i];
-      this.overtimeDays.add(otDay.format(DateTimeFormatter.ISO_LOCAL_DATE));
-    }
-
-    this.currentPeriod = undefined;
+    return weeksWithoutBreak;
   }
 
   private datesToCalculateBreaks(): LocalDate[] {
