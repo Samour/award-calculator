@@ -50,7 +50,7 @@ const makeClassifiedPayableTime = (amount: string): ClassifiedPayableTime => ({
 describe('AwardPayClassifier', () => {
   test('should correctly sum shifts and increments', () => {
     const result = new AwardPayCalculator(
-      new TimeClassifier([]),
+      new TimeClassifier([], []),
       [
         makePayClassifier([
           makeClassifiedPayableTime('123'),
@@ -73,7 +73,7 @@ describe('AwardPayClassifier', () => {
 
   test('should correctly sum shifts and increments with rounding', () => {
     const result = new AwardPayCalculator(
-      new TimeClassifier([]),
+      new TimeClassifier([], []),
       [
         makePayClassifier([
           makeClassifiedPayableTime('1.2345'),

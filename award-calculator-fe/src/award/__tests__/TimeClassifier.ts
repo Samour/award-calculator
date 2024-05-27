@@ -34,27 +34,29 @@ const expectWorkedTime = (workerTime: ClassifiedWorkedTime) => ({
 
 const expectShiftClassifications = (overtimeSpans: [OvertimeReason, number, number][]) => {
   const result = new TimeClassifier(
+    [],
     overtimeSpans.map(([reason, start, end]) => makeOvertimeCounter(reason, start, end)),
-  ).classifyShift({
+  ).classifyShifts([{
     sourceRow: 0,
     startTime: SHIFT_START_TIME,
     endTime: SHIFT_END_TIME,
-  });
+  }]);
 
   return {
     toHaveSpans: (
       expected: [number, number, WorkTimeClassification][],
       expectedOvertimeSpans?: [OvertimeReason, number, number][],
     ) => {
-      expect(result.classifiedWorkedTime).toHaveLength(expected.length);
-      expect(result.classifiedOvertime).toHaveLength(overtimeSpans.length);
+      expect(result).toHaveLength(1);
+      expect(result[0].classifiedTime).toHaveLength(expected.length);
+      expect(result[0].classifiedOvertime).toHaveLength(overtimeSpans.length);
       expected.forEach((workedTime, idx) =>
-        expectWorkedTime(result.classifiedWorkedTime[idx]).toEqual(workedTime[0], workedTime[1], workedTime[2]),
+        expectWorkedTime(result[0].classifiedTime[idx]).toEqual(workedTime[0], workedTime[1], workedTime[2]),
       );
       (expectedOvertimeSpans || overtimeSpans).map(([reason, start, end]) =>
         asClassifiedOvertimeSpan(reason, start, end),
       ).forEach((span, idx) =>
-        expect(result.classifiedOvertime[idx]).toEqual(span),
+        expect(result[0].classifiedOvertime[idx]).toEqual(span),
       );
     },
   };
