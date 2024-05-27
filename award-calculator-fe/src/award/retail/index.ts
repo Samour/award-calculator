@@ -1,5 +1,6 @@
 import { AwardPayCalculator } from 'award/AwardPayCalculator';
-import { TimeClassifier } from 'award/TimeClassifier';
+import { LookAheadOvertimeCounter, TimeClassifier } from 'award/TimeClassifier';
+import flags from 'flags';
 import { RegularTimePayClassifier } from './payClassifiers/RegularTimePayClassifier';
 import { CasualLoadingPayClassifier } from './payClassifiers/CasualLoadingPayClassifier';
 import { WeekendPenaltyPayClassifier } from './payClassifiers/WeekendPenaltyPayClassifier';
@@ -11,10 +12,15 @@ import { ConsecutiveDaysOvertimeCounter } from './overtimeCounters/ConsecutiveDa
 import { DailyShiftGapOvertimeCounter } from './overtimeCounters/DailyShiftGapOvertimeCounter';
 import { ConsecutiveDaysOffByRosterPeriodOvertimeCounter } from './overtimeCounters/ConsecutiveDaysOffByRosterPeriodOvertimeCounter';
 
-export const buildRetailAwardCalculator = (): AwardPayCalculator =>
-  new AwardPayCalculator(
+export const buildRetailAwardCalculator = (): AwardPayCalculator => {
+  const lookAheadOvertimeCounters: LookAheadOvertimeCounter[] = [];
+  if (flags.awardRules.retail.consecutiveDaysOffByRosterPeriodOvertimeCounter) {
+    lookAheadOvertimeCounters.push(new ConsecutiveDaysOffByRosterPeriodOvertimeCounter());
+  }
+
+  return new AwardPayCalculator(
     new TimeClassifier(
-      [new ConsecutiveDaysOffByRosterPeriodOvertimeCounter()],
+      lookAheadOvertimeCounters,
       [
         new RegularWorkingHoursOvertimeCounter(),
         new DailyOvertimeCounter(),
@@ -30,3 +36,4 @@ export const buildRetailAwardCalculator = (): AwardPayCalculator =>
       new CasualLoadingPayClassifier(),
     ],
   );
+};
