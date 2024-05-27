@@ -54,7 +54,6 @@ export class ConsecutiveDaysOffByRosterPeriodOvertimeCounter implements LookAhea
     if (!this.currentPeriod) {
       return;
     }
-    // TODO update this.overtimeDays
 
     const weeksWithoutBreak = this.calculateWeeksWithoutSufficientBreaks();
     const otDays = weeksWithoutBreakToOTDays(weeksWithoutBreak.size);
