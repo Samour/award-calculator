@@ -20,13 +20,13 @@ export class ConsecutiveDaysOffByRosterPeriodOvertimeCounter implements LookAhea
   public readonly reason: OvertimeReason = OvertimeReason.CONSECUTIVE_DAYS_OFF;
 
   public peekShift(shift: WorkerShift): void {
-    const fortnightStart = firstDateOfFortnight(shift.startTime.toLocalDate());
-    console.log({
-      date: toDate(shift.startTime),
-      isoWeekyear: shift.startTime.toLocalDate().isoWeekyear(),
-      isoWeek: shift.startTime.toLocalDate().isoWeekOfWeekyear(),
-      fortnightStart: fortnightStart.format(DateTimeFormatter.ISO_LOCAL_DATE),
-    });
+    // const fortnightStart = firstDateOfFortnight(shift.startTime.toLocalDate());
+    // console.log({
+    //   date: toDate(shift.startTime),
+    //   isoWeekyear: shift.startTime.toLocalDate().isoWeekyear(),
+    //   isoWeek: shift.startTime.toLocalDate().isoWeekOfWeekyear(),
+    //   fortnightStart: fortnightStart.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    // });
 
     // Assumption: Shift does not cross days
     const rosterPeriod = firstDateOfFortnight(shift.startTime.toLocalDate());
@@ -46,7 +46,16 @@ export class ConsecutiveDaysOffByRosterPeriodOvertimeCounter implements LookAhea
   }
 
   public countOvertimeInShift(shift: WorkerShift): TimeSpan[] {
-    return [];
+    this.finalizeCurrentPeriod();
+
+    if (this.overtimeDays.has(toDate(shift.startTime))) {
+      return [{
+        startTime: shift.startTime,
+        endTime: shift.endTime,
+      }];
+    } else {
+      return [];
+    }
   }
 
   private finalizeCurrentPeriod(): void {
