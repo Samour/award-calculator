@@ -47,7 +47,7 @@ export class TimeClassifier {
     orderedShifts.sort(comparingTime);
 
     this.lookAheadOvertimeCounters.forEach((lookAhead) =>
-      shifts.forEach((shift) => lookAhead.peekShift(shift)),
+      orderedShifts.forEach((shift) => lookAhead.peekShift(shift)),
     );
 
     return orderedShifts.map((shift) =>
